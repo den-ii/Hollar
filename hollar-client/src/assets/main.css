@@ -1,0 +1,16 @@
+/* fonts */
+/* Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Quicksand:wght@400;500;600;700&family=Raleway:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap');
+
+/* tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 500;
+}
+.trend {
+  height: calc(100vh - 60px);
+}
