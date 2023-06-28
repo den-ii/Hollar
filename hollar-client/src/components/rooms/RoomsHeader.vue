@@ -8,7 +8,10 @@
       placeholder="Search"
     />
     <div>
-      <button class="ml-2 bg-green-700 rounded-full w-[35px] h-[35px]">
+      <button
+        class="ml-2 bg-green-700 rounded-full w-[35px] h-[35px]"
+        @click.prevent="$emit('openRoomModal')"
+      >
         <i class="fa-solid fa-plus text-white"></i>
       </button>
       <button class="ml-2">
@@ -21,6 +24,8 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineEmits(['openRoomModal'])
+</script>
 
 <style scoped></style>

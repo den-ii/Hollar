@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bars trend fixed top-[60px] right-0 w-[200px] shadow-md px-3 flex flex-col justify-between"
+    class="bars trend fixed top-[60px] right-0 w-[200px] shadow-md px-4 flex flex-col justify-between"
   >
     <div>
       <h1 class="font-Raleway bg-purple-50 rounded text-center mb-2 text-lg font-semibold mt-3">
@@ -21,5 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import Trends from '../assets/trends'
+import Trends from '@/assets/trends'
 </script>
+
+<style></style>

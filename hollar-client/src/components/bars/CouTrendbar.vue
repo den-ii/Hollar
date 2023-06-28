@@ -37,5 +37,5 @@
 </template>
 
 <script setup lang="ts">
-import Trends from '../assets/trends'
+import Trends from '@/assets/trends'
 </script>

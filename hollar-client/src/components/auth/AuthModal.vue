@@ -7,7 +7,7 @@
       @click.prevent="auth.authModal = false"
     ></div>
     <div
-      class="bg-white h-[60vh] w-[70%] max-h-[500px] max-w-[700px] rounded-xl flex z-50 relative"
+      class="bg-white h-[70vh] w-[80%] max-h-[500px] max-w-[800px] rounded-xl flex z-50 relative"
     >
       <span
         class="bg-base absolute z-50 w-[30px] h-[30px] rounded-full flex items-center justify-center -left-3 -top-3 cursor-pointer"
@@ -28,12 +28,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useAuthStore } from '../stores/auth'
+import { useAuthStore } from '@/stores/auth'
 import Login from './LogIn.vue'
 import Register from './Register.vue'
 
 const auth = useAuthStore()
-const authType = ref('Register')
+const authType = ref('Login')
 </script>
 
 <style scoped></style>

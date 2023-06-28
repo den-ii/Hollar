@@ -21,31 +21,34 @@
       </button>
     </div>
     <div class="" v-else>
-      <form class="flex flex-col gap-3">
+      <vee-form class="flex flex-col gap-3" :validation-schema="schema" @submit="login">
         <div class="w-[80%] mx-auto">
-          <label for="email" class="font-Raleway">Email/Username:</label>
-          <input
-            type="text"
-            name="email"
-            id=""
+          <label for="username" class="font-Raleway">Email/Username:</label>
+          <vee-field
+            type="username"
+            name="username"
+            id="username"
             class="font-Raleway border border-gray-700 block w-full rounded p-1 focus:outline focus:outline-base"
           />
+          <ErrorMessage class="text-red-500 font-Raleway text-sm" name="username" />
         </div>
         <div class="w-[80%] mx-auto">
           <label for="password" class="font-Raleway">Password:</label>
-          <input
+          <vee-field
             type="password"
             name="password"
-            id=""
+            id="password"
             class="font-Raleway border border-gray-700 block w-full rounded p-1 focus:outline focus:outline-base"
           />
+          <ErrorMessage class="text-red-500 font-Raleway text-sm" name="password" />
         </div>
         <button
           class="loginemail mt-2 font-Raleway py-1 px-2 bg-green-700 self-center rounded-lg text-white font-semibold shadow-sm"
+          :disabled="loading"
         >
           Log in
         </button>
-      </form>
+      </vee-form>
       <span
         class="absolute top-[50%] -translate-y-[50%]"
         aria-label="go back"
@@ -54,26 +57,53 @@
         <i class="icon pi pi-angle-double-left cursor-pointer text-base"></i>
       </span>
     </div>
-    <p
-      class="font-Raleway font-semibold cursor-pointer hover:underline"
+    <span
+      class="font-Raleway font-semibold cursor-pointer hover:underline self-start"
       @click.prevent="$emit('auth-kind')"
     >
       Register?
-    </p>
+    </span>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 import 'primeicons/primeicons.css'
+import { loginQuery } from '@/graphql/queries'
+import { useLazyQuery } from '@vue/apollo-composable'
 defineEmits(['auth-kind'])
 
+const auth = useAuthStore()
+
 const signInWithMail = ref(false)
+const schema = reactive({
+  username: 'required',
+  password: 'required'
+})
+const loginUser = ref({})
+const { result, load, refetch, loading } = useLazyQuery(loginQuery, { loginUser })
+function login(values: any) {
+  loginUser.value = values
+  console.log(values)
+  load() || refetch()
+}
+
+watch(result, () => {
+  const user = result.value.loginWithEmail
+  if (user) {
+    console.log(user)
+    auth.login(user)
+  }
+  console.log('authtoken', auth.token)
+  console.log('isAuth', auth.isAuth)
+  console.log('auth', auth.user)
+})
 </script>
 
 <style scoped>
 .login:hover {
-  box-shadow: rgba(88, 30, 235, 0.2) 1px 2px 5px 1px;
+  box-shadow: rgba(60, 57, 68, 0.2) 1px 2px 5px 1px;
 }
 
 .loginemail:hover {

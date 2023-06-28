@@ -1,6 +1,7 @@
 <template>
   <video
     autoplay
+    ref="video"
     muted
     controls
     playsinline
@@ -12,7 +13,15 @@
   </video>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+
+const video = ref(null)
+
+watch(video, () => {
+  console.log(video)
+})
+</script>
 <!-- autoplay
     muted
     controls
