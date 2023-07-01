@@ -1,7 +1,7 @@
 <template>
   <main class="max-w-[750px] mx-auto">
     <div>
-      <rooms />
+      <rooms :rooms="true" />
     </div>
   </main>
 </template>

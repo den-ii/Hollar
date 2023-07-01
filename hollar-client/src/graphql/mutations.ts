@@ -1,9 +1,9 @@
 import { useMutation } from '@vue/apollo-composable'
 import { provideApolloClient } from "@vue/apollo-composable";
-import { apolloClient } from './Apollo'
+import { apolloClient } from '@/Apollo'
 import gql from 'graphql-tag'
 
-
+// VerifyUser
 export const { mutate: verifyUser, error: verifyUserError } = provideApolloClient(apolloClient)(() => useMutation(gql`
     mutation verifyUser ($token: String!){
       verifyUser(token: $token) {
@@ -14,13 +14,15 @@ export const { mutate: verifyUser, error: verifyUserError } = provideApolloClien
   `)
 )
 
-
-
-export const { mutate: tryCreateUserWithEmail, error: tryCreateUserWithEmailError, loading: tryCreateUserLoading } = provideApolloClient(apolloClient)(() => useMutation(gql`
-    mutation tryCreateUserWithEmail ($user: createAUser){
-      tryCreateUserWithEmail(user: $user) {
-        message
-        code
+// CreateRoom
+export const createRoomMutate = gql`
+    mutation createRoom ($name: String!, $cover: String!, $creator: String, $tv: ITv, $description: String){
+      createRoom(name: $name, cover: $cover, creator: $creator , tv: $tv, description: $description) {
+        id
       }
     }
-  `))
+  `
+
+
+
+

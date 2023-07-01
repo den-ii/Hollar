@@ -15,8 +15,8 @@
         ><i class="fa-solid fa-xmark text-white"></i
       ></span>
 
-      <!-- MOVIE SEARCHBAR -->
-      <div class="h-full overflow-y-scroll px-6" id="smovie">
+      <!-- Movie Searchbar -->
+      <div class="h-full overflow-y-scroll px-6" id="smovie" v-if="modal == 'addRoom'">
         <form @submit.prevent="bringUpMovies">
           <input
             placeholder="SEARCH..."
@@ -24,14 +24,15 @@
             class="block search w-[100%] text-lg py-3 px-4 mt-3 rounded-full border-2 border-gray-100"
           />
         </form>
-        <!-- MOVIE LIST -->
+        <!-- Movie List -->
         <div class="mt-6">
           <div v-if="data?.length && !loading">
-            <div v-for="movies in data" :key="movies.imddbID">
+            <div v-for="movies in data" :key="movies.id">
+              <!--  -->
               <div class="flex items-center mb-3 justify-between">
-                <img :src="movies.Poster" />
+                <img :src="movies.image?.url" class="moviebg" />
                 <div class="w-full text-center">
-                  <p class="font-bold text-2xl font-Raleway">{{ movies.Title }}</p>
+                  <p class="font-bold text-2xl font-Raleway">{{ movies.title }}</p>
                   <button
                     v-if="movies.inRoom"
                     class="mt-2 bg-yellow-600 text-white font-Raleway rounded px-2 py-1 font-bold cursor-not-allowed"
@@ -41,6 +42,9 @@
                   <button
                     v-else
                     class="mt-2 bgz2 text-white font-Raleway rounded px-2 py-1 font-bold"
+                    @click.prevent="
+                      createRoom({ name: movies.title, cover: movies.image?.url, tv: movies })
+                    "
                   >
                     available to create
                   </button>
@@ -72,6 +76,14 @@
           </div>
         </div>
       </div>
+      <!-- Create room loader -->
+      <div v-else class="flex flex-column h-full justify-center items-center">
+        <div v-if="createRoomLoading">
+          CREATING ROOM... <i class="fa-solid fa-rotate loader text-3xl"></i>
+        </div>
+        <div v-else-if="!createRoomLoading">ROOM CREATED</div>
+        <div v-else>AN ERROR OCCURRED</div>
+      </div>
     </div>
   </div>
 </template>
@@ -79,16 +91,28 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { searchTvTitlesQuery } from '@/graphql/queries'
-import { useLazyQuery } from '@vue/apollo-composable'
+import { createRoomMutate } from '@/graphql/mutations'
+import { useAuthStore } from '@/stores/auth'
+import { useLazyQuery, useMutation } from '@vue/apollo-composable'
+import { useRouter } from 'vue-router'
 
 defineEmits(['openRoomModal'])
 
+const auth = useAuthStore()
+const router = useRouter()
 const title = ref('')
 const data: any = ref(null)
+const modal = ref('addRoom')
 
 let { result, load, refetch, loading, error, onError } = useLazyQuery(searchTvTitlesQuery, {
   title: title
 })
+let {
+  mutate,
+  loading: createRoomLoading,
+  error: createRoomError,
+  onDone
+} = useMutation(createRoomMutate)
 
 async function bringUpMovies() {
   load() || refetch()
@@ -97,18 +121,33 @@ async function bringUpMovies() {
 console.log(title.value)
 console.log('error', error)
 
+async function createRoom(movie) {
+  movie.creator = auth.user.id
+  console.log(auth.user.id)
+  console.log(movie)
+  movie.description = ''
+  const { id, year } = movie.tv
+  const { height, imageUrl, width } = movie.tv.image
+  movie.tv = { id, year }
+  movie.tv.image = { height, imageUrl, width }
+
+  mutate({ ...movie })
+  modal.value = 'createRoom'
+}
 onError((err) => {
   error.value = err
 })
-watch([result, title], () => {
+watch([result, createRoomError], () => {
   data.value = result.value ? result.value?.searchTvTitles : []
-  // console.log(title.value)
-  // console.log(data.value)
+  onDone((result) => {
+    console.log(result.data)
+    router.push(`/rooms/${result.data.createRoom.id}`)
+  })
 })
 </script>
 
-<style scoped>
-img {
+<style>
+.moviebg {
   height: 240px;
   width: 160px;
   border-radius: 6px;

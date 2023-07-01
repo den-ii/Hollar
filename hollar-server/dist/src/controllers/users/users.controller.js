@@ -103,7 +103,7 @@ export async function parseEmailCreateUser(token) {
 }
 // getUserById
 export async function getUser(id) {
-    return await User.findById({ _id: id }).exec();
+    return await User.findById(id).exec();
 }
 // getUserByUsername
 export async function findUser(username) {

@@ -2,6 +2,7 @@
 import { Room } from '../../models/rooms.model.js'
 import axios from 'axios';
 import { GraphQLError } from 'graphql';
+import mongoose from 'mongoose';
 
 
 
@@ -10,49 +11,68 @@ import { GraphQLError } from 'graphql';
 
 // Search for movie/tvseries
 export async function searchTvTitles(title: string) {
-    const key = process.env.OMDB_KEY
+    const key = process.env.OMD_KEY
     console.log('title', title)
-    let response
-    const tvList: any = []
+    const options = {
+        method: 'GET',
+        url: 'https://online-movie-database.p.rapidapi.com/title/find',
+        params: { q: title },
+        headers: {
+            'X-RapidAPI-Key': key,
+            'X-RapidAPI-Host': 'online-movie-database.p.rapidapi.com'
+        }
+    };
     try {
-        response = await axios.get(`http://www.omdbapi.com/?s=${title}&apikey=${key}`)
-        console.log('res', response.data)
-        for (let data of response.data?.Search) {
-            const finData: any = await axios.get(`http://www.omdbapi.com/?i=${data.imdbID}&apikey=${key}`)
-            console.log('finData', finData)
-            const room = await getRoomByName(finData.data.Title)
-            console.log(room)
-            if (room.length) {
-                finData.data.inRoom = true
+        const response = await axios.request(options);
+        console.log(response.data)
+        return response.data.results.map(async (d) => {
+            const inRoom = await getRoomByName(d.title)
+            if (inRoom.length) {
+                d.inRoom = true
             }
             else {
-                finData.data.inRoom = false
+                d.inRoom = false
+                console.log(d)
             }
-
-            tvList.push(finData.data)
-
-        }
-
-    } catch (err) {
-        console.log('err', err)
-        throw new GraphQLError('omdb error.', {
+            console.log(d)
+            return d
+        });
+    } catch (error) {
+        console.error(error);
+        throw new GraphQLError('OMD error.', {
             extensions: {
-                code: 'OMDB_ERROR',
-                err: err
+                code: 'OMD_ERROR',
+                err: error
             }
         })
     }
-    return tvList
 }
 
 // getAllRooms
 export async function getAllRooms() {
     return await Room.find({})
 }
-
+export async function getAllRoomsPaginated(cursor: string, limit: number) {
+    if (!cursor.length) {
+        return await Room.find({}).sort('-updatedAt').limit(limit)
+    }
+    const rooms = await Room.find({ updatedAt: { $lt: new ObjectID(cursor) } }, { limit: limit }).sort('-updatedAt')
+    return rooms
+}
+// export async function getAllRoomCursor(cursor: string, limit: number) {
+//     const rooms = await Room.find({}).sort('-updatedAt')
+//     const index = rooms.findIndex(r => r.id === cursor)
+//     console.log(index)
+//     const newRooms = rooms.slice(index + 1, limit)
+//     const newCursor = newRooms[-1].id
+//     return {
+//         cursor: newCursor,
+//         rooms: newRooms
+//     }
+// }
 // getARoom
 export async function getRoom(id: string) {
-    return await Room.find({ _id: id }).exec()
+    return await Room.findById(id).exec()
 
 }
 // getARoomByName
@@ -61,13 +81,9 @@ export async function getRoomByName(name: string) {
 
 }
 // addaRoom
-export async function addRoom(date: string, name: string, cover: string, creator: string, description?: string,) {
+export async function addRoom(movie: { name: string, cover: string, creator: string, tv: any, description?: string }) {
     return await Room.create({
-        date,
-        name,
-        cover,
-        description,
-        creator
+        ...movie
     });
 }
 

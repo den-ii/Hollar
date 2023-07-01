@@ -7,6 +7,7 @@ declare global {
             SENDGRID: string,
             SALT: number,
             OMDB_KEY: string,
+            OMD_KEY: string,
             // PWD: string;
         }
     }

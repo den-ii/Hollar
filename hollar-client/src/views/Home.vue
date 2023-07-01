@@ -12,9 +12,10 @@ const open = ref(false)
   <main class="max-w-[750px] mx-auto">
     <div>
       <ads />
-      <rooms @openRoomModal="open = true" />
+      <rooms @openRoomModal="open = true" :rooms="false" />
     </div>
     <add-room v-if="open" @closeRoomModal="open = false" />
+
     <!-- <TheWelcome /> -->
   </main>
 </template>

@@ -55,7 +55,7 @@ export const routes: RouteRecordRaw[] = [
         path: '/rooms/:id',
         // name: 'rooms',
         components: {
-            default: () => import('@/views/Rooms.vue'),
+            default: () => import('@/views/Room.vue'),
             navbar: () => import('@/components/bars/Navbar.vue'),
             trendbar: () => import('@/components/bars/Trendbar.vue'),
             couTrendbar: () => import('@/components/bars/CouTrendbar.vue'),

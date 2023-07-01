@@ -131,8 +131,8 @@ export async function parseEmailCreateUser(token: string) {
 }
 
 // getUserById
-export async function getUser(id: number) {
-    return await User.findById({ _id: id }).exec();
+export async function getUser(id: string) {
+    return await User.findById(id).exec();
 }
 
 // getUserByUsername

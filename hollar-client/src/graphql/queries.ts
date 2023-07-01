@@ -55,9 +55,68 @@ query invalidUsername($email: String!) {
 export const searchTvTitlesQuery = gql`
 query searchTvTitles($title: String!){
   searchTvTitles(title: $title) {
-    Title
-    Poster
-    inRoom
+    image {
+      height
+       url
+      width
+     }
+     id
+     title
+     inRoom
   }
 }`
 
+// roombyID
+export const roomQuery = gql`
+query room($id: ID!){
+  room(id: $id) {
+    name
+    cover
+  }
+}`
+
+// getAllRooms
+export const roomsPaginateQuery = gql`
+query roomsPaginate($cursor: String, $limit: Int){
+  roomsPaginate(cursor: $cursor, limit: $limit) {
+      id
+      name
+      tv {
+        image {
+          url
+        }
+      }
+      objectPosition
+      cover
+      likes {
+        id
+      }
+      dislikes {
+        id
+      }
+      createdAt
+  }
+}`
+
+// export const roomsCursoredQuery = gql`
+// query roomsCursored($cursor: ID, $limit: Int){
+//   roomsCursored(cursor: $cursor,limit: $limit) {
+//     cursor
+//     rooms{
+//       id
+//       name
+//       tv {
+//         image {
+//           url
+//         }
+//       }
+//       objectPosition
+//       cover
+//       likes {
+//         id
+//       }
+//       dislikes {
+//         id
+//       }
+//   }
+// }}`

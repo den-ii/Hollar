@@ -9,7 +9,10 @@
       >
         <i class="fa-solid fa-house text-lg"></i>
       </router-link>
-      <button class="bg-green-700 shadow w-[50px] h-[50px] rounded-full">
+      <button
+        class="bg-green-700 shadow w-[50px] h-[50px] rounded-full"
+        @click="modals.postModal = true"
+      >
         <i class="fa-solid fa-pen-to-square text-white text-lg"></i>
       </button>
       <router-link
@@ -23,9 +26,7 @@
       </button>
     </div>
     <div class="">
-      <h1 class="font-Raleway bg-purple-50 rounded text-center mb-2 text-lg font-semibold mt-3">
-        NG Top Trendz
-      </h1>
+      <h1 class="bg-purple-50 rounded text-center mb-2 text-lg font-bold mt-3">NG Top Trendz</h1>
       <ul class="text-lg">
         <li v-for="trend in Trends" :key="trend" class="font-Raleway">
           {{ trend }}
@@ -37,5 +38,9 @@
 </template>
 
 <script setup lang="ts">
+// import { ref } from 'vue'
+import { useModalStore } from '@/stores/modals'
 import Trends from '@/assets/trends'
+
+const modals = useModalStore()
 </script>
