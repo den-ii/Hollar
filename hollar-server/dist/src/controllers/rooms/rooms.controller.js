@@ -2,7 +2,7 @@
 import { Room } from '../../models/rooms.model.js';
 import axios from 'axios';
 import { GraphQLError } from 'graphql';
-import mongoose from 'mongoose';
+import { ObjectId } from 'mongodb';
 // CONTROLLERS
 // Search for movie/tvseries
 export async function searchTvTitles(title) {
@@ -51,7 +51,7 @@ export async function getAllRoomsPaginated(cursor, limit) {
     if (!cursor.length) {
         return await Room.find({}).sort('-updatedAt').limit(limit);
     }
-    const rooms = await Room.find({ updatedAt: { $lt: new mongoose.Types.ObjectId(cursor) } }, { limit: limit }).sort('-updatedAt');
+    const rooms = await Room.find({ updatedAt: { $lt: new ObjectId(cursor) } }, { limit: limit }).sort('-updatedAt');
     return rooms;
 }
 // export async function getAllRoomCursor(cursor: string, limit: number) {
