@@ -2,7 +2,6 @@
 import { Room } from '../../models/rooms.model.js';
 import axios from 'axios';
 import { GraphQLError } from 'graphql';
-import { ObjectId } from 'mongodb';
 // CONTROLLERS
 // Search for movie/tvseries
 export async function searchTvTitles(title) {
@@ -47,25 +46,26 @@ export async function searchTvTitles(title) {
 export async function getAllRooms() {
     return await Room.find({});
 }
-export async function getAllRoomsPaginated(cursor, limit) {
-    if (!cursor.length) {
-        return await Room.find({}).sort('-updatedAt').limit(limit);
-    }
-    const rooms = await Room.find({ updatedAt: { $lt: new ObjectId(cursor) } }, { limit: limit }).sort('-updatedAt');
-    return rooms;
+//getRoomsBy Search 
+export async function getRoomsBySearch(search) {
+    const rooms = await Room.find({});
+    return rooms.filter((room) => room.name.toLowerCase().includes(search.toLowerCase()));
 }
-// export async function getAllRoomCursor(cursor: string, limit: number) {
-//     const rooms = await Room.find({}).sort('-updatedAt')
-//     const index = rooms.findIndex(r => r.id === cursor)
-//     console.log(index)
-//     const newRooms = rooms.slice(index + 1, limit)
-//     const newCursor = newRooms[-1].id
-//     return {
-//         cursor: newCursor,
-//         rooms: newRooms
-//     }
-// }
-// getARoom
+export async function getAllRoomsPaginated(cursor, limit) {
+    if (!cursor || !cursor.length) {
+        const d = await Room.find({}).sort('-updatedAt').limit(limit);
+        console.log('no cursor', d);
+        return d;
+    }
+    else {
+        const c = Number(cursor);
+        console.log(limit);
+        console.log(c);
+        const rooms = await Room.find({ updatedAt: { $lt: c } }).sort('-updatedAt').limit(limit);
+        console.log(rooms);
+        return rooms;
+    }
+}
 export async function getRoom(id) {
     return await Room.findById(id).exec();
 }

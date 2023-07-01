@@ -75,6 +75,15 @@ query room($id: ID!){
   }
 }`
 
+export const searchRoomsQuery = gql`
+query searchRooms($search: String!){
+  searchRooms(search: $search) {
+    id
+    name
+    cover
+  }
+}`
+
 // getAllRooms
 export const roomsPaginateQuery = gql`
 query roomsPaginate($cursor: String, $limit: Int){

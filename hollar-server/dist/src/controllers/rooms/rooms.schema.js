@@ -4,6 +4,7 @@ export const typeDef = `
         roomsPaginate(cursor: String, limit: Int): [Room]
         room(id: ID!): Room
         searchTvTitles(title: String!): [Tv]
+        searchRooms(search: String!): [Room]
 
     }
     
