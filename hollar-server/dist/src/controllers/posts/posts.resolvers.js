@@ -1,15 +1,14 @@
-import { addPost, getAllPosts, getPost, postsPaginator, deletePost } from "./posts.controller.js";
+import { createPost, getAllPosts, getPost, deletePost } from "./posts.controller.js";
 export const resolvers = {
     Query: {
         posts: () => getAllPosts(),
-        post: (_, args) => getPost(args.id),
-        paginatePost: (_, args) => postsPaginator(args.limit, args.pageNo)
+        post: (_, { id }) => getPost(id),
     },
     Mutation: {
-        createPost: (_, args) => {
-            const { author, comment, room, date } = args;
-            return addPost(author, comment, room, date);
+        createPost: (_, { post }) => {
+            const { authorId, comment, title, tv, tags, files } = post;
+            return createPost({ authorId, comment, title, tv, tags, files });
         },
-        removePost: (_, args) => deletePost(args.id)
+        deletePost: (_, { postId, authorId, roomId }) => deletePost(postId, authorId, roomId)
     }
 };

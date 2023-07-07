@@ -19,7 +19,8 @@ const roomSchema = new mongoose.Schema({
         type: String,
     },
     creator: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
     objectPosition: {

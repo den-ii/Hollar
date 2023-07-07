@@ -1,23 +1,24 @@
 import mongoose from 'mongoose'
 
 const postSchema = new mongoose.Schema({
-    date: {
-        type: Date,
-        required: true
-    },
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    replies: { type: mongoose.Schema.Types.ObjectId, ref: 'Reply' },
+    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reply' }],
     likes: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
     ],
     room:
         { type: mongoose.Schema.Types.ObjectId, ref: 'Room', required: true }
     ,
+    files: {
+        type: [String]
+    },
+    tags: {
+        type: [String]
+    },
     comment: {
-        type: [String],
+        type: String,
         required: true
     }
-
 },
     { timestamps: true }
 

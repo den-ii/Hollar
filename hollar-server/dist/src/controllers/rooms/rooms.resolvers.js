@@ -1,11 +1,12 @@
-import { getAllRooms, getRoom, addRoom, deleteRoom, searchTvTitles, getAllRoomsPaginated, getRoomsBySearch } from './rooms.controller.js';
+import { getAllRooms, getRoom, addRoom, deleteRoom, searchTvTitles, getAllRoomsPaginated, getRoomsBySearch, roomWithPost } from './rooms.controller.js';
 export const resolvers = {
     Query: {
         rooms: () => getAllRooms(),
         room: (_, { id }) => getRoom(id),
         searchTvTitles: (_, { title }) => searchTvTitles(title),
         roomsPaginate: (_, { cursor, limit }) => getAllRoomsPaginated(cursor, limit),
-        searchRooms: (_, { search }) => getRoomsBySearch(search)
+        searchRooms: (_, { cursor, limit, search }) => getRoomsBySearch(cursor, limit, search),
+        roomPosts: (_, { id, cursor, limit }) => roomWithPost(id, cursor, limit)
         // roomsCursored: (_, { cursor, limit }) => getAllRoomCursor(cursor, limit)
     },
     Mutation: {

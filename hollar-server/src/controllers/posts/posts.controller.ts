@@ -1,4 +1,9 @@
 import { Post } from '../../models/posts.model.js'
+import { getRoomByName, addRoom, getRoom } from '../rooms/rooms.controller.js'
+import { getUser } from '../users/users.controller.js';
+import { GraphQLError } from 'graphql';
+import { User } from '../../models/users.model.js';
+import { Room } from '../../models/rooms.model.js';
 
 
 export async function getAllPosts() {
@@ -6,22 +11,92 @@ export async function getAllPosts() {
 }
 
 export async function getPost(id: string) {
-    const post = await Post.find({ _id: id }).exec()
-    return
-}
-
-export async function postsPaginator(limit: number, pageNo: number) {
-    return await Post.find().skip((pageNo - 1) * limit).limit(limit).exec()
-}
-
-export async function addPost(comment: string, author: any, room: any, date: string) {
-    return await Post.create({ comment, author, room, date })
+    return await Post.findById(id).exec()
 }
 
 
-export async function deletePost(id: string) {
-    const result = await Post.deleteOne({ _id: id })
-    if (!result) return { message: "error occured", error: true }
-    return { message: "postdeleted", success: true }
+// createPost
+export async function createPost(post: { comment: string, authorId: string, title: string, tv?: any, tags: [string], files: [string] }) {
+    const { tags, files, comment, authorId, title, tv } = post
+    const rooms = await getRoomByName(title)
+    const user = await getUser(authorId)
+    console.log(user)
+    if (rooms.length && user) {
+        const room = rooms[0]
+        const newPost = await Post.create({ tags, files, comment, author: user.id, room: room.id })
+        room.posts.push(newPost.id)
+        user.posts.push(newPost.id)
+        const followers = user.followers
+        // Queue System
+        followers?.forEach(async (id: any) => {
+            const follower = await getUser(id)
+            follower?.feeds.push(newPost.id)
+        })
+        await room.save();
+        await user.save();
+        return newPost
+    }
+    else {
+        let room = await addRoom({ name: title, cover: tv.image.url, creator: authorId, tv: tv })
+        room = room.id
+        const newPost = await Post.create({ tags, files, comment, author: authorId, room })
+        room.posts.push(newPost.id)
+        user?.posts.push(newPost.id)
+        await room.save()
+        await user?.save()
+        return newPost
+    }
+}
+
+// deletePost
+export async function deletePost(postId: string, authorId: string, roomId: string) {
+    const post = await getPost(postId)
+    const user = await getUser(authorId)
+    const room = await getRoom(roomId)
+
+    if (user && room) {
+        if (post && post.author.equals(user.id)) {
+            await User.updateOne({ _id: user.id }, { $pull: { posts: post.id } });
+            await Room.updateOne({ _id: room.id }, { $pull: { posts: post.id } });
+            user.save()
+            room.save()
+
+            return {
+                message: 'deleted successfully',
+                code: 400
+            }
+        }
+    }
+    else if (!post) {
+        throw new GraphQLError('delete post error.', {
+            extensions: {
+                code: 'DELETE_POST_ERROR',
+                err: 'Post not found'
+            }
+        })
+    }
+    else {
+        throw new GraphQLError('delete post error.', {
+            extensions: {
+                code: 'DELETE_POST_ERROR',
+                err: 'not authorized'
+            }
+        })
+    }
+}
+
+// likePost
+export async function likePost(postId: string, userId: string) {
+    const user = await getUser(userId)
+    const post = await getPost(postId)
+    if (user && post) {
+        const liked = await post.likes.find(user.id)
+        if (liked) {
+            await Post.updateOne({ _id: post.id }, { $pull: { likes: user.id } });
+        }
+        else {
+            post.likes.push(user.id)
+        }
+    }
 
 }

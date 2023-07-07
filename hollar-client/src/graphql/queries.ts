@@ -72,15 +72,18 @@ query room($id: ID!){
   room(id: $id) {
     name
     cover
+    posts
+    likes
   }
 }`
 
 export const searchRoomsQuery = gql`
-query searchRooms($search: String!){
-  searchRooms(search: $search) {
+query searchRooms($cursor: String, $limit: Int, $search: String!){
+  searchRooms(cursor: $cursor, limit: $limit, search: $search) {
     id
     name
     cover
+    updatedAt
   }
 }`
 
@@ -95,37 +98,26 @@ query roomsPaginate($cursor: String, $limit: Int){
           url
         }
       }
-      objectPosition
       cover
-      likes {
-        id
-      }
-      dislikes {
-        id
-      }
       createdAt
+      updatedAt
   }
 }`
 
-// export const roomsCursoredQuery = gql`
-// query roomsCursored($cursor: ID, $limit: Int){
-//   roomsCursored(cursor: $cursor,limit: $limit) {
-//     cursor
-//     rooms{
-//       id
-//       name
-//       tv {
-//         image {
-//           url
-//         }
-//       }
-//       objectPosition
-//       cover
-//       likes {
-//         id
-//       }
-//       dislikes {
-//         id
-//       }
-//   }
-// }}`
+export const roomPosts = gql`
+query roomPosts($id: ID!, $cursor: String!, $limit: Int!){
+  roomPosts(id: $id, cursor: $cursor, limit: $limit) {
+    id   
+    posts{
+      author {
+        fullName
+        username
+        avatar
+        }
+      id
+      tags
+      comment
+      }
+  }
+}
+`

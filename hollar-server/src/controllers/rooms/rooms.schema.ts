@@ -4,7 +4,8 @@ export const typeDef = `
         roomsPaginate(cursor: String, limit: Int): [Room]
         room(id: ID!): Room
         searchTvTitles(title: String!): [Tv]
-        searchRooms(search: String!): [Room]
+        searchRooms(cursor: String, limit: Int, search: String!): [Room]
+        roomPosts(id: ID!, cursor: String!, limit: Int!): RoomWithPost
 
     }
     
@@ -21,9 +22,24 @@ export const typeDef = `
         name: String
         objectPosition: String
         tv: Tv
-        posts: [Post]
-        likes: [User]
-        dislikes: [User]
+        posts: [ID]
+        likes: [ID]
+        dislikes: [ID]
+        createdAt: String
+        updatedAt: String
+    }
+    
+    type RoomWithPost {
+        id: ID
+        cover: String
+        description: String
+        creator: User
+        name: String
+        objectPosition: String
+        tv: Tv
+        posts: [PostWithUser]
+        likes: [ID]
+        dislikes: [ID]
         createdAt: String
         updatedAt: String
     }

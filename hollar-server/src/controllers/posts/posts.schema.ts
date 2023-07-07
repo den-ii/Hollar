@@ -3,45 +3,48 @@ export const typeDef = `
     extend type Query {
         posts: [Post]
         post(id: ID!): Post
-        paginatePost(limit: Int!, size: Int!): [Post]
     }
-    input CreatePostInput {
-        author: UserInput!
-        date: String
-        room: RoomInput!
-        comment: String!
-    }
-    input UserInput{
-        id: String!
-        fullName: String
-        username: String
-        email: String
-        avatar: String,
-        color: String
-        followers: [UserInput],
-        follows: [UserInput]
-        
-    }
-    input RoomInput{
-        id: ID!
-        cover: String
-        description: String
-        date: String
-        creator: UserInput
-    },
+
     type Mutation {
-        createPost(input : CreatePostInput) : Post
-        removePost(id: ID!) : Error
+        createPost(post: createPostInput!): Post
+        deletePost(postId: ID!, authorId: ID!, roomId: ID!): Message
+    }
+    
+    input createPostInput{
+        comment: String
+        title: String
+        authorId: ID!
+        tv: ITv
+        tags: [String]
+        files: [String]
     }
 
     type Post {
         id: ID
         comment: String
-        author: User
-        date: String
-        room: Room
-        likes: [User]
+        author: ID
+        room: ID
+        tags: [String]
+        files: [String]
+        likes: [ID]
         createdAt: String
         updatedAt: String
+    }
+    
+    type PostWithUser {
+        id: ID
+        comment: String
+        author: User
+        room: ID
+        tags: [String]
+        files: [String]
+        likes: [ID]
+        createdAt: String
+        updatedAt: String
+    }
+
+    type Message {
+        message : String
+        code: Int
     }
 `;

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bars trend fixed top-[60px] left-0 w-[200px] shadow-md px-3 flex flex-col justify-between items-center"
+    class="shadow trend fixed top-[60px] left-0 w-[200px] px-3 flex flex-col justify-between items-center"
   >
     <div class="pt-6 flex flex-col gap-5">
       <router-link
@@ -26,7 +26,9 @@
       </button>
     </div>
     <div class="">
-      <h1 class="bg-purple-50 rounded text-center mb-2 text-lg font-bold mt-3">NG Top Trendz</h1>
+      <h1 class="bg-base text-gray-100 rounded text-center mb-2 text-lg font-bold mt-3">
+        NG Top Trendz
+      </h1>
       <ul class="text-lg">
         <li v-for="trend in Trends" :key="trend" class="font-Raleway">
           {{ trend }}

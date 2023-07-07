@@ -30,6 +30,7 @@
 </template>
 
 <script setup lang="ts">
+defineEmits(['toRoom'])
 const props = defineProps(['result'])
 </script>
 <style scoped>

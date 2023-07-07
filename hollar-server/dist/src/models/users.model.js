@@ -38,10 +38,12 @@ const userSchema = new mongoose.Schema({
     color: {
         type: String,
     },
+    feeds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    follows: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     bookmarks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
-    Replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reply' }],
+    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reply' }],
     notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reply' }],
 }, { timestamps: true });
 export const User = mongoose.model('User', userSchema);

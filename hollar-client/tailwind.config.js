@@ -7,7 +7,9 @@ module.exports = {
         Roboto: ['Roboto', 'sans-serif'],
         QuickSand: ['Quicksand'],
         Raleway: ['Raleway'],
-        Poppins: ['Poppins']
+        Poppins: ['Poppins'],
+        Karla: ['Karla'],
+        Inter: ['Inter']
       },
       colors: {
         base: 'rgba(88, 30, 235, 0.8)'

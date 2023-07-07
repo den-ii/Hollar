@@ -1,11 +1,11 @@
 <template>
   <div class="mb-5 cursor-pointer">
     <rooms-header @openRoomModal="$emit('openRoomModal')" :rooms="rooms" @change="change" />
-    <div v-if="!search.length">
-      <scroll-results :result="result" />
+    <div v-if="search.length < 3">
+      <scroll-results :result="result" @toRoom="toRoom" />
     </div>
     <div v-else>
-      <search-results :result="searchResult" />
+      <search-results :search="search" @toRoom="toRoom" />
     </div>
   </div>
 </template>
@@ -35,7 +35,7 @@ function like() {}
 function unlike() {}
 
 const cursor = ref('')
-const { result, loading, fetchMore } = useQuery(
+const { result, loading, fetchMore, error } = useQuery(
   roomsPaginateQuery,
   () => ({
     cursor: '',
@@ -44,19 +44,11 @@ const { result, loading, fetchMore } = useQuery(
   { notifyOnNetworkStatusChange: true }
 )
 
-const {
-  result: searchResult,
-  loading: searchLoading,
-  load
-} = useLazyQuery(searchRoomsQuery, {
-  search: search
-})
-
 // load rooms function
 function loadMore() {
   fetchMore({
     variables: {
-      cursor: result?.value?.roomsPaginate?.slice(-1)[0].createdAt
+      cursor: result?.value?.roomsPaginate?.slice(-1)[0].updatedAt
     },
     updateQuery: (previousResult, { fetchMoreResult }) => {
       // No new feed posts
@@ -95,12 +87,9 @@ function change(value) {
   search.value = value
   console.log(value)
 }
-watch([search, result], () => {
-  console.log(search.value)
-  if (search.value.length > 3) {
-    load()
-  }
-  console.log(searchResult.value)
+
+watch(result, () => {
+  console.log(result)
 })
 </script>
 

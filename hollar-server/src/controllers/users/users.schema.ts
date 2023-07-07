@@ -45,13 +45,13 @@ export const typeDef = `
         email: String
         avatar: String
         color: String
-        followers: [User]
-        follows: [User]
+        followers: [ID]
+        following: [ID]
         country: String
         countrycode: String!
-        bookmarks: [Post]
-        replies: [Reply]
-        notifications: [Reply]
+        bookmarks: [ID]
+        replies: [ID]
+        notifications: [ID]
         createdAt: String
         updatedAt: String
     }

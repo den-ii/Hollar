@@ -22,6 +22,14 @@ export const createRoomMutate = gql`
       }
     }
   `
+//createPodt
+export const createPost = gql`
+  mutation createPost ($post: createPostInput!){
+    createPost(post: $post) {
+      id
+    }
+}
+`
 
 
 

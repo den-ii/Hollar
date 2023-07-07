@@ -30,7 +30,56 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps(['result'])
+import { onUnmounted } from 'vue'
+import { searchRoomsQuery } from '@/graphql/queries'
+import { useQuery } from '@vue/apollo-composable'
+
+defineEmits(['toRoom'])
+const props = defineProps(['search'])
+console.log(props.search)
+const { result, loading, fetchMore } = useQuery(
+  searchRoomsQuery,
+  () => ({
+    search: props.search,
+    cursor: '',
+    limit: 2
+  }),
+  { notifyOnNetworkStatusChange: true }
+)
+function loadMore() {
+  fetchMore({
+    variables: {
+      cursor: result?.value?.searchRooms?.slice(-1)[0].updatedAt
+    },
+    updateQuery: (previousResult, { fetchMoreResult }) => {
+      // No new feed posts
+      if (!fetchMoreResult) return previousResult
+
+      // Concat previous feed with new feed posts
+
+      return {
+        ...previousResult,
+        searchRooms: [...previousResult.searchRooms, ...fetchMoreResult.searchRooms]
+      }
+    }
+  })
+}
+
+function infiniteScroll() {
+  console.log(loading)
+  if (!loading.value) {
+    const { scrollTop, offsetHeight } = document.documentElement
+    const { innerHeight } = window
+    const bottomOfWindow = Math.round(scrollTop) + innerHeight > offsetHeight - 100
+    if (bottomOfWindow) {
+      loadMore()
+    }
+  }
+}
+
+// infinite scrollin
+window.addEventListener('scroll', infiniteScroll)
+onUnmounted(() => window.removeEventListener('scroll', infiniteScroll))
 </script>
 <style scoped>
 img {
