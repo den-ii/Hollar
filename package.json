@@ -1,0 +1,9 @@
+{
+  "name": "hollar",
+  "version": "1.0.0",
+  "scripts": {
+    "dev:client": "cd ./hollar-client && npm run dev",
+    "dev:server": "cd ./hollar-server && npm run dev",
+    "dev": "npm run dev:client && npm run dev:server"
+  }
+}

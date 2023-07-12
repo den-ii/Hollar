@@ -2,7 +2,7 @@
 import { User } from '../../models/users.model.js';
 import { GraphQLError } from 'graphql';
 import sgMail from '@sendgrid/mail';
-import { signupMail } from './signupMail.js';
+import { sendMail } from './sendMail.js';
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 // CONTROLLERS
@@ -24,26 +24,27 @@ export async function tryEmailCreateUser(user) {
     const token = jwt.sign(user, secret, { expiresIn: '1hr' });
     sgMail.setApiKey(process.env.SENDGRID);
     const url = `http://localhost:5173/verifyaccount?token=${token}`;
-    const msg = {
-        to: user.email,
-        from: 'holllarztm@gmail.com',
-        subject: 'Verification Mail',
-        text: 'and easy to do anywhere, even with Node.js',
-        html: signupMail(url),
-    };
-    try {
-        let statement = await sgMail.send(msg);
-        return { message: 'email sent', code: 200 };
-    }
-    catch (err) {
-        console.log('err:', err);
-        throw new GraphQLError('Email not sent.', {
-            extensions: {
-                code: 'EMAIL_ERROR',
-                err: err
-            }
-        });
-    }
+    sendMail(user.email, url);
+    // const msg = {
+    //     to: user.email, // Change to your recipient
+    //     from: 'holllarztm@gmail.com', // Change to your verified sender
+    //     subject: 'Verification Mail',
+    //     text: 'and easy to do anywhere, even with Node.js',
+    //     html: signupMail(url),
+    // }
+    // try {
+    //     let statement = await sgMail.send(msg)
+    //     return { message: 'email sent', code: 200 }
+    // }
+    // catch (err) {
+    //     console.log('err:', err)
+    //     throw new GraphQLError('Email not sent.', {
+    //         extensions: {
+    //             code: 'EMAIL_ERROR',
+    //             err: err
+    //         }
+    //     })
+    // }
 }
 // password check
 export function passwordCheck(password) {
@@ -158,6 +159,31 @@ export async function addUser(user) {
         country,
         countrycode
     });
+}
+export async function editProfile(profile) {
+    const { userId, avatar, bg, favourite } = profile;
+    const user = await getUser(userId);
+    if (user) {
+        if (avatar?.length) {
+            user.avatar = avatar;
+        }
+        if (bg?.length) {
+            user.bg = bg;
+        }
+        if (favourite?.length) {
+            user.favourite = favourite;
+        }
+        await user.save();
+        console.log(user);
+        return user;
+    }
+    else {
+        throw new GraphQLError('No user', {
+            extensions: {
+                code: 'NO_USER',
+            }
+        });
+    }
 }
 // deleteAUser
 export async function deleteUser(id) {

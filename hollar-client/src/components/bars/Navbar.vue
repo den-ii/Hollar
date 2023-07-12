@@ -1,5 +1,7 @@
 <template>
-  <header class="shadow fixed h-[60px] top-0 left-0 right-0 w-full flex items-center bg-white z-40">
+  <header
+    class="shadow fixed h-[60px] top-0 left-0 right-0 w-full flex items-center bg-white dark:bg-gray-800 z-40"
+  >
     <nav class="w-screen flex items-center justify-between px-3">
       <!-- LOGO -->
       <div>
@@ -27,12 +29,11 @@
             >3</span
           >
         </button>
-        <button
-          v-if="auth.user?.avatar?.length"
-          class="cursor-pointer block"
-          @click="router.push('/profile')"
-        >
-          <img :src="auth.user?.avatar" />
+        <button v-if="auth.user?.avatar?.length" @click="router.push('/profile')">
+          <img
+            :src="auth.user?.avatar"
+            :class="`w-[45px] h-[45px] flex items-center justify-center cursor-pointer rounded-full ${auth.authBg}`"
+          />
         </button>
         <button
           v-else
@@ -51,6 +52,6 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
-const dp = auth.name()
+const dp = auth.name
 const router = useRouter()
 </script>

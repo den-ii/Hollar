@@ -13,6 +13,7 @@ export const typeDef = `
     type Mutation {
         removeUser(id: ID!) : deleteError
         verifyUser(token:String!) : Error
+        editProfile(profile: IEditProfile): User
     }
 
     input loginUser {
@@ -48,6 +49,8 @@ export const typeDef = `
         followers: [ID]
         following: [ID]
         country: String
+        favourite: String
+        bg: String
         countrycode: String!
         bookmarks: [ID]
         replies: [ID]
@@ -56,12 +59,7 @@ export const typeDef = `
         updatedAt: String
     }
 
-    type Reply {
-        id: ID
-        comment: [String]
-        createdAt: String
-        updatedAt: String
-    }
+    
     type deleteError {
         acknowledged: Boolean
         deletedCount: Int
@@ -69,5 +67,11 @@ export const typeDef = `
     type Error {
         message: String
         code: Int
+    }
+    input IEditProfile {
+        userId: ID!
+        avatar: String
+        bg: String
+        favourite: String
     }
 `;

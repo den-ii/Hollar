@@ -52,10 +52,30 @@ export const routes: RouteRecordRaw[] = [
         }
     },
     {
-        path: '/rooms/:id',
+        path: '/:name/:id',
         // name: 'rooms',
         components: {
             default: () => import('@/views/Room.vue'),
+            navbar: () => import('@/components/bars/Navbar.vue'),
+            trendbar: () => import('@/components/bars/Trendbar.vue'),
+            couTrendbar: () => import('@/components/bars/CouTrendbar.vue'),
+        }
+    },
+    {
+        path: '/post/:name/:id',
+        // name: 'rooms',
+        components: {
+            default: () => import('@/views/Post.vue'),
+            navbar: () => import('@/components/bars/Navbar.vue'),
+            trendbar: () => import('@/components/bars/Trendbar.vue'),
+            couTrendbar: () => import('@/components/bars/CouTrendbar.vue'),
+        }
+    },
+    {
+        path: '/replies/:name/:id',
+        // name: 'rooms',
+        components: {
+            default: () => import('@/views/Reply.vue'),
             navbar: () => import('@/components/bars/Navbar.vue'),
             trendbar: () => import('@/components/bars/Trendbar.vue'),
             couTrendbar: () => import('@/components/bars/CouTrendbar.vue'),

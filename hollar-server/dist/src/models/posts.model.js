@@ -7,7 +7,7 @@ const postSchema = new mongoose.Schema({
     ],
     room: { type: mongoose.Schema.Types.ObjectId, ref: 'Room', required: true },
     files: {
-        type: [String]
+        type: [Object]
     },
     tags: {
         type: [String]

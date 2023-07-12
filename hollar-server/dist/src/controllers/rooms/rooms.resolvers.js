@@ -1,4 +1,4 @@
-import { getAllRooms, getRoom, addRoom, deleteRoom, searchTvTitles, getAllRoomsPaginated, getRoomsBySearch, roomWithPost } from './rooms.controller.js';
+import { getAllRooms, getRoom, addRoom, deleteRoom, searchTvTitles, getAllRoomsPaginated, getRoomsBySearch, roomWithPost, likeRoom, dislikeRoom } from './rooms.controller.js';
 export const resolvers = {
     Query: {
         rooms: () => getAllRooms(),
@@ -15,6 +15,8 @@ export const resolvers = {
         },
         removeRoom: (_, { id }) => {
             return deleteRoom(id);
-        }
+        },
+        likeRoom: (_, { roomId, userId }) => likeRoom(roomId, userId),
+        dislikeRoom: (_, { roomId, userId }) => dislikeRoom(roomId, userId)
     }
 };

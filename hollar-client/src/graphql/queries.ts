@@ -21,10 +21,13 @@ query loginWithEmail($loginUser: loginUser!) {
     token
     user {
       id
-      avatar
-      color
-      fullName
       username
+      avatar
+      favourite
+      bg
+      fullName
+      followers
+      favourite
     }
   }
 }
@@ -43,8 +46,8 @@ query invalidUsername($username: String!) {
 
 // checkValidEmail
 export const invalidEmailQuery = gql`
-query invalidUsername($email: String!) {
-  invalidUsername(email: $email){
+query invalidEmail($email: String!) {
+  invalidEmail(email: $email){
     message
     code
 
@@ -74,6 +77,7 @@ query room($id: ID!){
     cover
     posts
     likes
+    dislikes
   }
 }`
 
@@ -83,6 +87,8 @@ query searchRooms($cursor: String, $limit: Int, $search: String!){
     id
     name
     cover
+    likes
+    dislikes
     updatedAt
   }
 }`
@@ -99,6 +105,8 @@ query roomsPaginate($cursor: String, $limit: Int){
         }
       }
       cover
+      likes
+      dislikes
       createdAt
       updatedAt
   }
@@ -113,11 +121,80 @@ query roomPosts($id: ID!, $cursor: String!, $limit: Int!){
         fullName
         username
         avatar
+        favourite
         }
       id
       tags
       comment
+      likes
+      replies
       }
+
+  }
+}
+`
+
+export const postQuery = gql`
+query post($id: ID!){
+  post(id: $id) {
+    id
+    author {
+      id
+      avatar
+      username
+      favourite
+    }
+    comment
+    room {
+      id
+      name
+      cover
+    }
+    replies
+    likes
+}
+}
+`
+
+
+export const postWithReplies = gql`
+query postWithReplies($id: ID!, $cursor: String, $limit: Int){
+  postWithReplies(id: $id, cursor: $cursor, limit: $limit) {
+     id
+     author{
+      username
+      avatar
+      favourite
+     }
+     comment
+     replies{
+      id
+     }
+     likes
+     createdAt
+     updatedAt
+    
+  }
+}
+`
+
+export const replyWithReplies = gql`
+query replyWithReplies($id: ID!, $cursor: String, $limit: Int){
+  replyWithReplies(id: $id, cursor: $cursor, limit: $limit) {
+     id
+     author{
+      username
+      avatar
+      favourite
+     }
+     comment
+     replies{
+      id
+     }
+     likes
+     createdAt
+     updatedAt
+    
   }
 }
 `

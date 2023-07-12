@@ -26,11 +26,11 @@
       </button>
     </div>
     <div class="">
-      <h1 class="bg-base text-gray-100 rounded text-center mb-2 text-lg font-bold mt-3">
-        NG Top Trendz
+      <h1 class="bg-base text-gray-100 rounded-lg text-center mb-2 text-lg font-bold py-1 mt-3">
+        NG Top 10
       </h1>
       <ul class="text-lg">
-        <li v-for="trend in Trends" :key="trend" class="font-Raleway">
+        <li v-for="trend in Trends" :key="trend" class="">
           {{ trend }}
         </li>
       </ul>

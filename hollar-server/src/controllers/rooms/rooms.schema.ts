@@ -12,6 +12,9 @@ export const typeDef = `
     type Mutation {
         createRoom(name: String!, cover: String!, tv: ITv, description: String, creator: String) : Room
         removeRoom(id: ID!) : Error 
+        likeRoom(roomId: ID!, userId: ID!): Room
+        dislikeRoom(roomId: ID!, userId: ID!): Room
+
     }
     
     type Room {

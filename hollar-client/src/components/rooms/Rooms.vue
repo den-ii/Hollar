@@ -13,6 +13,7 @@
 <script setup lang="ts">
 import { ref, watch, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useRefreshStore } from '@/stores/refresh'
 import { roomsPaginateQuery, searchRoomsQuery } from '@/graphql/queries'
 import { useQuery, useLazyQuery } from '@vue/apollo-composable'
 import RoomsHeader from './RoomsHeader.vue'
@@ -25,10 +26,14 @@ defineProps({
 })
 const router = useRouter()
 // const name = ref('taxidriver')
+const refresh = useRefreshStore()
 const search = ref('')
 
-function toRoom(id) {
-  router.push(`rooms/${id}`)
+refresh.home++
+
+function toRoom(title, id) {
+  const name = title.split(' ').join('+')
+  router.push(`${name}/${id}`)
 }
 function like() {}
 
@@ -41,7 +46,7 @@ const { result, loading, fetchMore, error } = useQuery(
     cursor: '',
     limit: 2
   }),
-  { notifyOnNetworkStatusChange: true }
+  { notifyOnNetworkStatusChange: true, fetchPolicy: 'cache-and-network' }
 )
 
 // load rooms function

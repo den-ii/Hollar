@@ -36,6 +36,8 @@ const userSchema = new mongoose.Schema({
         trim: true
     },
     avatar: String,
+    bg: String,
+    favourite: String,
     color: {
         type: String,
 

@@ -1,4 +1,4 @@
-import { ref, type Ref, computed } from 'vue';
+import { ref, type Ref, computed, watch } from 'vue';
 import { defineStore } from 'pinia';
 
 
@@ -10,15 +10,20 @@ export const useAuthStore = defineStore('auth', () => {
     const user: any = ref(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '') : null)
 
     // dp function
-    function name() {
+    const name = ref(getName())
+    watch(user, () => {
+        name.value = getName()
+    })
+    // dp background function
+    const authBg = computed(() => (user.value?.avatar ? '' : `bg-gray-500`))
+
+    function getName() {
         if (user.value) {
             const defaultDisplayName = user.value?.fullName.split(' ')
             return defaultDisplayName[0]?.charAt(0).toUpperCase() + defaultDisplayName[1]?.charAt(0).toUpperCase()
         }
         return ''
     }
-    // dp background function
-    const authBg = computed(() => (user.value?.avatar ? '' : `bg-gray-500`))
 
     // login function
     function login(luser) {

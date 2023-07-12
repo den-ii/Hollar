@@ -140,8 +140,9 @@ onError((err) => {
 watch([result, createRoomError], () => {
   data.value = result.value ? result.value?.searchTvTitles : []
   onDone((result) => {
-    console.log(result.data)
-    router.push(`/rooms/${result.data.createRoom.id}`)
+    let { name, id } = result.data.createRoom
+    name = name.split(' ').join('+')
+    router.push(`/${name}/${id}`)
   })
 })
 </script>

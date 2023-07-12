@@ -85,7 +85,7 @@ export async function roomWithPost(id, cursor, limit) {
     if (!cursor || !cursor.length) {
         const result = await Room.findById({ _id: id }).populate({
             path: 'posts',
-            options: { sort: { 'created_at': -1 } },
+            options: { sort: { createdAt: -1 } },
             populate: {
                 path: 'author'
             },
@@ -95,9 +95,10 @@ export async function roomWithPost(id, cursor, limit) {
     }
     else {
         const c = Number(cursor);
+        console.log(c);
         const result = await Room.findById({ _id: id }).populate({
             path: 'posts',
-            options: { sort: { 'created_at': -1 } },
+            options: { sort: { createdAt: -1 } },
             match: { createdAt: { $lt: c } },
             populate: {
                 path: 'author'
@@ -124,15 +125,16 @@ export async function likeRoom(roomId, userId) {
     const user = await getUser(userId);
     if (room && user) {
         await Room.updateOne({ _id: roomId }, { $pull: { dislikes: userId } });
+        await Room.updateOne({ _id: roomId }, { $pull: { likes: userId } });
+        const ll = await Room.findOne({ _id: roomId, likes: userId });
+        console.log('ll', ll);
         await room.likes.push(user.id);
         room.save();
-        return {
-            message: "liked successful",
-            code: 200
-        };
+        console.log(room);
+        return room;
     }
     else if (!room) {
-        throw new GraphQLError('dislike error.', {
+        throw new GraphQLError('like error.', {
             extensions: {
                 code: 'ROOM_ERROR',
                 err: 'Room not found'
@@ -154,12 +156,12 @@ export async function dislikeRoom(roomId, userId) {
     const user = await getUser(userId);
     if (room && user) {
         await Room.updateOne({ _id: roomId }, { $pull: { likes: userId } });
-        await room.dislikes.push(user.id);
+        await Room.updateOne({ _id: roomId }, { $pull: { likes: userId } });
+        const ll = await room.likes.find(user.id);
+        console.log('ll', ll);
         room.save();
-        return {
-            message: "disliked successful",
-            code: 200
-        };
+        console.log(room);
+        return room;
     }
     else if (!room) {
         throw new GraphQLError('dislike error.', {

@@ -56,32 +56,7 @@
         </div>
       </div>
       <!-- for files -->
-      <div v-if="allFiles.length" class="flex mt-3 p-2 gap-3 flex-wrap">
-        <div v-for="(file, index) in allFiles" :key="index" class="relative">
-          <template v-if="file.type == 'video'">
-            <video autoplay muted alt="photo" class="w-[150px] h-[100px]">
-              <source :src="file.src" />
-            </video>
-            <button
-              @click="removeFiles(index)"
-              class="bg-base absolute w-[20px] h-[20px] rounded-full flex items-center justify-center -right-3 -top-3 cursor-pointer"
-              aria-label="remove image"
-            >
-              <i class="fa-solid fa-xmark text-white text-sm"></i>
-            </button>
-          </template>
-          <template v-else>
-            <img :src="file.src" alt="photo" class="w-[150px] h-[100px] object-cover" />
-            <button
-              @click.prevent="removeFiles(index)"
-              class="bg-base absolute w-[20px] h-[20px] rounded-full flex items-center justify-center -right-3 -top-3 cursor-pointer"
-              aria-label="remove image"
-            >
-              <i class="fa-solid fa-xmark text-white text-sm"></i>
-            </button>
-          </template>
-        </div>
-      </div>
+      <files :all-files="allFiles" @remove-files="removeFiles" />
 
       <div class="relative py-3 px-2" ref="menuContainer" id="post">
         <vue-tribute :options="options">
@@ -102,12 +77,14 @@
 <script setup lang="ts">
 // imports
 import { computed, ref, watch, reactive } from 'vue'
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { PutObjectCommand } from '@aws-sdk/client-s3'
+import { client, bucket, region } from '@/config/aws'
 import LargeFile from './LargeFile.vue'
 import { VueTribute } from 'vue-tribute'
 import { useAuthStore } from '@/stores/auth'
 import { useMutation } from '@vue/apollo-composable'
 import { createPost } from '@/graphql/mutations'
+import Files from './Files.vue'
 
 // refs
 const emit = defineEmits(['closeAllModal', 'unchoose'])
@@ -125,17 +102,7 @@ const fileInput: any = ref(null)
 const post: any = ref(null)
 const postBody = ref('')
 const tags: any = ref([])
-const secretAccessKey = import.meta.env.VITE_S3SECRETKEY // IAM user secret key
-const accessKeyId = import.meta.env.VITE_S3ACCESSKEY // IAM user access id
-const bucket = import.meta.env.VITE_S3BUCKET // Bucket name
-const region = import.meta.env.VITE_S3REGION // Region
-const client = new S3Client({
-  region,
-  credentials: {
-    secretAccessKey,
-    accessKeyId
-  }
-})
+
 const options = {
   trigger: '@',
   values: [
@@ -218,16 +185,10 @@ async function uploadFiles() {
   console.log('fileupload', region)
   fileUpload.value.forEach(async (file) => {
     const timestamp = new Date().getTime()
-    const filename =
-      file.name
-        .split('.')[0]
-        .replace(/[&/\\#,+()$~%'":*?<>{}]/g, '')
-        .toLowerCase() + `_${timestamp}`
-    const fileExtension = file.name.split('.').pop()
-    const fileName = filename + '.' + fileExtension
+    const filename = timestamp + file.name
     const command = new PutObjectCommand({
       Bucket: bucket,
-      Key: fileName,
+      Key: filename,
       Body: file
     })
     try {
@@ -235,12 +196,12 @@ async function uploadFiles() {
       if (file.type == 'video/mp4') {
         returnFile.value.push({
           type: 'video',
-          src: `https://${bucket}.s3.${region}.amazonaws.com/${fileName}`
+          src: `https://${bucket}.s3.${region}.amazonaws.com/${filename}`
         })
       } else {
         returnFile.value.push({
           type: 'video',
-          src: `https://${bucket}.s3.${region}.amazonaws.com/${fileName}`
+          src: `https://${bucket}.s3.${region}.amazonaws.com/${filename}`
         })
       }
       console.log(res)

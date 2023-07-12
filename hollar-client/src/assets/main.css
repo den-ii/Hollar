@@ -1,14 +1,16 @@
 /* fonts */
 /* Roboto */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Quicksand:wght@400;500;600;700&family=Raleway:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@500;600&display=swap');
+
 /* tailwind directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 * {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Quicksand', sans-serif;
   font-weight: 500;
 }
 .trend {
@@ -25,4 +27,7 @@
 }
 .bgz2 {
   background: rgba(88, 30, 235, 0.7);
+}
+.view {
+  display: none;
 }

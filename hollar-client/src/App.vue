@@ -4,6 +4,7 @@ import PostModal from '@/components/post/PostModal.vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { useAuthStore } from './stores/auth'
 import { useModalStore } from './stores/modals'
+import { useRefreshStore } from './stores/refresh'
 
 const auth = useAuthStore()
 const modals = useModalStore()

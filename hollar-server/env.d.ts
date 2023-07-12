@@ -8,6 +8,10 @@ declare global {
             SALT: number,
             OMDB_KEY: string,
             OMD_KEY: string,
+            SES_SECRETKEY: string,
+            SES_ACCESSKEY: string,
+            SES_REGION: string,
+
             // PWD: string;
         }
     }
