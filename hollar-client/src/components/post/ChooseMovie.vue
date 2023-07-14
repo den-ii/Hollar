@@ -3,11 +3,13 @@
     class="fixed top-0 left-0 right-0 bottom-0 w-[100vw] h-[100vh] z-50 flex flex-col items-center justify-center"
   >
     <div
-      class="w-[100vw] h-[100vh] fixed top-0 bg-gray-800 opacity-30"
+      class="w-[100vw] h-[100vh] fixed top-0 bg-gray-800 dark:bg-transparent dark:backdrop-blur opacity-30"
       @click="$emit('closeAllModal')"
     ></div>
 
-    <div class="bg-white h-[70vh] w-[80%] max-h-[500px] max-w-[800px] rounded-2xl z-40 relative">
+    <div
+      class="bg-white dark:bg-darks h-[70vh] w-[80%] max-h-[500px] max-w-[800px] rounded-2xl z-40 relative dark:shadow-barshadow"
+    >
       <span
         class="bg-base absolute z-50 w-[30px] h-[30px] rounded-full flex items-center justify-center -right-3 -top-3 cursor-pointer z-index-50"
         aria-label="close modal"
@@ -21,7 +23,7 @@
           <input
             placeholder="SEARCH..."
             v-model="search"
-            class="block search w-[100%] text-lg py-3 px-4 mt-3 rounded-full border-2 border-gray-100"
+            class="block dark:text-darks search w-[100%] text-lg py-3 px-4 mt-3 rounded-full border-2 border-gray-100"
           />
         </form>
         <!-- Movie List -->
@@ -30,7 +32,7 @@
             <div
               v-for="movies in data"
               :key="movies.id"
-              class="cursor-pointer hover:bg-purple-50"
+              class="cursor-pointer hover:bg-purple-50 dark:hover:bg-transparent dark:hover:shadow-barshadow"
               @click="$emit('chooseFilm', movies)"
             >
               <!--  -->
@@ -46,7 +48,7 @@
             v-else-if="loading"
             class="flex flex-column h-[35vh] w-full items-center justify-center"
           >
-            <i class="fa-solid fa-rotate loader text-6xl"></i>
+            <i class="fa-solid fa-rotate loader text-base"></i>
           </div>
           <div
             v-else-if="error?.name && !loading"

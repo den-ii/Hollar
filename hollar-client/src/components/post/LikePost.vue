@@ -1,11 +1,11 @@
 <template>
   <span>
     <button v-if="!liked" class="flex items-center gap-1" @click.stop="like">
-      <span class="font-Raleway text text-gray-800">{{ len }}</span
+      <span class="font-Raleway text text-gray-800 dark:text-white">{{ len }}</span
       ><span class="w-[12px]"><i class="fa-regular fa-heart"></i></span>
     </button>
     <button v-else class="flex items-center gap-1" @click.stop="unlike">
-      <span class="font-Raleway text text-gray-800">{{ len }}</span
+      <span class="font-Raleway text text-gray-800 dark:text-white">{{ len }}</span
       ><span class="w-[12px]"><i class="fa-solid text-red-400 fa-heart"></i></span>
     </button>
   </span>

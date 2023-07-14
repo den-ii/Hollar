@@ -1,4 +1,4 @@
-import { createPost, getAllPosts, getPost, deletePost, likePost, unlikePost, replyPost, getPostWithReplies, unlikeReply, likeReply, replyReply, getReplyWithReplies, getReplyAddon } from "./posts.controller.js"
+import { createPost, getAllPosts, getPost, deletePost, likePost, unlikePost, replyPost, getPostWithReplies, unlikeReply, likeReply, replyReply, getReplyWithReplies, getReplyAddon, getReply } from "./posts.controller.js"
 
 export const resolvers = {
     Query: {
@@ -13,8 +13,8 @@ export const resolvers = {
     },
     Mutation: {
         createPost: (_, { post }) => {
-            const { authorId, comment, title, tv, tags, files } = post
-            return createPost({ authorId, comment, title, tv, tags, files })
+            const { authorId, comment, title, tv, tags, files, cover } = post
+            return createPost({ authorId, comment, title, tv, tags, files, cover })
         },
         deletePost: (_, { postId, authorId, roomId }) => deletePost(postId, authorId, roomId),
         likePost: (_, { postId, userId }) => likePost(postId, userId),

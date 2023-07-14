@@ -22,9 +22,9 @@ config()
 
 
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/hollar"
+
 const port = process.env.PORT || 3000
-mongoose.connect(MONGO_URL).then(() => console.log('DB Connected!'));
+mongoose.connect(process.env.MONGO_URL).then(() => console.log('DB Connected!'));
 const httpServer = http.createServer(app);
 
 

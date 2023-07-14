@@ -2,23 +2,33 @@
   <div
     v-for="post in props.results"
     :key="post.id"
-    class="cursor-pointer hover:shadow flex gap-2 w-full mb-1 border border-dotted p-2 border-gray-400 rounded-lg items-start"
+    class="cursor-pointer hover:shadow flex gap-2 w-full mb-1 border border-dotted p-2 border-gray-400 dark:border-white rounded-lg items-start"
     @click.prevent="router.push(`/post/@${post.author.username}/${post.id}`)"
   >
     <img
       v-if="post.author?.avatar"
       :src="post.author?.avatar"
-      class="w-[50px] h-[50px] rounded-full"
+      loading="lazy"
+      class="w-[50px] h-[50px] object-cover rounded-full"
     />
-    <div v-else class="w-[50px] h-[50px] rounded-full bg-gray-200 animate-pulse mr-2"></div>
+    <span
+      v-else
+      class="w-[55px] h-[50px] rounded-full dark:bg-gray-400 bg-gray-400 flex justify-center text-white dark:text-darks items-center font-bold"
+    >
+      {{ dp(post.author.fullName) }}
+    </span>
     <div class="w-full">
       <div class="text-base font-semibold text-sm relative">
-        <span class="prof cursor-pointer" @mouseover="enter(post.id)" @mouseleave="leave(post.id)">
+        <span
+          class="prof cursor-pointer italic text-base dark:text-white text-sm"
+          @mouseover="enter(post.id)"
+          @mouseleave="leave(post.id)"
+        >
           @{{ post.author.username }}</span
         >
         <div
           :id="post.id"
-          class="view w-[150px] min-h-[100px] border absolute rounded-lg p-2 -top-[102px] bg-white shadow"
+          class="view w-[150px] min-h-[100px] border absolute rounded-lg -top-[102px] bg-white dark:bg-darks shadow"
           @mouseover.prevent="enter(post.id)"
           @mouseleave="leave(post.id)"
         >
@@ -42,10 +52,12 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 import LikePost from '@/components/post/LikePost.vue'
 import ViewProfile from '@/components/profile/ViewProfile.vue'
+import { dp } from './utils'
 const router = useRouter()
-
+const auth = useAuthStore()
 const props = defineProps(['results'])
 
 function enter(id) {

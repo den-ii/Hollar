@@ -13,7 +13,7 @@ export async function getAllPosts() {
 }
 
 export async function getPost(id: string) {
-    const post = await Post.findById(id).populate({ path: 'author room' }).exec()
+    const post = await Post.findById(id).populate({ path: 'author room replies likes' }).exec()
     return post
 }
 
@@ -25,7 +25,7 @@ export async function getPostL(id: string) {
 
 
 // createPost
-export async function createPost(post: { comment: string, authorId: string, title: string, tv?: any, tags: [string], files: [any] }) {
+export async function createPost(post: { comment: string, authorId: string, title: string, tv?: any, tags: [string], cover: string, files: [any] }) {
     const { tags, files, comment, authorId, title, tv } = post
     const rooms = await getRoomByName(title)
     const user = await getUser(authorId)
@@ -33,8 +33,8 @@ export async function createPost(post: { comment: string, authorId: string, titl
     if (rooms.length && user) {
         const room = rooms[0]
         const newPost = await Post.create({ tags, files, comment, author: user.id, room: room.id })
-        room.posts.push(newPost.id)
-        user.posts.push(newPost.id)
+        room?.posts?.push(newPost.id)
+        user?.posts?.push(newPost.id)
         const followers = user.followers
         // Queue System
         followers?.forEach(async (id: any) => {
@@ -49,8 +49,10 @@ export async function createPost(post: { comment: string, authorId: string, titl
         let room = await addRoom({ name: title, cover: tv.image.url, creator: authorId, tv: tv })
         room = room.id
         const newPost = await Post.create({ tags, files, comment, author: authorId, room })
-        room.posts.push(newPost.id)
-        user?.posts.push(newPost.id)
+        console.log('addRoom', room)
+        console.log('post', newPost)
+        room?.posts?.push(newPost.id)
+        user?.posts?.push(newPost.id)
         await room.save()
         await user?.save()
         return newPost
@@ -127,11 +129,12 @@ export async function getReply(id) {
 export async function getReplyAddon(id: string) {
     console.log('kk')
     const reply = await Reply.findById(id).populate({
-        path: 'author post treplies replies',
-        strictPopulate: false
-    })
+        path: 'author post treplies replies likes',
+        populate: { path: 'author room replies likes', strictPopulate: false }
+    }).exec()
     const post = getPost(String(reply?.post.id))
-    return { post, reply }
+    // return { post, reply }
+    return reply
 }
 // REPLIES
 // likePost
@@ -223,47 +226,31 @@ export async function getPostWithReplies(id: string, cursor?: string, limit?: nu
 
 }
 export async function getReplyWithReplies(id: string, cursor?: string, limit?: number) {
-    const reply = await Reply.findById(id).populate({
-        path: 'author room'
-    })
-    if (reply) {
-        console.log('yh')
-        if (!cursor || !cursor.length) {
+    console.log('kk')
+    if (!cursor || !cursor.length) {
+        const reply = await Reply.findById(id).populate({
+            path: 'replies likes',
+            options: { sort: { createdAt: -1 } },
+            populate: { path: 'author', strictPopulate: false },
+            perDocumentLimit: limit,
 
-            const result = await Reply.findById(id).populate({
-                path: 'replies',
-                options: { sort: { createdAt: -1 } },
-
-                perDocumentLimit: limit,
-                populate: {
-                    path: 'author',
-                },
-                // match: { author: { $ne: post?.author } },
-            })
-            const replies = result?.replies
-            return replies
-
-        }
-        else {
-            const c = Number(cursor)
-            const result = await Reply.findById({ _id: reply.id }).populate({
-                path: 'replies',
-                options: { sort: { createdAt: -1 } },
-                match: { createdAt: { $lt: c } },
-                // match: { createdAt: { $lt: c }, author: { $ne: post?.author } },
-                populate: {
-                    path: 'author'
-                },
-                perDocumentLimit: limit
-            }).exec()
-            const replies = result?.replies
-            console.log(replies)
-
-            return replies
-
-        }
+        }).exec()
+        return reply?.replies
     }
+    else {
+        const c = Number(cursor)
 
+        const reply = await Reply.findById(id).populate({
+            path: 'replies likes',
+            options: { sort: { createdAt: -1 } },
+            match: { createdAt: { $lt: c } },
+            populate: { path: 'author', strictPopulate: false },
+            perDocumentLimit: limit,
+
+        }).exec()
+        return reply?.replies
+
+    }
 }
 
 export async function postReplies(id: string, cursor: string, limit: number) {

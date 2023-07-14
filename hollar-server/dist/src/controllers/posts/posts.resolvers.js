@@ -9,8 +9,8 @@ export const resolvers = {
     },
     Mutation: {
         createPost: (_, { post }) => {
-            const { authorId, comment, title, tv, tags, files } = post;
-            return createPost({ authorId, comment, title, tv, tags, files });
+            const { authorId, comment, title, tv, tags, files, cover } = post;
+            return createPost({ authorId, comment, title, tv, tags, files, cover });
         },
         deletePost: (_, { postId, authorId, roomId }) => deletePost(postId, authorId, roomId),
         likePost: (_, { postId, userId }) => likePost(postId, userId),

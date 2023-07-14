@@ -11,10 +11,10 @@ const refresh = useRefreshStore()
 </script>
 
 <template>
-  <main class="max-w-[750px] mx-auto">
-    <div>
+  <main class="max-w-[750px] mx-auto dark:bg-darks dark:text-white">
+    <div class="dark:bg-darks">
       <ads />
-      <rooms @openRoomModal="open = true" :rooms="false" :key="refresh.home" />
+      <rooms @openRoomModal="open = true" :rooms="false" />
     </div>
     <add-room v-if="open" @closeRoomModal="open = false" />
 

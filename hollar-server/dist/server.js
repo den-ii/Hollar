@@ -12,9 +12,8 @@ import express from 'express';
 import { config } from 'dotenv';
 const app = express();
 config();
-const MONGO_URL = "mongodb://127.0.0.1:27017/hollar";
 const port = process.env.PORT || 3000;
-mongoose.connect(MONGO_URL).then(() => console.log('DB Connected!'));
+mongoose.connect(process.env.MONGO_URL).then(() => console.log('DB Connected!'));
 const httpServer = http.createServer(app);
 function getScope(req) {
     const token = req.headers.authorization || '';

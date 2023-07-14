@@ -38,6 +38,7 @@ export const typeDef = `
         tv: ITv
         tags: [String]
         files: [String]
+        cover: String
     }
 
     input Ireply {
@@ -58,8 +59,8 @@ export const typeDef = `
         room: Room
         tags: [String]
         files: [file]
-        replies: [ID]
-        likes: [ID]
+        replies: [Reply]
+        likes: [User]
         createdAt: String
         updatedAt: String
     }
@@ -75,7 +76,7 @@ export const typeDef = `
     }
     type PostReplies {
         post: Post
-        replies: [Reply]
+        reply: [Reply]
     }
     type Reply{
         id: ID
@@ -86,7 +87,7 @@ export const typeDef = `
         files: [String]
         treplies: [Reply]
         replies: [Reply]
-        likes: [ID]
+        likes: [User]
         createdAt: String
         updatedAt: String
     }

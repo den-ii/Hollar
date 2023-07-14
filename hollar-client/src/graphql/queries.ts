@@ -143,6 +143,7 @@ query post($id: ID!){
       avatar
       username
       favourite
+      fullName
     }
     comment
     room {
@@ -150,11 +151,37 @@ query post($id: ID!){
       name
       cover
     }
-    replies
-    likes
+    replies{
+      id
+    }
+    likes{
+      id
+    }
 }
 }
 `
+// export const replyQuery = gql`
+// query reply($id: ID!){
+//   reply(id: $id) {
+//     id
+//     author {
+//       id
+//       avatar
+//       username
+//       favourite
+//       fullName
+//     }
+//     comment
+//     room {
+//       id
+//       name
+//       cover
+//     }
+//     replies
+//     likes
+// }
+// }
+// `
 
 
 export const postWithReplies = gql`
@@ -165,19 +192,76 @@ query postWithReplies($id: ID!, $cursor: String, $limit: Int){
       username
       avatar
       favourite
+      fullName
      }
      comment
      replies{
       id
      }
-     likes
+     likes{
+      id
+     }
      createdAt
      updatedAt
     
   }
 }
 `
-
+export const replyQuery = gql`
+ query reply($id: ID!){
+  reply(id: $id){
+  id
+  comment
+  likes{
+    id
+  }
+  replies{
+    id
+  }
+  author{
+    id
+    fullName
+    avatar
+    username
+    favourite
+  }
+  treplies{
+    id
+    comment
+    author {
+      id
+      fullName
+      avatar
+      username
+      favourite
+    }
+  }
+  post{
+    id
+    room{
+      id
+      cover 
+      name
+    }
+    comment
+    author{
+      fullName
+      avatar
+      id
+      favourite
+      username
+    }
+    likes{
+      id
+    }
+    replies{
+      id
+    }
+  }
+  
+ }
+ }
+`
 export const replyWithReplies = gql`
 query replyWithReplies($id: ID!, $cursor: String, $limit: Int){
   replyWithReplies(id: $id, cursor: $cursor, limit: $limit) {
@@ -186,12 +270,20 @@ query replyWithReplies($id: ID!, $cursor: String, $limit: Int){
       username
       avatar
       favourite
+      fullName
+     }
+     post{
+      id
+      room {
+        cover
+        name
+      }
      }
      comment
-     replies{
+     treplies
+     likes{
       id
      }
-     likes
      createdAt
      updatedAt
     

@@ -1,74 +1,48 @@
 <template>
   <div class="max-w-[750px] mx-auto min-h-[screen] relative pb-[207px]">
-    <!-- {{ id }} -->
     <!-- Main Post -->
-    <thread :postId="id" :post="post" />
-    <!-- <div class="box border border-gray-800 dark:border-white border-dashed rounded-lg" v-if="post">
-      <div class="flex gap-2 min-h-[150px]">
-        avatar
-        <img
-          v-if="post?.author?.avatar"
-          :src="post?.author?.avatar"
-          class="w-[50px] h-[50px] rounded-full mt-2 ml-2"
-        />
-        <span
-          v-else
-          class="w-[55px] mt-2 ml-2 h-[50px] rounded-full flex items-center justify-center bg-gray-400 font-bold text-white"
-        >
-          {{ dp(post.author?.fullName) }}
-        </span>
-        username
-        <div class="w-full flex justify-between gap-1">
-          <div class="w-full mr-3">
-            <div class="text-base font-semibold pt-2 pl-2 text-sm relative">
-              <span
-                class="prof cursor-pointer font-semibold dark:text-white italic"
-                @mouseover="enter(post.id)"
-                @mouseleave="leave(post.id)"
-              >
-                @{{ post?.author.username }}</span
-              >
-              <div
-                :id="post.id"
-                class="view w-[150px] min-h-[100px] border absolute rounded-lg p-2 -top-[102px] bg-white shadow z-50"
-                @mouseover.prevent="enter(post.id)"
-                @mouseleave="leave(post.id)"
-              >
-                <view-profile :post="post" />
-              </div>
-            </div>
-            <div class="font-light w-full h-[80%] flex flex-col justify-between g-5">
-              <div class="pl-2">{{ post.comment }}</div>
-              <div class="flex justify-end gap-5">
-                <like-post :likes="post.likes" :post="post" />
-              </div>
-            </div>
-          </div>
-          <img
-            :src="post?.room.cover"
-            class="w-[80px] rounded-tr-xl opacity-80 cursor-pointer px-1 py-1 rounded-br-xl h-full object-cover"
-          />
-          {{ postResult }}
-        </div>
-      </div>
+    <div v-if="!isReply">
+      <!-- top post  -->
+      <top-thread
+        :post="post"
+        @click.prevent="router.push(`/post/@${post.author.username}/${post.id}`)"
+      />
     </div>
+
+    <div class="" v-else>
+      <!-- reply.post  -->
+      <top-thread
+        :post="replyData?.post"
+        class="hover:cursor-pointer"
+        @click="router.push(`/post/@${replyData?.post.author.username}/${replyData?.post.id}`)"
+      />
+      <!-- reply.treplies  -->
+      <top-thread :topReplies="replyData?.treplies" />
+      <div class="w-[1.5px] ml-4 mt-1 mb-1 border-gray-300 border-l border-dashed h-[100px]"></div>
+      <top-thread :post="replyData ? replyData : false" class="" />
+    </div>
+
     <div
-      v-if="post?.replies.length && !newReplies.length"
+      v-if="newReplies.length || post?.replies?.length"
       class="w-[1.5px] ml-4 mt-1 mb-1 border-gray-300 border-l border-dashed h-[100px]"
     ></div>
 
-    newReplies
-    <user-post :newReplies="newReplies" />
+    <!-- newReplies  -->
+    <section id="replySection" class="">
+      <user-post :newReplies="newReplies" />
 
-    <post-reply :postId="id" />
-    Reply box
+      <post-reply :postId="postId" :isReply="isReply" />
+      <!-- Reply box -->
+    </section>
     <div
-      class="fixed bottom-2 w-full max-w-[750px] bg-base dark:bg-darks dark:border dark:border-white dark:shadow-lg rounded-xl p-2"
+      class="fixed bottom-2 w-full max-w-[750px] bg-base dark:bg-darks dark:shadow-barshadow rounded-xl p-2"
     >
       <div class="flex justify-between pb-2 text-white">
-        <h2 class="text-white font-bold font-Raleway text-lg mb-1">Reply:</h2>
+        <h2 class="text-white font-bold dark:font-medium text-lg mb-1">Reply:</h2>
         <div class="flex items-center gap-3">
-          <p class="font-bold font-Raleway w-12 text-ellipsis text-center">{{ replyLen }}</p>
+          <p class="font-bold font-Raleway dark:italic w-12 text-ellipsis text-center">
+            {{ replyLen }}
+          </p>
           <button class="cursor-pointer hover:text-purple-100">
             <i class="fa-solid fa-face-grin-wink text-lg"></i>
           </button>
@@ -94,65 +68,40 @@
           </span>
         </div>
       </div>
-
       <files :all-files="allFiles" @remove-files="removeFiles" class="-mt-4" />
       <vue-tribute :options="options">
         <div
-          class="w-full relative min-h-[70px] p-2 bg-white dark:border dark:border-white dark:bg-darks rounded-xl"
+          class="w-full relative min-h-[70px] p-2 bg-white dark:bg-darks dark:border border-dotted dark:border-white rounded-xl"
           id="#post"
           contenteditable
           ref="reply"
           @input="checkMaxLength"
         ></div>
       </vue-tribute>
-    </div> -->
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
-import Thread from '../components/Thread.vue'
-import { useQuery, useMutation } from '@vue/apollo-composable'
-import { useAuthStore } from '@/stores/auth'
-import { postQuery } from '@/graphql/queries'
-import PostReply from '@/components/post/PostReply.vue'
-import { dp } from '@/components/post/utils'
-import { replyPostMutate } from '@/graphql/mutations'
+import { watch, ref } from 'vue'
 import { VueTribute } from 'vue-tribute'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 import ViewProfile from '@/components/profile/ViewProfile.vue'
 import LikePost from '@/components/post/LikePost.vue'
+import { useQuery, useMutation } from '@vue/apollo-composable'
+import PostReply from '@/components/post/PostReply.vue'
 import UserPost from '@/components/post/UserPost.vue'
+import { replyPostMutate } from '@/graphql/mutations'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { client, bucket, region } from '@/config/aws'
 import files from '@/components/post/Files.vue'
+import TopThread from './TopThread.vue'
 
-const route = useRoute()
+const props = defineProps(['isReply', 'post', 'loading', 'replyData', 'postId'])
+const router = useRouter()
 const auth = useAuthStore()
 const newReplies: any = ref([])
-// const props = defineProps(['id', 'isReply'])
-const { id } = route.params
-
-const {
-  result: postResult,
-  loading,
-  error
-} = useQuery(postQuery, { id }, { fetchPolicy: 'cache-and-network' })
-const post = computed(() => postResult?.value?.post)
-function enter(id) {
-  console.log(id)
-  const item: any = document.getElementById(id)
-  if (item) {
-    item.style.display = 'block'
-  }
-}
-function leave(id) {
-  const item: any = document.getElementById(id)
-  if (item) {
-    item.style.display = 'none'
-  }
-}
-console.log(postResult)
 const reply: any = ref(null)
 const replyLen = ref(400)
 const largeFileContent = ref('')
@@ -271,8 +220,8 @@ async function handleReply() {
         files: returnFile.value,
         authorId: auth.user.id
       }
-      console.log(post.value.id, replyPost)
-      mutate({ postId: post.value.id, reply: replyPost })
+      console.log(props.postId, replyPost)
+      mutate({ postId: props.postId, reply: replyPost })
       onDone((result) => {
         console.log(result)
         newReplies.value.unshift({ id: result.data.replyPost.id, reply: reply.value.textContent })
@@ -296,16 +245,20 @@ function removeFiles(fileIndex: number) {
     return index !== fileIndex
   })
 }
-if (post.value) {
-  post.value.focus()
-}
 function openFile() {
   if (fileInput.value) {
     fileInput.value.click()
   }
 }
 
-// watches
+// const element = ref(document.getElementById('replySection'))
+// console.log(element, 'el')
+// element.value?.scrollIntoView(true)
+
+// // watches
+// watch(element, () => {
+//   element.value?.scrollIntoView(true)
+// })
 watch(replyBody, () => {
   const o: any = document.querySelector('.tribute-container')
   if (o) {
@@ -317,6 +270,7 @@ watch(replyBody, () => {
 
   // const o = document.querySelector('.tribute-container')
 })
+// watch()
 watch(reply, () => {
   if (reply.value) {
     reply.value.focus()
@@ -325,11 +279,4 @@ watch(reply, () => {
 })
 </script>
 
-<style>
-.view {
-  display: none;
-}
-.box {
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(0, 0, 0, 0.2) 0px 0px 0px 1px;
-}
-</style>
+<style scoped></style>

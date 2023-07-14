@@ -10,7 +10,7 @@
         </div>
         <div class="flex items-center gap-1 hover:text-lg h-[18px]" v-else @click.stop="like">
           <span class="font-Raleway">{{ likeLen }}</span>
-          <i class="fa-regular fa-thumbs-up text-gray-800"></i>
+          <i class="fa-regular fa-thumbs-up text-gray-800 dark:text-white"></i>
         </div>
       </div>
       <!-- dislikes -->
@@ -28,7 +28,7 @@
         @click.stop="dislike"
       >
         <span class="font-Raleway">{{ dislikeLen }}</span>
-        <i class="fa-regular fa-thumbs-down text-gray-800"></i>
+        <i class="fa-regular fa-thumbs-down text-gray-800 dark:text-white"></i>
       </div>
     </div>
   </div>

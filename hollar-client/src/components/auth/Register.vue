@@ -6,13 +6,13 @@
     <div v-if="!error && !result">
       <div class="" v-if="!signUpWithMail">
         <button
-          class="mb-4 mx-auto rounded bg-white shadow py-2 w-[200px] font-Raleway flex items-center gap-2 px-2 justify-center login"
+          class="mb-4 mx-auto rounded bg-white dark:bg-darks shadow py-2 w-[200px] font-Raleway flex items-center gap-2 px-2 justify-center login"
         >
           <img src="google.svg" alt="google sign in" class="w-[20px] h-[20px]" />
           <span class="font-Raleway">Register with Google</span>
         </button>
         <button
-          class="mb-3 mx-auto rounded bg-white shadow py-2 w-[200px] flex items-center justify-center gap-3 login"
+          class="mb-3 mx-auto rounded bg-white dark:bg-darks shadow py-2 w-[200px] flex items-center justify-center gap-3 login"
           @click.prevent="signUpWithMail = true"
         >
           <img src="Minduka-mail.svg" alt="email sign in" class="w-[20px] h-[20px]" />
@@ -24,59 +24,61 @@
       <div class="mt-6" v-else>
         <vee-form class="flex flex-col gap-3" :validation-schema="schema" @submit="register">
           <div class="w-[80%] mx-auto">
-            <label for="fullName" class="font-Raleway"
+            <label for="fullName" class="font-Raleway dark:text-darks"
               ><span class="text-red-500">*</span>Your Name:</label
             >
             <vee-field
               type="text"
               name="name"
               id="fullName"
-              class="font-Raleway border border-gray-700 block w-full rounded p-1 focus:outline focus:outline-base"
+              class="font-Raleway border dark:text-darks border-gray-700 block w-full rounded p-1 focus:outline focus:outline-base"
             />
             <ErrorMessage class="text-red-500 font-Raleway text-sm" name="name" />
           </div>
           <div class="w-[80%] mx-auto">
-            <label for="username" class="font-Raleway"
+            <label for="username" class="font-Raleway dark:text-darks"
               ><span class="text-red-500">*</span>Username:</label
             >
             <vee-field
               type="text"
               name="username"
               id="username"
-              class="font-Raleway border border-gray-700 block w-full rounded p-1 focus:outline focus:outline-base"
+              class="font-Raleway border dark:text-darks border-gray-700 block w-full rounded p-1 focus:outline focus:outline-base"
             />
             <ErrorMessage class="text-red-500 font-Raleway text-sm" name="username" />
           </div>
           <div class="w-[80%] mx-auto">
-            <label for="email" class="font-Raleway"
+            <label for="email" class="font-Raleway dark:text-darks"
               ><span class="text-red-500">*</span>Email:</label
             >
             <vee-field
               type="text"
               name="email"
               id="email"
-              class="font-Raleway border border-gray-700 block w-full rounded p-1 focus:outline focus:outline-base"
+              class="font-Raleway border border-gray-700 block w-full rounded p-1 focus:outline dark:text-darks focus:outline-base"
             />
             <ErrorMessage class="text-red-500 font-Raleway text-sm" name="email" />
           </div>
           <div class="w-[80%] mx-auto">
-            <label for="Age" class="font-Raleway"><span class="text-red-500">*</span>Age:</label>
+            <label for="Age" class="font-Raleway dark:text-darks"
+              ><span class="text-red-500">*</span>Age:</label
+            >
             <vee-field
               type="number"
               name="age"
               id="age"
-              class="font-Raleway border border-gray-700 block w-full rounded p-1 focus:outline focus:outline-base"
+              class="font-Raleway dark:text-darks border border-gray-700 block w-full rounded p-1 focus:outline focus:outline-base"
             />
             <ErrorMessage class="text-red-500 font-Raleway text-sm" name="age" />
           </div>
 
           <div class="w-[80%] mx-auto">
-            <label for="country" class="font-Raleway"
+            <label for="country" class="font-Raleway dark:text-darks"
               ><span class="text-red-500">*</span>Country:</label
             >
 
             <country-select
-              class="font-Raleway border border-gray-700 block w-full rounded py-2 focus:outline focus:outline-base"
+              class="font-Raleway border border-gray-700 block w-full rounded py-2 focus:outline focus:outline-base dark:text-darks"
               v-model="code"
               :country="code"
               topCountry="US"
@@ -94,31 +96,31 @@
           <ErrorMessage class="text-red-500 font-Raleway text-sm" name="countrys" /> -->
           </div>
           <div class="w-[80%] mx-auto">
-            <label for="password" class="font-Raleway"
+            <label for="password" class="font-Raleway dark:text-darks"
               ><span class="text-red-500">*</span>Password:</label
             >
             <vee-field
               type="password"
               name="password"
               id="password"
-              class="font-Raleway border border-gray-700 block w-full rounded p-1 focus:outline focus:outline-base"
+              class="font-Raleway border dark:text-darks border-gray-700 block w-full rounded p-1 focus:outline focus:outline-base"
             />
             <ErrorMessage class="text-red-500 font-Raleway text-sm" name="password" />
           </div>
           <div class="w-[80%] mx-auto">
-            <label for="cpassword" class="font-Raleway"
+            <label for="cpassword" class="font-Raleway dark:text-darks"
               ><span class="text-red-500">*</span>Confirm Password:</label
             >
             <vee-field
               type="password"
               name="cpassword"
               id="cpassword"
-              class="font-Raleway border border-gray-700 block w-full rounded p-1 focus:outline focus:outline-base"
+              class="font-Raleway border dark:text-darks border-gray-700 block w-full rounded p-1 focus:outline focus:outline-base"
             />
             <ErrorMessage class="text-red-500 font-Raleway text-sm" name="cpassword" />
           </div>
           <div class="w-[80%] mt-3 flex flex-row-reverse gap-2 items-center">
-            <label for="tc" class="font-Raleway text-sm"
+            <label for="tc" class="font-Raleway text-sm dark:text-darks"
               >Agree to <a class="font-Raleway underline text-sm">terms and conditions</a></label
             >
             <vee-field
@@ -150,13 +152,13 @@
         </span>
       </div>
     </div>
-    <div v-else-if="!error && result" class="text-center">
+    <div v-else-if="!error && result" class="text-center dark:text-darks">
       Please check your mail for verification link
     </div>
-    <div v-else class="text-center">There was an error while registering</div>
+    <div v-else class="text-center dark:text-darks">There was an error while registering</div>
 
     <span
-      class="font-Raleway font-semibold cursor-pointer hover:underline self-start"
+      class="font-Raleway font-semibold cursor-pointer hover:underline self-start dark:text-darks"
       @click.prevent="$emit('auth-kind')"
     >
       Login?

@@ -154,11 +154,12 @@ export async function likeRoom(roomId, userId) {
 export async function dislikeRoom(roomId, userId) {
     const room = await getRoom(roomId);
     const user = await getUser(userId);
+    console.log('enter');
     if (room && user) {
         await Room.updateOne({ _id: roomId }, { $pull: { likes: userId } });
-        await Room.updateOne({ _id: roomId }, { $pull: { likes: userId } });
-        const ll = await room.likes.find(user.id);
-        console.log('ll', ll);
+        await Room.updateOne({ _id: roomId }, { $pull: { dislikes: userId } });
+        await room.dislikes.push(user.id);
+        console.log('dis');
         room.save();
         console.log(room);
         return room;

@@ -2,19 +2,25 @@
   <div
     v-for="reply in props.results"
     :key="reply.id"
-    class="cursor-pointer hover:shadow flex gap-2 w-full mb-1 border border-dotted p-2 border-gray-400 rounded-lg items-start"
+    class="cursor-pointer hover:shadow flex gap-2 w-full mb-1 border border-dotted p-2 border-gray-400 dark:border-gray-200 rounded-lg items-start"
     @click.prevent="router.push(`/replies/@${reply.author.username}/${reply.id}`)"
   >
     <img
       v-if="reply.author?.avatar"
       :src="reply.author?.avatar"
-      class="w-[50px] h-[50px] rounded-full"
+      loading="lazy"
+      class="w-[50px] h-[50px] object-cover rounded-full"
     />
-    <div v-else class="w-[50px] h-[50px] rounded-full bg-gray-200 animate-pulse mr-2"></div>
+    <span
+      v-else
+      class="w-[55px] h-[50px] rounded-full bg-gray-400 flex items-center justify-center text-white font-bold"
+    >
+      {{ dp(reply?.author?.fullName) }}
+    </span>
     <div class="w-full">
       <div class="text-base font-semibold text-sm relative">
         <span
-          class="prof cursor-pointer"
+          class="prof cursor-pointer dark:text-white italic"
           @mouseover="enter(reply.id)"
           @mouseleave="leave(reply.id)"
         >
@@ -22,7 +28,7 @@
         >
         <div
           :id="reply.id"
-          class="view w-[150px] min-h-[90px] border absolute rounded-lg p-2 -top-[102px] bg-white shadow"
+          class="view w-[150px] min-h-[90px] border p-2 z-50 absolute rounded-lg -top-[102px] shadow dark:bg-darks bg-white"
           @mouseover.prevent="enter(reply.id)"
           @mouseleave="leave(reply.id)"
         >
@@ -48,6 +54,7 @@
 import { useRouter } from 'vue-router'
 import LikePost from '@/components/post/LikePost.vue'
 import ViewProfile from '@/components/profile/ViewProfile.vue'
+import { dp } from './utils'
 const router = useRouter()
 
 const props = defineProps(['results'])

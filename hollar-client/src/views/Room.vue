@@ -1,7 +1,7 @@
 <template>
   <main class="max-w-[750px] mx-auto min-h-[screen] pb-3">
     <!-- Room Header -->
-    <div class="shadow rounded-lg px-3 py-3">
+    <div class="shadow dark:shadow-dshadow rounded-lg px-3 py-3">
       <div class="">
         <div class="w-full h-[300px] bg-gray-200 animate-pulse rounded-lg" v-if="!room?.cover" />
         <img :src="room?.cover" class="w-full h-[300px] object-cover rounded-lg" v-else />

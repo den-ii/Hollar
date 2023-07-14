@@ -3,11 +3,13 @@
     class="fixed top-0 left-0 right-0 bottom-0 w-[100vw] h-[100vh] z-40 flex flex-col items-center justify-center"
   >
     <div
-      class="w-[100vw] h-[100vh] fixed top-0 bg-gray-800 opacity-30"
+      class="w-[100vw] h-[100vh] fixed top-0 bg-gray-800 dark:bg-transparent dark:backdrop-blur-lg opacity-30"
       @click.prevent="$emit('closeRoomModal')"
     ></div>
 
-    <div class="bg-white h-[70vh] w-[80%] max-h-[500px] max-w-[800px] rounded-2xl z-40 relative">
+    <div
+      class="bg-white dark:bg-darks h-[70vh] w-[80%] max-h-[500px] max-w-[800px] rounded-2xl z-40 relative"
+    >
       <span
         class="bg-base absolute z-50 w-[30px] h-[30px] rounded-full flex items-center justify-center -right-3 -top-3 cursor-pointer z-index-50"
         aria-label="close modal"
@@ -21,7 +23,7 @@
           <input
             placeholder="SEARCH..."
             v-model="title"
-            class="block search w-[100%] text-lg py-3 px-4 mt-3 rounded-full border-2 border-gray-100"
+            class="block search dark:text-darks w-[100%] text-lg py-3 px-4 mt-3 rounded-full border-2 border-gray-100"
           />
         </form>
         <!-- Movie List -->
@@ -30,7 +32,7 @@
             <div v-for="movies in data" :key="movies.id">
               <!--  -->
               <div class="flex items-center mb-3 justify-between">
-                <img :src="movies.image?.url" class="moviebg" />
+                <img :src="movies.image?.url" class="moviebg" loading="lazy" />
                 <div class="w-full text-center">
                   <p class="font-bold text-2xl font-Raleway">{{ movies.title }}</p>
                   <button
@@ -41,7 +43,7 @@
                   </button>
                   <button
                     v-else
-                    class="mt-2 bgz2 text-white font-Raleway rounded px-2 py-1 font-bold"
+                    class="mt-2 bg-base text-white font-Raleway rounded px-2 py-1 font-bold"
                     @click.prevent="
                       createRoom({ name: movies.title, cover: movies.image?.url, tv: movies })
                     "
@@ -57,7 +59,7 @@
             v-else-if="loading"
             class="flex flex-column h-[35vh] w-full items-center justify-center"
           >
-            <i class="fa-solid fa-rotate loader text-6xl"></i>
+            <i class="fa-solid fa-rotate text-base loader"></i>
           </div>
           <div
             v-else-if="error?.name && !loading"
@@ -133,17 +135,19 @@ async function createRoom(movie) {
 
   mutate({ ...movie })
   modal.value = 'createRoom'
+  onDone((result) => {
+    console.log(result)
+    let { name, id } = result.data.createRoom
+    console.log(name, id)
+    name = name.split(' ').join('+')
+    router.push(`/${name}/${id}`)
+  })
 }
 onError((err) => {
   error.value = err
 })
 watch([result, createRoomError], () => {
   data.value = result.value ? result.value?.searchTvTitles : []
-  onDone((result) => {
-    let { name, id } = result.data.createRoom
-    name = name.split(' ').join('+')
-    router.push(`/${name}/${id}`)
-  })
 })
 </script>
 
@@ -178,7 +182,7 @@ watch([result, createRoomError], () => {
 }
 .loader {
   animation: rotation 1s infinite linear;
-  color: rgba(88, 30, 235, 0.7);
+  font-size: 5rem;
 }
 @keyframes rotation {
   from {

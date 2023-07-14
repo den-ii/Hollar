@@ -1,5 +1,5 @@
 <template>
-  <div class="relative" @mouseover="mouseOver" @mouseleave="mouseLeave">
+  <div class="relative dark:bg-darks" @mouseover="mouseOver" @mouseleave="mouseLeave">
     <video
       autoplay
       ref="video"
@@ -18,8 +18,7 @@
     >
       <i class="fa-solid fa-pause play text-base" v-show="play && playTag"></i>
       <i class="fa-solid fa-circle-play play text-base" v-show="!play"></i>
-      </span
-    >
+    </span>
     <span class="flex gap-3 absolute bottom-3 right-3" v-if="hover">
       <span class="cursor-pointer" @click="volume">
         <i class="fa-solid fa-volume-xmark text-base side" v-if="muted"></i>

@@ -1,7 +1,7 @@
 <template>
   <div class="mt-6 flex items-center justify-between">
     <input
-      class="block border-2 shadow p-2 rounded-lg"
+      class="block border-2 shadow p-2 rounded-lg dark:bg-darks"
       :class="{ 'w-full': rooms, 'w-[80%]': !rooms }"
       type="text"
       name="search"

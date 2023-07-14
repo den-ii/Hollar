@@ -26,20 +26,13 @@ defineProps({
 })
 const router = useRouter()
 // const name = ref('taxidriver')
-const refresh = useRefreshStore()
 const search = ref('')
-
-refresh.home++
 
 function toRoom(title, id) {
   const name = title.split(' ').join('+')
   router.push(`${name}/${id}`)
 }
-function like() {}
 
-function unlike() {}
-
-const cursor = ref('')
 const { result, loading, fetchMore, error } = useQuery(
   roomsPaginateQuery,
   () => ({
@@ -93,8 +86,8 @@ function change(value) {
   console.log(value)
 }
 
-watch(result, () => {
-  console.log(result)
+watch(error, () => {
+  console.log(error.value)
 })
 </script>
 

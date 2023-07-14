@@ -19,6 +19,7 @@ export const createRoomMutate = gql`
     mutation createRoom ($name: String!, $cover: String!, $creator: String, $tv: ITv, $description: String){
       createRoom(name: $name, cover: $cover, creator: $creator , tv: $tv, description: $description) {
         id
+        name
     }
 }
 `

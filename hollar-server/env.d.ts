@@ -11,6 +11,7 @@ declare global {
             SES_SECRETKEY: string,
             SES_ACCESSKEY: string,
             SES_REGION: string,
+            MONGO_URL: string
 
             // PWD: string;
         }

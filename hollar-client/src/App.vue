@@ -11,10 +11,10 @@ const modals = useModalStore()
 </script>
 
 <template>
-  <div>
+  <div class="dark:bg-darks">
     <auth-modal v-if="auth.authModal" />
     <router-view name="navbar" />
-    <div class="mt-[100px]">
+    <div class="mt-[100px] dark:bg-darks">
       <router-view />
     </div>
     <router-view name="trendbar" />

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mt-6 rounded-md shadow"
+    class="mt-6 rounded-md ahadow dark:shadow-dshadow"
     v-for="room in result?.searchRooms"
     :key="room.id"
     @click="$emit('toRoom', room.name, room.id)"
@@ -9,6 +9,7 @@
       class="rounded-tl-lg rounded-tr-lg block"
       :src="room.cover"
       alt="poster"
+      loading="lazy"
       v-if="room.cover"
     />
     <div v-else class="rounded-tl-lg rounded-tr-lg h-[100px] bg-gray-200 animate-pulse"></div>
