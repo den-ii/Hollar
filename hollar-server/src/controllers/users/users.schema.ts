@@ -17,8 +17,7 @@ export const typeDef = `
     }
 
     input loginUser {
-        username: String
-        email: String
+        username: String!
         password: String!
     }
     type loginReturn {

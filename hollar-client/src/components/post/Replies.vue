@@ -2,10 +2,11 @@
   <div
     v-for="reply in props.results"
     :key="reply.id"
-    class="cursor-pointer hover:shadow flex gap-2 w-full mb-1 border border-dotted p-2 border-gray-400 dark:border-gray-200 rounded-lg items-start"
+    class="cursor-pointer hover:shadow flex gap-2 w-full mb-2 border border-dotted p-2 border-gray-400 dark:border-gray-200 rounded-lg items-start"
     @click.prevent="router.push(`/replies/@${reply.author.username}/${reply.id}`)"
   >
-    <img
+    <avatar :post="reply" size="w-[50px] h-[50px]" />
+    <!-- <img
       v-if="reply.author?.avatar"
       :src="reply.author?.avatar"
       loading="lazy"
@@ -16,9 +17,9 @@
       class="w-[55px] h-[50px] rounded-full bg-gray-400 flex items-center justify-center text-white font-bold"
     >
       {{ dp(reply?.author?.fullName) }}
-    </span>
+    </span> -->
     <div class="w-full">
-      <div class="text-base font-semibold text-sm relative">
+      <div class="text-base text-sm relative">
         <span
           class="prof cursor-pointer dark:text-white italic"
           @mouseover="enter(reply.id)"
@@ -28,14 +29,14 @@
         >
         <div
           :id="reply.id"
-          class="view w-[150px] min-h-[90px] border p-2 z-50 absolute rounded-lg -top-[102px] shadow dark:bg-darks bg-white"
+          class="view w-[150px] min-h-[80px] border p-2 z-50 absolute rounded-lg -top-[102px] shadow dark:bg-darks bg-white"
           @mouseover.prevent="enter(reply.id)"
           @mouseleave="leave(reply.id)"
         >
           <view-profile :post="reply" />
         </div>
       </div>
-      <div class="font-light w-full min-h-[90px] flex flex-col justify-between g-5">
+      <div class="font-light w-full min-h-[80px] flex flex-col justify-between g-5">
         <div>{{ reply.comment }}</div>
         <div class="flex justify-end gap-5">
           <like-post :likes="reply?.likes" :post="reply" :isReply="true" />
@@ -54,6 +55,7 @@
 import { useRouter } from 'vue-router'
 import LikePost from '@/components/post/LikePost.vue'
 import ViewProfile from '@/components/profile/ViewProfile.vue'
+import Avatar from '@/components/Avatar.vue'
 import { dp } from './utils'
 const router = useRouter()
 

@@ -23,7 +23,7 @@
           <input
             placeholder="SEARCH..."
             v-model="search"
-            class="block dark:text-darks search w-[100%] text-lg py-3 px-4 mt-3 rounded-full border-2 border-gray-100"
+            class="block addsearch dark:bg-black dark:text-gray-200 search w-[100%] text-lg py-3 px-4 mt-3 rounded-full border-2 border-gray-100"
           />
         </form>
         <!-- Movie List -->
@@ -60,10 +60,12 @@
             v-else-if="!title.length"
             class="flex flex-column h-[35vh] w-full items-center justify-center text-xl"
           >
-            SEARCH FOR SOMETHING...
+            WHAT MOVIE OR SHOW DO YOU WANT TO POST ABOUT?
           </div>
           <div v-else class="flex flex-column h-[35vh] w-full items-center justify-center text-xl">
-            SEARCH FOR SOMETHING...
+            WHAT MOVIE OR SHOW DO YOU WANT TO POST ABOUT?
+
+            <!-- SEARCH FOR SOMETHING... -->
           </div>
         </div>
       </div>

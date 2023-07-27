@@ -13,7 +13,10 @@ import { config } from 'dotenv';
 const app = express();
 config();
 const port = process.env.PORT || 3000;
-mongoose.connect(process.env.MONGO_URL).then(() => console.log('DB Connected!'));
+mongoose.connect(process.env.MONGO_URL, {
+    connectTimeoutMS: 7000,
+    serverSelectionTimeoutMS: 7000
+}).then(() => console.log('DB Connected!'));
 const httpServer = http.createServer(app);
 function getScope(req) {
     const token = req.headers.authorization || '';

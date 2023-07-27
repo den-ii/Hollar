@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-[750px] mx-auto min-h-[screen] relative pb-[207px]">
+  <div class="max-w-[750px] mt-[100px] mx-auto min-h-[screen] relative pb-[207px]">
     <thread :postId="id" :replyData="reply" :isReply="true" />
     <!-- headReply -->
   </div>

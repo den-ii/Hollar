@@ -14,7 +14,7 @@
         class="bg-base absolute z-50 w-[30px] h-[30px] rounded-full flex items-center justify-center -right-3 -top-3 cursor-pointer z-index-50"
         aria-label="close modal"
         @click.prevent="$emit('closeRoomModal')"
-        ><i class="fa-solid fa-xmark text-white"></i
+        ><i class="fa-solid fa-xmark text-white dark:text-gray-100"></i
       ></span>
 
       <!-- Movie Searchbar -->
@@ -23,7 +23,8 @@
           <input
             placeholder="SEARCH..."
             v-model="title"
-            class="block search dark:text-darks w-[100%] text-lg py-3 px-4 mt-3 rounded-full border-2 border-gray-100"
+            ref="search"
+            class="block search addsearch dark:bg-black dark:text-gray-200 w-[100%] text-lg py-3 px-4 mt-3 rounded-full border-2 border-gray-100"
           />
         </form>
         <!-- Movie List -->
@@ -63,25 +64,30 @@
           </div>
           <div
             v-else-if="error?.name && !loading"
-            class="flex flex-column h-[35vh] w-full items-center justify-center text-xl"
+            class="flex flex-column h-[35vh] dark:text-gray-200 w-full items-center justify-center text-xl"
           >
             OOPS...NOTHING MATCHES
           </div>
           <div
             v-else-if="!title.length"
-            class="flex flex-column h-[35vh] w-full items-center justify-center text-xl"
+            class="flex dark:text-gray-200 flex-column h-[35vh] w-full items-center justify-center text-xl"
           >
-            SEARCH FOR SOMETHING...
+            SEARCH AND ADD MOVIES OR TV SHOWS
           </div>
-          <div v-else class="flex flex-column h-[35vh] w-full items-center justify-center text-xl">
-            SEARCH FOR SOMETHING...
+          <div
+            v-else
+            class="flex dark:text-gray-200 flex-column h-[35vh] w-full items-center justify-center text-xl"
+          >
+            SEARCH AND ADD MOVIES OR TV SHOWS
+
+            <!-- SEARCH FOR TV SHOWS & MOVIES... -->
           </div>
         </div>
       </div>
       <!-- Create room loader -->
       <div v-else class="flex flex-column h-full justify-center items-center">
         <div v-if="createRoomLoading">
-          CREATING ROOM... <i class="fa-solid fa-rotate loader text-3xl"></i>
+          <i class="fa-solid fa-rotate loader text-3xl"></i>
         </div>
         <div v-else-if="!createRoomLoading">ROOM CREATED</div>
         <div v-else>AN ERROR OCCURRED</div>
@@ -103,6 +109,7 @@ defineEmits(['openRoomModal'])
 const auth = useAuthStore()
 const router = useRouter()
 const title = ref('')
+const search: any = ref(null)
 const data: any = ref(null)
 const modal = ref('addRoom')
 
@@ -146,12 +153,22 @@ async function createRoom(movie) {
 onError((err) => {
   error.value = err
 })
+watch(search, () => {
+  search.value?.focus()
+})
 watch([result, createRoomError], () => {
   data.value = result.value ? result.value?.searchTvTitles : []
 })
 </script>
 
 <style>
+.addsearch {
+  background-image: url(../../assets/search.svg);
+  background-repeat: no-repeat;
+  background-position: 8px 50%;
+  background-size: 24px;
+  text-indent: 20px;
+}
 .moviebg {
   height: 240px;
   width: 160px;

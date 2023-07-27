@@ -3,7 +3,7 @@ import Feed from '@/components/Feed.vue'
 </script>
 
 <template>
-  <main>
+  <main class="mt-[100px]">
     <div class="max-w-[750px] mx-auto">
       <feed />
     </div>

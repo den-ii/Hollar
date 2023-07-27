@@ -7,9 +7,9 @@ export const resolvers = {
         rooms: () => getAllRooms(),
         room: (_, { id }) => getRoom(id),
         searchTvTitles: (_, { title }) => searchTvTitles(title),
-        roomsPaginate: (_, { cursor, limit }) => getAllRoomsPaginated(cursor, limit),
+        roomsPaginate: (_, { cursor, limit, userId }) => getAllRoomsPaginated(cursor, limit, userId),
         searchRooms: (_, { cursor, limit, search }) => getRoomsBySearch(cursor, limit, search),
-        roomPosts: (_, { id, cursor, limit }) => roomWithPost(id, cursor, limit)
+        roomPosts: (_, { id, cursor, limit, userId }) => roomWithPost(id, cursor, limit, userId)
         // roomsCursored: (_, { cursor, limit }) => getAllRoomCursor(cursor, limit)
 
     },

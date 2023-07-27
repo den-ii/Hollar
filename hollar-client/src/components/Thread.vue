@@ -23,31 +23,34 @@
     </div>
 
     <div
-      v-if="newReplies.length || post?.replies?.length"
-      class="w-[1.5px] ml-4 mt-1 mb-1 border-gray-300 border-l border-dashed h-[100px]"
+      v-if="newReplies.length || post?.replyCount > 0"
+      class="w-[1.5px] ml-4 mt-1 mb-1 border-darks dark:border-gray-300 border-l border-dashed h-[100px]"
     ></div>
 
     <!-- newReplies  -->
     <section id="replySection" class="">
       <user-post :newReplies="newReplies" />
 
-      <post-reply :postId="postId" :isReply="isReply" />
+      <!-- <post-reply :postId="postId" :isReply="isReply" /> -->
       <!-- Reply box -->
     </section>
     <div
-      class="fixed bottom-2 w-full max-w-[750px] bg-base dark:bg-darks dark:shadow-barshadow rounded-xl p-2"
+      v-if="auth.isAuth"
+      class="fixed bottom-2 w-full max-w-[750px] bg-base dark:bg-darks dark:shadow-barshadow border border-black rounded-xl p-2"
     >
-      <div class="flex justify-between pb-2 text-white">
-        <h2 class="text-white font-bold dark:font-medium text-lg mb-1">Reply:</h2>
+      <div class="flex justify-between pb-2 dark:text-gray-100 text-white">
+        <h2 class="dark:text-gray-100 text-white font-bold dark:font-medium text-lg mb-1">
+          Reply:
+        </h2>
         <div class="flex items-center gap-3">
-          <p class="font-bold font-Raleway dark:italic w-12 text-ellipsis text-center">
+          <p class="font-Raleway italic w-12 text-ellipsis text-center">
             {{ replyLen }}
           </p>
           <button class="cursor-pointer hover:text-purple-100">
-            <i class="fa-solid fa-face-grin-wink text-lg"></i>
+            <i class="fa-solid fa-face-grin-wink text-lg dark:text-gray-100 text-white"></i>
           </button>
           <button class="hover:text-purple-100 cursor-pointer" @click="openFile">
-            <i class="fa-solid fa-images text-lg"></i>
+            <i class="fa-solid fa-images text-lg dark:text-gray-100 text-white"></i>
             <input
               ref="fileInput"
               type="file"
@@ -58,7 +61,7 @@
           </button>
           <span class="w-[40px]">
             <button
-              class="send cursor-pointer w-[30px] h-[30px] rounded-full bg-white flex items-center justify-center"
+              class="send cursor-pointer w-[30px] h-[30px] rounded-full dark:bg-gray-100 bg-white flex items-center justify-center"
               :disabled="loading"
               @click.prevent="handleReply"
             >
@@ -68,11 +71,12 @@
           </span>
         </div>
       </div>
-      <files :all-files="allFiles" @remove-files="removeFiles" class="-mt-4" />
+      <files :all-files="allFiles" @remove-files="removeFiles" class="-mt-5" />
       <vue-tribute :options="options">
         <div
-          class="w-full relative min-h-[70px] p-2 bg-white dark:bg-darks dark:border border-dotted dark:border-white rounded-xl"
+          class="w-full relative min-h-[70px] p-2 bg-white dark:border focus:outline focus:outline-1 dark:border-black focus:outline-black dark:outline-black dark:bg-darks rounded-xl reply"
           id="#post"
+          :placeholder="replyPlaceholder"
           contenteditable
           ref="reply"
           @input="checkMaxLength"
@@ -83,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref } from 'vue'
+import { watch, ref, computed } from 'vue'
 import { VueTribute } from 'vue-tribute'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
@@ -92,7 +96,7 @@ import LikePost from '@/components/post/LikePost.vue'
 import { useQuery, useMutation } from '@vue/apollo-composable'
 import PostReply from '@/components/post/PostReply.vue'
 import UserPost from '@/components/post/UserPost.vue'
-import { replyPostMutate } from '@/graphql/mutations'
+import { replyPostMutate, replyReply } from '@/graphql/mutations'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { client, bucket, region } from '@/config/aws'
 import files from '@/components/post/Files.vue'
@@ -112,6 +116,11 @@ const fileUpload: any = ref([])
 const fileInput: any = ref(null)
 const emit = defineEmits(['closeAllModal', 'unchoose'])
 // const post: any = ref(null)
+const replyPlaceholder = computed(() =>
+  props.replyData
+    ? `reply @${props.replyData?.authorDetails.username}...`
+    : `reply @${props.post?.authorDetails.username}...`
+)
 const replyBody = ref('')
 const tags: any = ref([])
 const options = {
@@ -127,12 +136,13 @@ const options = {
   },
   positionMenu: false,
   containerClass:
-    'tribute-container absolute bottom-[10%] border border-base rounded font-Raleway z-50 bg-white',
-  itemClass: 'font-Raleway hover:bg-base hover:text-white cursor-pointer py-1 px-2',
+    'tribute-container fixed bottom-[22%] border shadow-barshadow rounded z-50 bg-white dark:bg-darks dark:shadow-barshadow mx-auto left-[50%] -translate-x-[50%] w-[60%] dark:border-black border-dashed',
+  itemClass:
+    'hover:bg-slate-100 hover:text-darks dark:hover:bg-base dark:hover:text-white cursor-pointer py-1 px-2',
   selectTemplate: function (item) {
     tags.value.push(item.original.value)
     return (
-      '<span contenteditable="false" class="bg-gray-200 font-medium p-1 rounded text-gray-800 font-Raleway italic cursor-pointer">@' +
+      '<span contenteditable="false" class="bg-slate-100 text-darks dark:bg-black p-1 rounded-lg dark:text-white cursor-pointer">@' +
       item.original.value +
       '</span>'
     )
@@ -210,6 +220,11 @@ async function uploadFiles() {
 }
 
 const { mutate, onDone, error: replyPostError } = useMutation(replyPostMutate)
+const {
+  mutate: replyRepliesMutate,
+  onDone: replyRonDone,
+  error: replyReplyError
+} = useMutation(replyReply)
 async function handleReply() {
   if (checkMaxLength() && (replyLen.value != 400 || fileUpload.value.length)) {
     try {
@@ -221,11 +236,25 @@ async function handleReply() {
         authorId: auth.user.id
       }
       console.log(props.postId, replyPost)
-      mutate({ postId: props.postId, reply: replyPost })
-      onDone((result) => {
-        console.log(result)
-        newReplies.value.unshift({ id: result.data.replyPost.id, reply: reply.value.textContent })
-      })
+      if (!props.isReply) {
+        mutate({ postId: props.postId, reply: replyPost })
+        onDone((result) => {
+          console.log(result)
+          newReplies.value.unshift({ id: result.data.replyPost.id, reply: reply.value.innerHTML })
+          reply.value.innerHTML = ''
+        })
+      } else {
+        replyRepliesMutate({ replyId: props.postId, reply: replyPost })
+        onDone((result) => {
+          console.log(result)
+          newReplies.value.unshift({
+            id: result.data.replyReplies.id,
+            reply: reply.value.innerHTML
+          })
+          reply.value.innerHTML = ''
+        })
+      }
+      console.log(replyReplyError)
       console.log(replyPostError)
     } catch (err) {
       console.log(err)
@@ -274,9 +303,19 @@ watch(replyBody, () => {
 watch(reply, () => {
   if (reply.value) {
     reply.value.focus()
+    console.log(replyReplyError)
     console.log(replyPostError)
   }
 })
 </script>
 
-<style scoped></style>
+<style>
+[contenteditable='true']:empty:before {
+  content: attr(placeholder);
+  pointer-events: none;
+  display: block; /* For Firefox */
+  color: grey;
+  font-style: italic;
+  font-family: 'Trebuchet Ms';
+}
+</style>

@@ -188,7 +188,11 @@ const code: any = ref('')
 const country = ref('')
 const regOutput = ref(false)
 const user: any = ref({})
-const { result, load, loading, error, refetch } = useLazyQuery(registerQuery, { user })
+const { result, load, loading, error, refetch } = useLazyQuery(
+  registerQuery,
+  { user },
+  { fetchPolicy: 'no-cache' }
+)
 
 function register(values) {
   const { name: fullName, email, password, username } = values

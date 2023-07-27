@@ -5,29 +5,27 @@ import { GraphQLError } from 'graphql';
 import { User } from '../../models/users.model.js';
 import { Room } from '../../models/rooms.model.js';
 import { Reply } from '../../models/replies.model.js';
-import mongoose from 'mongoose';
-
+import { getPostPipeline } from './pipelines.js'
 
 export async function getAllPosts() {
     return await Post.find({})
 }
 
-export async function getPost(id: string) {
-    const post = await Post.findById(id).populate({ path: 'author room replies likes' }).exec()
-    return post
-}
-
-
-export async function getPostL(id: string) {
+export async function getPost(id: string, userId?: string) {
     const post = await Post.findById(id).exec()
     return post
 }
-
+export async function getPostWithFilm(id: string, userId?: string) {
+    const post = await getPostPipeline(id, userId)
+    console.log(post)
+    return post
+}
 
 // createPost
 export async function createPost(post: { comment: string, authorId: string, title: string, tv?: any, tags: [string], cover: string, files: [any] }) {
     const { tags, files, comment, authorId, title, tv } = post
     const rooms = await getRoomByName(title)
+    console.log(authorId)
     const user = await getUser(authorId)
     console.log(user)
     if (rooms.length && user) {
@@ -129,7 +127,7 @@ export async function getReply(id) {
 export async function getReplyAddon(id: string) {
     console.log('kk')
     const reply = await Reply.findById(id).populate({
-        path: 'author post treplies replies likes',
+        path: 'author post treplies replies',
         populate: { path: 'author room replies likes', strictPopulate: false }
     }).exec()
     const post = getPost(String(reply?.post.id))
@@ -169,7 +167,7 @@ export async function unlikeReply(replyId: string, userId: string) {
 
 
 export async function postWithAuthorReplies(id: string) {
-    const post = await getPostL(id)
+    const post = await getPost(id)
     const result = await Post.findById({ _id: id }).populate({
         path: 'replies',
         options: { sort: { 'created_at': -1 } },
@@ -254,7 +252,7 @@ export async function getReplyWithReplies(id: string, cursor?: string, limit?: n
 }
 
 export async function postReplies(id: string, cursor: string, limit: number) {
-    const post = await getPostL(id)
+    const post = await getPost(id)
     if (!cursor || !cursor.length) {
         const nid = Number(id)
         const result = await Post.findById({ _id: id }).populate({
@@ -288,8 +286,9 @@ export async function postReplies(id: string, cursor: string, limit: number) {
 
 
 export async function replyPost(postId: string, reply: { authorId: string, comment: string, files: any, tags: [string] }) {
+
     const user = await getUser(reply.authorId)
-    const post = await getPostL(postId)
+    const post = await getPost(postId)
     console.log('post', post)
     if (user && post) {
         const createdReply = await Reply.create({ author: user.id, post: post.id, comment: reply.comment, files: reply.files, tags: reply.tags })

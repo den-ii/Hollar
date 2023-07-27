@@ -2,17 +2,13 @@
   <div class="border rounded-lg mb-1" v-for="reply in newReplies" :key="reply.id">
     <div class="flex gap-2 min-h-[100px] mb-1 hover:shadow">
       <!-- avatar -->
-      <img
-        v-if="auth.user?.avatar"
-        :src="auth.user?.avatar"
-        loading="lazy"
-        class="w-[50px] h-[50px] object-cover rounded-full mt-2 ml-2"
+      <avatar
+        :post="reply"
+        :dpName="auth?.user?.fullName"
+        :src="auth?.user?.avatar"
+        size="w-[56px] h-[50px]"
       />
-      <span
-        v-else
-        class="w-[55px] h-[50px] rounded-full bg-gray-400 text-white font-bold items-center justify-center"
-        >{{ auth.name }}</span
-      >
+
       <!-- username -->
       <div class="w-full flex justify-between gap-1">
         <div class="w-full mr-3">
@@ -34,7 +30,7 @@
             </div>
           </div>
           <div class="font-light w-full h-[70%] flex flex-col justify-between g-5">
-            <div class="pl-2">{{ reply.reply }}</div>
+            <div class="pl-2" v-html="reply.reply"></div>
             <div class="flex justify-end gap-5">
               <like-post :likes="reply.likes" :post="reply" />
             </div>
@@ -47,12 +43,15 @@
 
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth'
+import ViewProfile from '../profile/ViewProfile.vue'
+import Avatar from '../Avatar.vue'
 const auth = useAuthStore()
 const props = defineProps(['newReplies'])
 const dummyPost = {
-  author: {
+  authorDetails: {
     username: auth.user?.username,
-    avatar: auth.user?.avatar
+    avatar: auth.user?.avatar,
+    favourite: auth.user?.favourite
   }
 }
 function enter(id) {

@@ -33,12 +33,19 @@ export const routes: RouteRecordRaw[] = [
     },
     {
         path: '/profile',
+        redirect: '/profile/@me'
+    },
+    {
+        path: '/profile/:username',
         name: 'profile',
         components: {
             default: () => import('@/views/Profile.vue'),
             navbar: () => import('@/components/bars/Navbar.vue'),
             trendbar: () => import('@/components/bars/Trendbar.vue'),
             couTrendbar: () => import('@/components/bars/CouTrendbar.vue'),
+        },
+        meta: {
+            requiresAuth: true
         }
     },
     {
@@ -81,4 +88,8 @@ export const routes: RouteRecordRaw[] = [
             couTrendbar: () => import('@/components/bars/CouTrendbar.vue'),
         }
     },
+    {
+        path: '/:catchAll(.*)*',
+        redirect: { name: 'home' }
+    }
 ]

@@ -1,43 +1,66 @@
 <template>
   <div class="mt-6 flex items-center justify-between">
-    <input
-      class="block border-2 shadow p-2 rounded-lg dark:bg-darks"
-      :class="{ 'w-full': rooms, 'w-[80%]': !rooms }"
-      type="text"
-      name="search"
-      id=""
-      placeholder="Search"
-      v-model="value"
-      @keyup="$emit('change', value)"
-    />
-    <div v-show="!rooms">
+    <div v-show="!rooms" class="ml-auto flex gap-2 items-center">
+      <button>
+        <i class="fa-brands fa-hive text-lg text-gray-200"></i>
+      </button>
+      <button class="" v-if="auth.isAuth">
+        <i class="fa-solid fa-phone-volume text-gray-200 text-lg"></i>
+      </button>
       <button
-        class="ml-2 bg-green-700 rounded-full w-[35px] h-[35px]"
+        v-if="auth.isAuth"
+        class="bg-gray-200 rounded-full w-[30px] h-[30px]"
         @click.prevent="$emit('openRoomModal')"
       >
-        <i class="fa-solid fa-plus text-white"></i>
-      </button>
-      <button class="ml-2">
-        <i class="fa-solid fa-phone-volume text-base text-lg"></i>
-      </button>
-      <button>
-        <i class="fa-regular fa-ellipsis-stroke text-base"></i>
+        <i class="fa-solid fa-plus text-darks"></i>
       </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 defineEmits(['openRoomModal', 'change'])
-// const props = defineProps<{
-//   rooms?: boolean
-// }>()
+
 defineProps({
   rooms: Boolean
 })
 
-const value = ref('')
+// const value = ref('')
+const auth = useAuthStore()
+// const searchBar = ref(false)
+// const searchEle: any = ref(null)
+
+// function rollupSearch() {
+//   searchBar.value = !searchBar.value
+//   if (searchBar.value === true) {
+//     setTimeout(() => {
+//       if (searchBar.value) return searchEle.value?.focus()
+//     }, 700)
+//   }
+// }
+// function closeupSearch() {
+//   // alert('lazy')
+//   searchBar.value = false
+// }
+// watch(searchEle, () => {
+//   console.log(searchEle)
+// })
 </script>
 
-<style scoped></style>
+<style scoped>
+.searchbar {
+  /*animation: rollup 1s linear;*/
+  width: 80%;
+}
+.v-enter-active,
+.v-leave-active {
+  transition: width 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  width: 0;
+}
+</style>

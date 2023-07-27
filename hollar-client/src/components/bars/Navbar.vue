@@ -26,9 +26,17 @@
           Log in?
         </button>
       </div>
-      <div class="flex items-center gap-4" v-else>
+      <div class="flex items-center gap-5" v-else>
+        <input
+          type="text"
+          placeholder="search here ... username starts with @"
+          class="w-[290px] focus:bg-white search py-1 px-2 text-sm placeholder:text-darks dark:placeholder:text-gray-400 rounded-lg font-Quicksand text-darks dark:text-gray-100 bg-slate-100 dark:border-gray-200 dark:bg-black"
+        />
+        <!-- <button>
+          <i class="fa-solid fa-magnifying-glass -mr-2 text-gray-100"></i>
+        </button> -->
         <button class="relative cursor-pointer">
-          <i class="fa-regular fa-bell text-2xl text-gray-600 dark:text-gray-100"></i
+          <i class="fa-regular fa-bell text-xl text-gray-600 dark:text-gray-100"></i
           ><span
             class="absolute -top-2 left-3 bg-base text-white w-5 h-5 rounded-full flex items-center justify-center text-sm"
             >3</span
@@ -39,6 +47,7 @@
             :src="auth.user?.avatar"
             loading="lazy"
             :class="`w-[45px] h-[45px] flex items-center justify-center cursor-pointer rounded-full ${auth.authBg} object-cover`"
+            onerror=""
           />
         </button>
         <button
@@ -61,3 +70,11 @@ const auth = useAuthStore()
 const dp = auth.name
 const router = useRouter()
 </script>
+<style scoped>
+.search {
+  background-image: url(../../assets/search.svg);
+  background-repeat: no-repeat;
+  background-position: 8px 50%;
+  text-indent: 20px;
+}
+</style>

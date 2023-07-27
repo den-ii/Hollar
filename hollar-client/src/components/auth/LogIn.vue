@@ -44,6 +44,7 @@
         </div>
         <button
           class="loginemail mt-2 font-Raleway py-1 px-2 bg-green-700 self-center rounded-lg text-white font-semibold shadow-sm"
+          :class="{ 'cursor-not-allowed': loading }"
           :disabled="loading"
         >
           Log in
@@ -68,6 +69,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch } from 'vue'
+import {useRouter} from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import 'primeicons/primeicons.css'
 import { loginQuery } from '@/graphql/queries'
@@ -75,6 +77,7 @@ import { useLazyQuery } from '@vue/apollo-composable'
 defineEmits(['auth-kind'])
 
 const auth = useAuthStore()
+const router = useRouter()
 
 const signInWithMail = ref(false)
 const schema = reactive({
@@ -82,18 +85,24 @@ const schema = reactive({
   password: 'required'
 })
 const loginUser = ref({})
-const { result, load, refetch, loading } = useLazyQuery(loginQuery, { loginUser })
+const { result, load, refetch, loading, onResult } = useLazyQuery(
+  loginQuery,
+  { loginUser },
+  { fetchPolicy: 'no-cache' }
+)
 function login(values: any) {
   loginUser.value = values
   console.log(values)
   load() || refetch()
 }
 
-watch(result, () => {
-  const user = result.value.loginWithEmail
+onResult((result) => {
+  console.log(result)
+  const user = result.data.loginWithEmail
   if (user) {
     console.log(user)
     auth.login(user)
+    router.push('/')
   }
   console.log('authtoken', auth.token)
   console.log('isAuth', auth.isAuth)

@@ -1,7 +1,7 @@
 export const typeDef = `
     extend type Query {
         posts: [Post]
-        post(id: ID!): Post
+        post(id: ID!, userId: ID): Post2
         reply(id: ID!): Reply
         postWithReplies(id: ID!, cursor: String, limit: Int): [Reply]
         ReplyWithReplies(id: ID!, cursor: String, limit: Int): [Reply]
@@ -64,6 +64,21 @@ export const typeDef = `
         createdAt: String
         updatedAt: String
     }
+    
+    type Post2 {
+        id: ID
+        comment: String
+        authorDetails: User
+        roomDetails: Room
+        tags: [String]
+        files: [file]
+        replies: [Reply]
+        likes: [ID]
+        userLiked: Int
+        likesCount: Int
+        replyCount: Int
+        createdAt: String
+    }
 
     type file {
         type: String
@@ -99,7 +114,7 @@ export const typeDef = `
         room: ID
         tags: [String]
         files: [String]
-        likes: [ID]
+        likes: [User]
         replies: [ID]
         createdAt: String
         updatedAt: String

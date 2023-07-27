@@ -12,6 +12,10 @@
 * {
   font-family: 'Quicksand', sans-serif;
   font-weight: 500;
+  scroll-behavior: smooth;
+}
+body {
+  overflow-x: hidden;
 }
 .trend {
   height: calc(100vh - 60px);

@@ -5,6 +5,8 @@ import { RouterLink, RouterView } from 'vue-router'
 import { useAuthStore } from './stores/auth'
 import { useModalStore } from './stores/modals'
 import { useRefreshStore } from './stores/refresh'
+import Ads from '@/components/Ads.vue'
+import RoomsHeader from '@/components/rooms/RoomsHeader.vue'
 
 const auth = useAuthStore()
 const modals = useModalStore()
@@ -14,7 +16,7 @@ const modals = useModalStore()
   <div class="dark:bg-darks">
     <auth-modal v-if="auth.authModal" />
     <router-view name="navbar" />
-    <div class="mt-[100px] dark:bg-darks">
+    <div class="dark:bg-darks">
       <router-view />
     </div>
     <router-view name="trendbar" />
@@ -22,3 +24,9 @@ const modals = useModalStore()
     <post-modal v-show="modals.postModal" />
   </div>
 </template>
+
+<style scoped>
+.ads {
+  width: calc(100% - 400px);
+}
+</style>

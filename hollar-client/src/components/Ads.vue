@@ -7,26 +7,26 @@
       loop
       playsinline
       poster="https://dnm.nflximg.net/api/v6/BvVbc2Wxr2w6QuoANoSpJKEIWjQ/AAAAQfZoOth5nUAKa5Enibc_9gqGFSqqXjypa10UoVE0TWiM69ek-mNXBIKx8YiB9GmClDlTTXilHehiLMHXT9U_m5PbBawmzrks62eysPRtPmFsH-9YkK5oR40phlHDSG3Zfl74rk9K6w7zOHr7EyfPJB88yf0.jpg?r=d0a"
-      class="rounded-xl"
-      width="750"
+      class=""
+      width=""
     >
       <source src="../assets/ext.mp4" type="video/mp4" />
     </video>
-    <span
+    <!-- <span
       class="absolute top-[50%] -translate-y-[50%] left-[50%] -translate-x-[50%] cursor-pointer"
       @click="playPause"
     >
       <i class="fa-solid fa-pause play text-base" v-show="play && playTag"></i>
       <i class="fa-solid fa-circle-play play text-base" v-show="!play"></i>
-    </span>
+    </span> -->
     <span class="flex gap-3 absolute bottom-3 right-3" v-if="hover">
-      <span class="cursor-pointer" @click="volume">
+      <!-- <span class="cursor-pointer" @click="volume">
         <i class="fa-solid fa-volume-xmark text-base side" v-if="muted"></i>
         <i class="fa-solid fa-volume-high side text-base" v-else></i>
-      </span>
-      <span class="cursor-pointer" @click="video.requestFullscreen"
+      </span> -->
+      <!-- <span class="cursor-pointer" @click="video.requestFullscreen"
         ><i class="fa-solid fa-expand text-base side"></i
-      ></span>
+      ></span> -->
     </span>
   </div>
 </template>

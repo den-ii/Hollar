@@ -17,19 +17,26 @@ import { computed, ref, watch } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { likePost, unlikePost, likeReply, unlikeReply } from '@/graphql/mutations'
 
-const props = defineProps(['likes', 'post', 'isReply'])
+const props = defineProps(['likesCount', 'userLiked', 'id', 'isReply'])
 
 const auth = useAuthStore()
-const liked = ref(props.likes?.find((x: string) => (x == auth.user?.id ? true : false)))
-const likeLen = ref(props.likes ? props.likes.length : 0)
 
+const liked = ref(props.userLiked === 1 ? true : false)
+const likeLen = ref(props.likesCount)
+
+// like a post
 const { mutate: likeMutate, error: likeError, onDone: likeDone } = useMutation(likePost)
+// unlike a post
 const { mutate: unlikeMutate, error: unlikeError, onDone: unlikeDone } = useMutation(unlikePost)
+
+// like a reply
 const {
   mutate: likeReplyMutate,
   error: likeReplyError,
   onDone: likeReplyDone
 } = useMutation(likeReply)
+
+// unlike a reply
 const {
   mutate: unlikeReplyMutate,
   error: unlikeReplyError,
@@ -39,27 +46,33 @@ const {
 const len = computed(() => (likeLen.value > 0 ? likeLen.value : ''))
 
 function like() {
-  if (!liked.value) {
+  if (!auth.isAuth) {
+    auth.authModal = true
+    return
+  } else if (!liked.value) {
     liked.value = !liked.value
     likeLen.value++
     if (props.isReply) {
-      console.log('replylike', props.post.id)
-      likeReplyMutate({ replyId: props.post.id, userId: auth.user.id })
+      console.log('replylike', props.id)
+      likeReplyMutate({ replyId: props.id, userId: auth.user.id })
     } else {
       console.log(props.isReply)
-      likeMutate({ postId: props.post.id, userId: auth.user.id })
+      likeMutate({ postId: props.id, userId: auth.user.id })
     }
     console.log(likeReplyError)
   }
 }
 function unlike() {
-  if (liked.value) {
+  if (!auth.isAuth) {
+    auth.authModal = true
+    return
+  } else if (liked.value) {
     liked.value = !liked.value
     likeLen.value--
     if (props.isReply) {
-      unlikeReplyMutate({ replyId: props.post.id, userId: auth.user.id })
+      unlikeReplyMutate({ replyId: props.id, userId: auth.user.id })
     } else {
-      unlikeMutate({ postId: props.post.id, userId: auth.user.id })
+      unlikeMutate({ postId: props.id, userId: auth.user.id })
     }
   }
 }

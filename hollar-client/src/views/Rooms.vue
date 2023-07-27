@@ -1,5 +1,5 @@
 <template>
-  <main class="max-w-[750px] mx-auto">
+  <main class="max-w-[750px] mt-[100px] mx-auto">
     <div>
       <rooms :rooms="true" />
     </div>

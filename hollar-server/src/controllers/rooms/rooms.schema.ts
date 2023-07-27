@@ -1,11 +1,11 @@
 export const typeDef = `
     extend type Query {
         rooms: [Room]
-        roomsPaginate(cursor: String, limit: Int): [Room]
+        roomsPaginate(cursor: String, limit: Int, userId: ID): [RoomWithLikes]
         room(id: ID!): Room
         searchTvTitles(title: String!): [Tv]
         searchRooms(cursor: String, limit: Int, search: String!): [Room]
-        roomPosts(id: ID!, cursor: String!, limit: Int!): RoomWithPost
+        roomPosts(id: ID!, cursor: String!, limit: Int!, userId: ID): [RoomandPosts]
 
     }
     
@@ -31,8 +31,69 @@ export const typeDef = `
         createdAt: String
         updatedAt: String
     }
-    
+   type AuthorDetails{
+        fullName: String
+        username: String
+        avatar:String
+        id: ID
+        favourite: String
+   }   
+   type RoomDetails {
+        name: String
+        cover: String
+        id: ID
+   }
+    type RoomandPosts{
+        id: ID
+        author: ID
+        likes: [ID]
+        comment: String
+        authorDetails: AuthorDetails
+        replyCount: Int
+        likesCount: Int
+        userLiked: Int
+        createdAt: String
+    }
+
+    type RoomWithLikes {
+        id: ID
+        cover: String
+        description: String
+        creator: User
+        name: String
+        objectPosition: String
+        tv: Tv
+        posts: [ID]
+        likes: [ID]
+        dislikes: [ID]
+        likesCount: Int
+        dislikesCount: Int
+        userLiked: Int
+        userDisliked: Int
+        createdAt: String
+        updatedAt: String
+
+    }
     type RoomWithPost {
+        id: ID
+        commentsCount: Int
+        likesCount: Int
+        userLiked: Int
+        comment: String
+        cover: String
+        description: String
+        creator: User
+        name: String
+        objectPosition: String
+        tv: Tv
+        posts: [PostWithUser]
+        likes: [ID]
+        dislikes: [ID]
+        createdAt: String
+        updatedAt: String
+    }
+
+    type RoomWithPost2 {
         id: ID
         cover: String
         description: String

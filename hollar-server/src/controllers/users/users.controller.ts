@@ -83,7 +83,15 @@ export async function loginWithEmail(loginUser: IloginUser) {
     const secret = process.env.SECRETKEY
 
     const { email, username, password } = loginUser
-    const user = email ? await User.findOne({ email }) : await User.findOne({ username })
+    let user
+    if (username?.includes('@')) {
+        user = await User.findOne({ email: username })
+
+    }
+    else {
+        user = await User.findOne({ username })
+    }
+    console.log(user)
     const userfound = email ? await User.findOne({ email }).lean() : await User.findOne({ username }).lean()
     console.log('user', userfound)
     const hash = userfound?.password || ''
@@ -96,7 +104,9 @@ export async function loginWithEmail(loginUser: IloginUser) {
             }
         })
     }
-    const token = jwt.sign(userfound, secret, { expiresIn: '1hr' })
+    // const token = jwt.sign(userfound, secret, { expiresIn: '1hr' })
+    const token = jwt.sign(userfound, secret)
+
     return { token, user }
 
 }

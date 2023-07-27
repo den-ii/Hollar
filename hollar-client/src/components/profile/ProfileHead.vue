@@ -6,8 +6,8 @@
       <div v-if="bg" class="h-[200px] w-full rounded">
         <img :src="bg" class="w-full h-full rounded object-cover" />
       </div>
-      <div v-else-if="auth.user.bg" class="rounded">
-        <img :src="auth.user.bg" class="w-full h-[200px] rounded object-cover" />
+      <div v-else-if="auth?.user?.bg" class="rounded">
+        <img :src="auth?.user?.bg" class="w-full h-[200px] rounded object-cover" />
       </div>
       <div v-else class="bg-purple-50 h-[200px] w-full rounded"></div>
 
@@ -90,7 +90,7 @@
         <div v-else>
           <i class="fa-solid fa-star text-yellow-500"></i
           ><input
-            class="italic font-light dark:placeholder-darks font-Dosis border border-base rounded px-1"
+            class="italic font-light dark:placeholder-darks font-Dosis border border-base rounded px-1 dark:text-darks"
             v-model="edited.favourite"
             :placeholder="auth.user.favourite ? auth.user.favourite : 'unknown'"
           />
@@ -98,9 +98,9 @@
       </div>
       <!-- Profile Settings -->
       <div class="flex items-center gap-3">
-        <button @click="logOut">
+        <!-- <button @click="logOut">
           <i class="fa-solid fa-arrow-right-from-bracket text-base dark:text-white"></i>
-        </button>
+        </button> -->
         <button class=""><i class="fa-solid fa-gear text-base dark:text-white"></i></button>
         <button
           class="flex items-center gap-2 border border-grey-500 rounded-md px-2 cursor-pointer text-gray-100 bg-base"
@@ -148,10 +148,10 @@ const bg: any = ref(null)
 const bgUpload: any = ref('')
 
 // methods
-function logOut() {
-  auth.logout()
-  router.push('/')
-}
+// function logOut() {
+//   auth.logout()
+//   router.push('/')
+// }
 
 function parseAvatar() {
   const file = avatarInput.value?.files[0]

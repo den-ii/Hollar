@@ -18,7 +18,7 @@
     <div class="flex justify-between p-4 h-[60px]">
       <p class="font-Raleway">0 posts</p>
       <h1 class="font-semibold">{{ room.name.toUpperCase() }}</h1>
-      <like-room :likes="room?.likes" :dislikes="room?.dislikes" :roomId="room?.id" />
+      <like-room :likesCount="room?.likesCount" :dislikesCount="room?.dislikesCount" :roomId="room?.id" :userLiked="room?.userLiked" :userDisliked="room?.userDisliked" />
     </div>
   </div>
 </template>

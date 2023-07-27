@@ -7,7 +7,7 @@
         </video>
         <button
           @click="$emit('removeFiles', index)"
-          class="bg-white text-base absolute w-[20px] h-[20px] rounded-full flex items-center justify-center -right-3 -top-3 cursor-pointer"
+          class="bg-white dark:bg-base dark:text-white text-base absolute w-[20px] h-[20px] rounded-full flex items-center justify-center -right-3 -top-3 cursor-pointer"
           aria-label="remove image"
         >
           <i class="fa-solid fa-xmark text-sm"></i>
@@ -17,7 +17,7 @@
         <img :src="file.src" alt="photo" class="w-[150px] h-[100px] object-cover" />
         <button
           @click.prevent="$emit('removeFiles', index)"
-          class="bg-white text-base absolute w-[20px] h-[20px] rounded-full flex items-center justify-center -right-3 -top-3 cursor-pointer"
+          class="bg-white text-base dark:bg-base dark:text-white absolute w-[20px] h-[20px] rounded-full flex items-center justify-center -right-3 -top-3 cursor-pointer"
           aria-label="remove image"
         >
           <i class="fa-solid fa-xmark text-sm"></i>

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="shadow dark:shadow-barshadow trend fixed top-[60px] left-0 w-[200px] px-3 flex flex-col justify-between items-center dark:bg-darks"
+    class="shadow dark:shadow-barshadow trend fixed top-[60px] left-0 w-[200px] px-2 flex flex-col justify-between items-center dark:bg-darks"
   >
     <div class="pt-6 flex flex-col gap-5">
       <router-link
@@ -10,10 +10,12 @@
         <i class="fa-solid fa-house text-lg text-black"></i>
       </router-link>
       <button
+        v-if="auth.isAuth"
         class="bg-green-700 shadow w-[50px] h-[50px] rounded-full"
         @click="modals.postModal = true"
       >
-        <i class="fa-solid fa-pen-to-square text-white text-lg"></i>
+        <i class="fa-solid fa-pencil text-lg text-white"></i>
+        <!-- <i class="fa-solid fa-pen-to-square text-white text-lg"></i> -->
       </button>
       <router-link
         to="/feed"
@@ -32,27 +34,32 @@
     </div>
     <div class="">
       <h1
-        class="bg-base text-white rounded-lg text-center mb-2 text-lg font-bold py-1 mt-3 dark:font-semibold"
+        class="bg-base text-white rounded-lg text-center mb-2 text-[1.1rem] font-bold py-1 mt-3 dark:font-semibold cursor-pointer dark:text-gray-100"
       >
         NG Top 10
       </h1>
-      <ul class="text-lg">
-        <li v-for="trend in Trends" :key="trend" class="dark:text-white">
+      <ul class="text-lg mb-2">
+        <li
+          v-for="trend in Trends"
+          :key="trend"
+          class="dark:hover:text-purple-50 dark:text-gray-200 cursor-pointer"
+        >
           {{ trend }}
         </li>
       </ul>
-      <p class="text-center text-sm">See more</p>
+      <!-- <p class="text-center text-sm">See more</p> -->
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 // import { ref } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 import { useModalStore } from '@/stores/modals'
 import { useModeStore } from '@/stores/mode'
 
 import Trends from '@/assets/trends'
-
+const auth = useAuthStore()
 const modals = useModalStore()
 const mode = useModeStore()
 </script>

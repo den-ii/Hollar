@@ -95,68 +95,61 @@ query searchRooms($cursor: String, $limit: Int, $search: String!){
 
 // getAllRooms
 export const roomsPaginateQuery = gql`
-query roomsPaginate($cursor: String, $limit: Int){
-  roomsPaginate(cursor: $cursor, limit: $limit) {
+query roomsPaginate($cursor: String, $limit: Int, $userId: ID){
+  roomsPaginate(cursor: $cursor, limit: $limit, userId: $userId) {
       id
       name
-      tv {
-        image {
-          url
-        }
-      }
       cover
-      likes
       dislikes
-      createdAt
+      likesCount
+      dislikesCount
+      userLiked
+      userDisliked
       updatedAt
   }
 }`
 
 export const roomPosts = gql`
-query roomPosts($id: ID!, $cursor: String!, $limit: Int!){
-  roomPosts(id: $id, cursor: $cursor, limit: $limit) {
-    id   
-    posts{
-      author {
-        fullName
-        username
-        avatar
-        favourite
-        }
+query roomPosts($id: ID!, $cursor: String!, $limit: Int!, $userId: ID){
+  roomPosts(id: $id, cursor: $cursor, limit: $limit, userId: $userId) {
+    id
+    likesCount
+    authorDetails{
+      username
+      fullName
       id
-      tags
-      comment
-      likes
-      replies
-      }
-
+      avatar
+      favourite
+    }
+    comment
+    replyCount
+    userLiked
+    createdAt
   }
 }
 `
 
 export const postQuery = gql`
-query post($id: ID!){
-  post(id: $id) {
+query post($id: ID!, $userId: ID){
+  post(id: $id, userId: $userId) {
     id
-    author {
+    authorDetails {
       id
       avatar
       username
       favourite
       fullName
     }
-    comment
-    room {
+    replyCount
+    roomDetails {
       id
       name
       cover
     }
-    replies{
-      id
-    }
-    likes{
-      id
-    }
+    comment
+    likesCount
+    userLiked
+    createdAt
 }
 }
 `

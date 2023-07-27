@@ -63,6 +63,7 @@
           <div
             class="w-full min-h-[150px] -mt-1 pt-3 p-2 focus:outline-none overflow-x-hidden"
             ref="post"
+            placeholder="What 're you posting today?"
             id="textarea"
             @input="checkMaxLength"
             contenteditable

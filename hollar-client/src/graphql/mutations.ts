@@ -116,5 +116,11 @@ export const unlikeReply = gql`
     }
 }
 `
-
+export const replyReply = gql`
+  mutation replyReply($replyId: ID!, $reply  :Ireply!) {
+    replyReply(replyId: $replyId, userId: $userId){
+      id
+    }
+  }
+`
 

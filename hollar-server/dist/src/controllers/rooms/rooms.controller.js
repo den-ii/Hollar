@@ -1,9 +1,10 @@
-// IMPORTS
+// imports
 import { Room } from '../../models/rooms.model.js';
 import axios from 'axios';
 import { GraphQLError } from 'graphql';
 import { getUser } from '../users/users.controller.js';
-// CONTROLLERS
+import { roomWithPostPipeline, getRoomsPaginatedPipeline } from './pipelines.js';
+//controllers
 // Search for movie/tvseries
 export async function searchTvTitles(title) {
     const key = process.env.OMD_KEY;
@@ -64,50 +65,40 @@ export async function getRoomsBySearch(cursor, limit, search) {
     // const rooms = await Room.find({})
     // return rooms.filter((room) => room.name.toLowerCase().includes(search.toLowerCase()))
 }
-export async function getAllRoomsPaginated(cursor, limit) {
-    if (!cursor || !cursor.length) {
-        const rooms = await Room.find({}).sort('-updatedAt').limit(limit);
-        console.log('no cursor', rooms);
-        return rooms;
-    }
-    else {
-        const rooms = await Room.find({ updatedAt: { $lt: cursor } }).sort('-updatedAt').limit(limit);
-        console.log(rooms);
-        return rooms;
-    }
+export async function getAllRoomsPaginated(cursor, limit, userId) {
+    const result = getRoomsPaginatedPipeline(cursor, limit, userId);
+    return result;
 }
 export async function getRoom(id) {
     return await Room.findById(id).exec();
 }
-export async function roomWithPost(id, cursor, limit) {
-    // const room = await Room.findById(id).exec()
-    // console.log('room', room)
-    if (!cursor || !cursor.length) {
-        const result = await Room.findById({ _id: id }).populate({
-            path: 'posts',
-            options: { sort: { createdAt: -1 } },
-            populate: {
-                path: 'author'
-            },
-            perDocumentLimit: limit
-        }).exec();
-        return result;
-    }
-    else {
-        const c = Number(cursor);
-        console.log(c);
-        const result = await Room.findById({ _id: id }).populate({
-            path: 'posts',
-            options: { sort: { createdAt: -1 } },
-            match: { createdAt: { $lt: c } },
-            populate: {
-                path: 'author'
-            },
-            perDocumentLimit: limit
-        }).exec();
-        console.log(result);
-        return result;
-    }
+//getRoomandPosts
+export async function roomWithPost(id, cursor, limit, userId) {
+    const result = await roomWithPostPipeline(id, cursor, limit, userId);
+    const result1 = await Room.findById({ _id: id }).populate({
+        path: 'posts',
+        options: { sort: { createdAt: -1 } },
+        populate: {
+            path: 'author likes'
+        },
+        perDocumentLimit: limit
+    }).exec();
+    // console.log('result', result)
+    console.log(result);
+    return result;
+    // const c = Number(cursor)
+    // console.log(c)
+    // const result = await Room.findById({ _id: id }).populate({
+    //     path: 'posts',
+    //     options: { sort: { createdAt: -1 } },
+    //     match: { createdAt: { $lt: c } },
+    //     populate: {
+    //         path: 'author likes'
+    //     },
+    //     perDocumentLimit: limit
+    // }).exec()
+    // console.log(result)
+    // return result
 }
 // getARoomByName
 export async function getRoomByName(name) {
@@ -120,6 +111,16 @@ export async function addRoom(movie) {
     });
 }
 // likes
+// export async function checkLikedandDisliked(roomId: string, userId: string) {
+//     const liked = await Room.findOne({ _id: roomId, likes: userId })
+//     const disliked = await Room.findOne({ _id: roomId, dislikes: userId })
+//     let userLiked = liked ? true : false
+//     let userDisliked = disliked ? true : false
+//     return {
+//         liked: userLiked,
+//         disliked: userDisliked
+//     }
+// }
 export async function likeRoom(roomId, userId) {
     const room = await getRoom(roomId);
     const user = await getUser(userId);
