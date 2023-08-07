@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Post } from '../../models/posts.model.js';
 import { getRoomByName, addRoom, getRoom } from '../rooms/rooms.controller.js';
 import { getUser } from '../users/users.controller.js';
@@ -5,7 +6,7 @@ import { GraphQLError } from 'graphql';
 import { User } from '../../models/users.model.js';
 import { Room } from '../../models/rooms.model.js';
 import { Reply } from '../../models/replies.model.js';
-import { getPostPipeline } from './pipelines.js';
+import { getPostPipeline, authorPostRepliesPipeline, postRepliesPipeline, replyRepliesHeader, getReplyPipeline, authorReplyRepliesPipeline, replyRepliesPipeline } from './pipelines.js';
 export async function getAllPosts() {
     return await Post.find({});
 }
@@ -113,15 +114,9 @@ export async function unlikePost(postId, userId) {
 export async function getReply(id) {
     return await Reply.findById(id).exec();
 }
-export async function getReplyAddon(id) {
-    console.log('kk');
-    const reply = await Reply.findById(id).populate({
-        path: 'author post treplies replies',
-        populate: { path: 'author room replies likes', strictPopulate: false }
-    }).exec();
-    const post = getPost(String(reply?.post.id));
-    // return { post, reply }
-    return reply;
+export async function getReplyAddon(id, userId) {
+    const result = getReplyPipeline(id, userId);
+    return result;
 }
 // REPLIES
 // likePost
@@ -150,107 +145,25 @@ export async function unlikeReply(replyId, userId) {
         return reply;
     }
 }
-export async function postWithAuthorReplies(id) {
-    const post = await getPost(id);
-    const result = await Post.findById({ _id: id }).populate({
-        path: 'replies',
-        options: { sort: { 'created_at': -1 } },
-        match: { author: { $eq: post?.author } },
-        populate: {
-            path: 'author'
-        },
-    }).exec();
+export async function authorPostReplies(id, authorId, userId) {
+    const result = await authorPostRepliesPipeline(id, authorId, userId);
     return result;
 }
-export async function getPostWithReplies(id, cursor, limit) {
-    const post = await Post.findById(id).populate({
-        path: 'author room'
-    });
-    if (post) {
-        console.log('yh');
-        if (!cursor || !cursor.length) {
-            const result = await Post.findById(id).populate({
-                path: 'replies',
-                options: { sort: { createdAt: -1 } },
-                perDocumentLimit: limit,
-                populate: {
-                    path: 'author',
-                },
-                // match: { author: { $ne: post?.author } },
-            });
-            const replies = result?.replies;
-            return replies;
-        }
-        else {
-            const c = Number(cursor);
-            const result = await Post.findById({ _id: post.id }).populate({
-                path: 'replies',
-                options: { sort: { createdAt: -1 } },
-                match: { createdAt: { $lt: c } },
-                // match: { createdAt: { $lt: c }, author: { $ne: post?.author } },
-                populate: {
-                    path: 'author'
-                },
-                perDocumentLimit: limit
-            }).exec();
-            const replies = result?.replies;
-            console.log(replies);
-            return replies;
-        }
-    }
+export async function authorReplyReplies(id, authorId, userId) {
+    const result = await authorReplyRepliesPipeline(id, authorId, userId);
+    return result;
 }
-export async function getReplyWithReplies(id, cursor, limit) {
-    console.log('kk');
-    if (!cursor || !cursor.length) {
-        const reply = await Reply.findById(id).populate({
-            path: 'replies likes',
-            options: { sort: { createdAt: -1 } },
-            populate: { path: 'author', strictPopulate: false },
-            perDocumentLimit: limit,
-        }).exec();
-        return reply?.replies;
-    }
-    else {
-        const c = Number(cursor);
-        const reply = await Reply.findById(id).populate({
-            path: 'replies likes',
-            options: { sort: { createdAt: -1 } },
-            match: { createdAt: { $lt: c } },
-            populate: { path: 'author', strictPopulate: false },
-            perDocumentLimit: limit,
-        }).exec();
-        return reply?.replies;
-    }
+export async function getPostReplies(id, authorId, userId, cursor, limit) {
+    const result = await postRepliesPipeline(id, authorId, userId, cursor, limit);
+    return result;
 }
-export async function postReplies(id, cursor, limit) {
-    const post = await getPost(id);
-    if (!cursor || !cursor.length) {
-        const nid = Number(id);
-        const result = await Post.findById({ _id: id }).populate({
-            path: 'replies',
-            options: { sort: { 'created_at': -1 } },
-            match: { author: { $ne: post?.author } },
-            populate: {
-                path: 'author'
-            },
-            perDocumentLimit: limit
-        }).exec();
-        return result;
-    }
-    else {
-        const c = Number(cursor);
-        const result = await Room.findById({ _id: id }).populate({
-            path: 'posts',
-            options: { sort: { 'created_at': -1 } },
-            match: { createdAt: { $lt: c }, author: { $ne: post?.author } },
-            populate: {
-                path: 'replies'
-            },
-            perDocumentLimit: limit
-        }).exec();
-        console.log(result);
-        return result;
-    }
+export async function getReplyRepliesHeader(id, authorId, userId) {
+    const result = await replyRepliesHeader(id, authorId, userId);
+    return result;
+}
+export async function getReplyReplies(id, authorId, userId, cursor, limit) {
+    const result = await replyRepliesPipeline(id, authorId, userId, cursor, limit);
+    return result;
 }
 export async function replyPost(postId, reply) {
     const user = await getUser(reply.authorId);
@@ -275,7 +188,13 @@ export async function replyReply(replyId, reply) {
     const headReply = await getReply(replyId);
     if (user && headReply) {
         const createdReply = await Reply.create({ author: user.id, post: headReply.post, treplies: headReply.treplies, comment: reply.comment });
+        createdReply.lastReply = new mongoose.Types.ObjectId(replyId);
         createdReply.treplies.push(headReply.id);
+        createdReply.save();
+        headReply.replies.push(createdReply.id);
+        headReply.save();
+        console.log(createdReply);
+        return createdReply;
     }
 }
 // export async function getReply(replyId: string) {

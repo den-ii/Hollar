@@ -13,12 +13,12 @@
 
       <button
         v-if="edit"
-        class="w-[50px] h-[50px] rounded-full flex items-center justify-center bg-base absolute -right-3 -bottom-3 cursor-pointer"
+        class="w-[50px] h-[50px] rounded-full flex items-center justify-center bg-base absolute -right-3 -bottom-3 cursor-pointer border border-white dark:border-gray-200"
       >
         <span
           v-if="!loading"
           class="w-[30px] h-[30px] rounded-full flex items-center justify-center cursor-pointer backdrop-blur-lg"
-          ><i class="fa-solid fa-plus text-xl text-white"></i>
+          ><i class="fa-solid fa-plus text-2xl text-white dark:text-gray-200"></i>
           <input
             ref="bgInput"
             type="file"
@@ -36,7 +36,7 @@
 
     <!-- Display Picture -->
     <div class="relative">
-      <div class="w-[105px] h-[105px] cursor-pointer rounded-full absolute -top-12">
+      <div class="w-[105px] h-[105px] rounded-full absolute -top-12">
         <div v-if="avatar">
           <img :src="avatar" class="w-[105px] h-[105px] rounded-full object-cover" />
         </div>
@@ -52,19 +52,19 @@
         </div>
         <button
           v-if="edit"
-          class="cursor-pointer w-[30px] h-[30px] rounded-full bg-base absolute -right-0 bottom-0 backdrop-blur-lg"
+          class="cursor-pointer border border-white dark:border-gray-200 w-[30px] h-[30px] rounded-full bg-base absolute -right-0 bottom-0 backdrop-blur-lg"
         >
           <span
             v-if="!loading"
             class="w-[30px] h-[30px] rounded-full flex items-center justify-center cursor-pointer"
-            ><i class="fa-solid fa-plus text-xl text-gray-100 cursor-pointer"></i>
-            <input
+            ><i class="fa-solid fa-plus text-xl text-white dark:text-gray-200 cursor-pointer"></i>
+            <!-- <input
               ref="avatarInput"
               type="file"
               accept=".gif,.jpg,.jpeg,.png"
-              class="opacity-0 w-[30px] h-[30px] absolute cursor-pointer"
+              class="opacity-5 z-10 w-[30px] h-[30px] absolute cursor-pointer"
               @change="parseAvatar"
-            />
+            /> -->
           </span>
           <span
             v-else
@@ -103,14 +103,14 @@
         </button> -->
         <button class=""><i class="fa-solid fa-gear text-base dark:text-white"></i></button>
         <button
-          class="flex items-center gap-2 border border-grey-500 rounded-md px-2 cursor-pointer text-gray-100 bg-base"
+          class="flex items-center gap-2 border border-grey-500 rounded-md px-2 cursor-pointer text-[1.1rem] text-gray-100 bg-base"
           @click.prevent="saveEdit"
         >
           <button v-if="edit">Save</button>
           <button v-else-if="loading" class="text-white">...</button>
           <button v-else>Edit</button>
           <i v-if="!edit" class="fa-solid fa-pen-to-square text-gray-100"></i>
-          <i v-else class="fa-solid fa-check"></i>
+          <i v-else class="fa-solid fa-floppy-disk"></i>
         </button>
       </div>
     </div>

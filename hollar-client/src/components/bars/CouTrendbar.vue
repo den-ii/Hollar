@@ -34,11 +34,11 @@
     </div>
     <div class="">
       <h1
-        class="bg-base text-white rounded-lg text-center mb-2 text-[1.1rem] font-bold py-1 mt-3 dark:font-semibold cursor-pointer dark:text-gray-100"
+        class="bg-base text-white rounded-lg text-center mb-2 text-[1rem] font-bold py-1 mt-3 dark:font-semibold cursor-pointer dark:text-gray-100"
       >
         NG Top 10
       </h1>
-      <ul class="text-lg mb-2">
+      <ul class="text-[1.1rem] mb-3">
         <li
           v-for="trend in Trends"
           :key="trend"

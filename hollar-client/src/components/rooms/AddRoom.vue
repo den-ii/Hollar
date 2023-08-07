@@ -8,7 +8,7 @@
     ></div>
 
     <div
-      class="bg-white dark:bg-darks h-[70vh] w-[80%] max-h-[500px] max-w-[800px] rounded-2xl z-40 relative"
+      class="bg-white dark:bg-darks dark:border dark:border-black h-[70vh] w-[80%] max-h-[500px] max-w-[800px] rounded-2xl z-40 relative"
     >
       <span
         class="bg-base absolute z-50 w-[30px] h-[30px] rounded-full flex items-center justify-center -right-3 -top-3 cursor-pointer z-index-50"
@@ -72,13 +72,13 @@
             v-else-if="!title.length"
             class="flex dark:text-gray-200 flex-column h-[35vh] w-full items-center justify-center text-xl"
           >
-            SEARCH AND ADD MOVIES OR TV SHOWS
+            CREATE A CHANNEL
           </div>
           <div
             v-else
             class="flex dark:text-gray-200 flex-column h-[35vh] w-full items-center justify-center text-xl"
           >
-            SEARCH AND ADD MOVIES OR TV SHOWS
+            CREATE A CHANNEL
 
             <!-- SEARCH FOR TV SHOWS & MOVIES... -->
           </div>

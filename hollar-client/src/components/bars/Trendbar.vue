@@ -4,11 +4,11 @@
   >
     <div>
       <h1
-        class="bg-base text-white dark:text-gray-100 rounded-lg text-center mb-2 text-[1.1rem] font-bold mt-3 py-1 dark:font-semibold cursor-pointer"
+        class="bg-base text-white dark:text-gray-100 rounded-lg text-center mb-2 text-[1rem] font-bold mt-3 py-1 dark:font-semibold cursor-pointer"
       >
         What's Trending?
       </h1>
-      <ul class="text-lg">
+      <ul class="text-[1.1rem]">
         <li
           v-for="trend in Trends"
           :key="trend"
@@ -18,7 +18,7 @@
         </li>
       </ul>
     </div>
-    <footer class="text-sm dark:text-gray-200 mb-1">
+    <footer class="text-sm dark:text-gray-200 mb-3">
       <button v-if="auth.isAuth" class="hover:text-red-600" @click="logOut">
         Logout
         <i class="fa-solid fa-arrow-right-from-bracket"></i>

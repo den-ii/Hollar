@@ -8,7 +8,8 @@
     ></div>
 
     <div
-      class="bg-white dark:bg-darks h-[70vh] w-[80%] max-h-[500px] max-w-[800px] rounded-2xl z-40 relative dark:shadow-barshadow"
+      id="chooseModal"
+      class="bg-white dark:bg-darks dark:border dark:border-black h-[70vh] w-[80%] max-h-[500px] max-w-[800px] rounded-2xl z-40 relative dark:shadow-barshadow"
     >
       <span
         class="bg-base absolute z-50 w-[30px] h-[30px] rounded-full flex items-center justify-center -right-3 -top-3 cursor-pointer z-index-50"
@@ -18,12 +19,16 @@
       ></span>
 
       <!-- Movie Searchbar -->
-      <div class="h-full overflow-y-scroll px-6" id="smovie">
+      <div
+        class="h-full overflow-y-hidden px-6"
+        id="smovie"
+        :class="{ 'overflow-y-scroll': data?.length }"
+      >
         <form @submit.prevent="bringUpMovies(search)">
           <input
             placeholder="SEARCH..."
             v-model="search"
-            class="block addsearch dark:bg-black dark:text-gray-200 search w-[100%] text-lg py-3 px-4 mt-3 rounded-full border-2 border-gray-100"
+            class="block addsearch dark:bg-black dark:text-gray-200 search w-[100%] text-lg py-3 px-4 mt-3 rounded-full border-2 border-gray-400"
           />
         </form>
         <!-- Movie List -->
@@ -60,10 +65,10 @@
             v-else-if="!title.length"
             class="flex flex-column h-[35vh] w-full items-center justify-center text-xl"
           >
-            WHAT MOVIE OR SHOW DO YOU WANT TO POST ABOUT?
+            WHAT CHANNEL DO YOU WANT TO POST ON?
           </div>
           <div v-else class="flex flex-column h-[35vh] w-full items-center justify-center text-xl">
-            WHAT MOVIE OR SHOW DO YOU WANT TO POST ABOUT?
+            WHAT CHANNEL DO YOU WANT TO POST ON?
 
             <!-- SEARCH FOR SOMETHING... -->
           </div>

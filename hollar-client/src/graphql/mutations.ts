@@ -39,6 +39,7 @@ export const replyPostMutate = gql`
   mutation replyPost ($postId: ID!, $reply: Ireply! ){
     replyPost(postId: $postId, reply: $reply) {
       id
+      comment
     }
 }
 `
@@ -85,7 +86,7 @@ export const likePost = gql`
   mutation likePost ($postId: ID!, $userId: ID!,) {
     likePost(postId: $postId, userId: $userId,) {
       id
-      likes
+      
     }
 }
 `
@@ -94,7 +95,7 @@ export const unlikePost = gql`
   mutation unlikePost ($postId: ID!, $userId: ID!,) {
     unlikePost(postId: $postId, userId: $userId,) {
       id
-      likes
+    
     }
 }
 `
@@ -103,7 +104,7 @@ export const likeReply = gql`
   mutation likeReply ($replyId: ID!, $userId: ID!,) {
     likeReply(replyId: $replyId, userId: $userId,) {
       id
-      likes
+      
     }
 }
 `
@@ -112,14 +113,15 @@ export const unlikeReply = gql`
   mutation unlikeReply ($replyId: ID!, $userId: ID!,) {
     unlikeReply(replyId: $replyId, userId: $userId,) {
       id
-      likes
+      
     }
 }
 `
 export const replyReply = gql`
-  mutation replyReply($replyId: ID!, $reply  :Ireply!) {
-    replyReply(replyId: $replyId, userId: $userId){
+  mutation replyReply($replyId: ID!, $reply:Ireply!) {
+    replyReply(replyId: $replyId, reply: $reply){
       id
+      comment
     }
   }
 `

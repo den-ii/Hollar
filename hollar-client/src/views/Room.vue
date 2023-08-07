@@ -1,19 +1,22 @@
 <template>
   <main class="max-w-[750px] mt-[100px] mx-auto min-h-[screen] pb-3">
     <!-- Room Header -->
-    <div class="shadow dark:shadow-dshadow rounded-lg px-3 py-3 relative">
+    <div
+      class="shadow dark:shadow-barshadow dark:border dark:border-black rounded-lg px-3 py-3 relative"
+    >
       <div class="">
         <div
-          class="w-full h-[300px] bg-gray-200 animate-pulse rounded-lg"
+          class="w-full h-[250px] bg-gray-200 animate-pulse rounded-lg"
           v-if="!result?.room.cover"
         />
-        <img :src="result?.room?.cover" class="w-full h-[300px] object-cover rounded-lg" v-else />
+        <img :src="result?.room?.cover" class="w-full h-[200px] object-cover rounded-lg" v-else />
       </div>
-      <h1 class="font-bold text-darks dark:text-gray-200 text-2xl mt-3">
+      <h1 class="font-bold text-darks dark:text-gray-200 text-xl mt-3">
         {{ result?.room?.name.toUpperCase() }}
       </h1>
-      <span class="dark:bg-gray-200 rounded-full base absolute p-0 -right-5 -bottom-5"
-        ><i class="fa-solid fa-circle-play text-7xl"></i
+      <span
+        class="dark:bg-gray-200 rounded-full text-base dark:border-2 dark:border-black absolute p-0 -right-5 -bottom-5"
+        ><i class="fa-solid fa-circle-play text-6xl"></i
       ></span>
     </div>
 

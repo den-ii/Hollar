@@ -2,9 +2,12 @@ export const typeDef = `
     extend type Query {
         posts: [Post]
         post(id: ID!, userId: ID): Post2
-        reply(id: ID!): Reply
-        postWithReplies(id: ID!, cursor: String, limit: Int): [Reply]
-        ReplyWithReplies(id: ID!, cursor: String, limit: Int): [Reply]
+        reply(id: ID!, userId: ID): Reply
+        authorPostReplies(id:ID!, authorId: ID!, userId:ID): [Reply]
+        postReplies(id:ID!, authorId: ID!,userId: ID, cursor: String, limit:Int): [Reply]
+        replyRepliesHeader(id: ID!, authorId: ID!, userId: ID ): replyHeader
+        authorReplyReplies(id:ID!, authorId: ID!, userId:ID): [Reply]
+        replyReplies(id:ID!, authorId: ID!,userId: ID, cursor: String, limit:Int): [Reply]
     }
 
     type Mutation {
@@ -18,12 +21,18 @@ export const typeDef = `
         replyReply(replyId: ID!, reply: Ireply!): PostReply
 
     }
+    
+    type replyHeader{
+        id : ID,
+        post: Post2
+        treplies: [Reply] 
+    }
 
     type PostReply {
+        id: ID,
         treplies: [String],
         files: [String],
         author: User
-        id: ID
         post: ID
         likes: [ID]
         replies: [ID]
@@ -95,16 +104,19 @@ export const typeDef = `
     }
     type Reply{
         id: ID
+        authorDetails: User
         comment: String
         author: User
-        post: Post
+        post: ID
         tags: [String]
         files: [String]
-        treplies: [Reply]
+        treplies: [ID]
         replies: [Reply]
         likes: [User]
+        likesCount: Int
+        userLiked: Int
+        replyCount: Int
         createdAt: String
-        updatedAt: String
     }
 
     type PostWithUser {

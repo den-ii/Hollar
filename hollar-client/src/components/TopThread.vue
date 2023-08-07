@@ -1,19 +1,24 @@
 <template>
   <div>
-    <div v-if="post" class="box border border-gray-800 dark:border-white rounded-lg">
-      <div class="flex gap-2 min-h-[150px]">
+    <div
+      v-if="post"
+      class="box border border-gray-800 dark:border-white rounded-lg cursor-pointer"
+      @click.prevent="router.push(`/post/@${post?.authorDetails?.username}/${post?.id}`)"
+    >
+      <div class="flex gap-2 min-h-[140px]">
         <avatar
           :post="post"
           :dpName="post?.authorDetails?.fullName"
+          dpSize="w-[49px] h-[45px] mt-2 ml-2"
           :src="post?.authorDetails?.avatar"
-          size="w-[50px] h-[50px] mt-2 ml-2"
+          size="w-[45px] h-[45px] mt-2 ml-2"
         />
 
         <div class="w-full flex justify-between gap-1">
           <div class="w-full mr-3">
             <div class="text-base font-semibold pt-2 pl-2 text-sm relative">
               <span
-                class="prof cursor-pointer dark:text-gray-200"
+                class="prof cursor-pointer dark:text-gray-200 dark:font-light"
                 @mouseover="enter(post?.id)"
                 @mouseleave="leave(post?.id)"
               >
@@ -28,7 +33,7 @@
                 <view-profile :post="post" />
               </div>
             </div>
-            <div class="font-light w-full h-[80%] flex flex-col justify-between g-5">
+            <div class="font-light w-full h-[75%] flex flex-col justify-between g-5">
               <div class="pl-2 dark:text-gray-200 text-darks">{{ post?.comment }}</div>
               <div class="flex justify-end gap-5">
                 <like-post
@@ -36,19 +41,28 @@
                   :userLiked="post?.userLiked"
                   :id="post?.id"
                 />
-                <button>
-                  <span class="mr-1">{{ post?.replyCount > 0 ? post?.replyCount : '' }}</span>
+                <button class="flex items-center">
                   <i class="fa-regular fa-comment dark:text-white"></i>
+                  <span class="ml-1 font-Raleway">{{
+                    post?.replyCount > 0 ? post?.replyCount : ''
+                  }}</span>
                 </button>
               </div>
             </div>
           </div>
-          <span>
+          <!-- <span
+            class="cursor-pointer relative"
+            @mouseover.prevent="enter(roomHoverId)"
+            @mouseleave="leave(roomHoverId)"
+          > -->
+          <span v-if="post?.roomDetails">
             <img
               :src="post?.roomDetails.cover"
               class="w-[80px] rounded-tr-xl opacity-80 cursor-pointer px-1 py-1 rounded-br-xl h-full object-cover"
             />
-            <div></div>
+            <!-- <div :id="roomHoverId" class="absolute top-2 z-50 view">
+              <room-post-details :room="post?.roomDetails" />
+            </div> -->
           </span>
           <!-- <span v-else>
             <img
@@ -71,6 +85,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { dp } from '@/components/post/utils'
 import { v4 as uuidv4 } from 'uuid'
 import { useAuthStore } from '@/stores/auth'
@@ -79,7 +94,9 @@ import LikePost from './post/LikePost.vue'
 import Avatar from '@/components/Avatar.vue'
 const props = defineProps(['post', 'topReplies'])
 
-const auth = useAuthStore()
+const router = useRouter()
+
+// const auth = useAuthStore()
 function enter(id) {
   console.log(id)
   const item: any = document.getElementById(id)
@@ -93,7 +110,7 @@ function leave(id) {
     item.style.display = 'none'
   }
 }
-const roomHoverId = uuidv4()
+// const roomHoverId = ref(uuidv4())
 // const element = ref(document.getElementById('replySection'))
 // console.log(element, 'el')
 // element.value?.scrollIntoView(true)

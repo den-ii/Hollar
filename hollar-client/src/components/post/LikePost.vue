@@ -1,12 +1,12 @@
 <template>
   <span>
     <button v-if="!liked" class="flex items-center gap-1" @click.stop="like">
-      <span class="font-Raleway text text-gray-800 dark:text-white">{{ len }}</span
+      <span class="text-gray-800 dark:text-white font-Raleway">{{ len }}</span
       ><span class="w-[12px]"><i class="fa-regular fa-heart"></i></span>
     </button>
-    <button v-else class="flex items-center gap-1" @click.stop="unlike">
-      <span class="font-Raleway text text-gray-800 dark:text-white">{{ len }}</span
-      ><span class="w-[12px]"><i class="fa-solid text-red-400 fa-heart"></i></span>
+    <button v-else class="flex items-center gap-2" @click.stop="unlike">
+      <span class="w-[12px]"><i class="fa-solid text-red-400 fa-heart"></i></span>
+      <span class="font-Raleway">{{ len }}</span>
     </button>
   </span>
 </template>
@@ -76,6 +76,10 @@ function unlike() {
     }
   }
 }
+
+watch(likeReplyError, () => {
+  console.log(likeReplyError)
+})
 </script>
 
 <style>

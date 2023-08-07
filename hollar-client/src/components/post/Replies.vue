@@ -2,10 +2,16 @@
   <div
     v-for="reply in props.results"
     :key="reply.id"
-    class="cursor-pointer hover:shadow flex gap-2 w-full mb-2 border border-dotted p-2 border-gray-400 dark:border-gray-200 rounded-lg items-start"
-    @click.prevent="router.push(`/replies/@${reply.author.username}/${reply.id}`)"
+    class="cursor-pointer hover:shadow flex gap-2 w-full mb-2 p-2 border-gray-400 dark:border-gray-200 rounded-lg items-start border"
+    @click.prevent="router.push(`/replies/@${reply?.authorDetails?.username}/${reply.id}`)"
+    :class="{ borderBright: main }"
   >
-    <avatar :post="reply" size="w-[50px] h-[50px]" />
+    <avatar
+      :post="reply"
+      :size="`w-[44px] h-[40px]`"
+      :src="reply?.authorDetails?.avatar"
+      :dpName="reply?.authorDetails?.fullName"
+    />
     <!-- <img
       v-if="reply.author?.avatar"
       :src="reply.author?.avatar"
@@ -21,11 +27,11 @@
     <div class="w-full">
       <div class="text-base text-sm relative">
         <span
-          class="prof cursor-pointer dark:text-white italic"
+          class="prof cursor-pointer dark:text-white dark:font-light"
           @mouseover="enter(reply.id)"
           @mouseleave="leave(reply.id)"
         >
-          @{{ reply.author.username }}</span
+          @{{ reply?.authorDetails?.username }}</span
         >
         <div
           :id="reply.id"
@@ -36,13 +42,20 @@
           <view-profile :post="reply" />
         </div>
       </div>
-      <div class="font-light w-full min-h-[80px] flex flex-col justify-between g-5">
-        <div>{{ reply.comment }}</div>
+      <div class="font-light w-full min-h-[65px] flex flex-col justify-between g-5">
+        <div>{{ reply?.comment }}</div>
         <div class="flex justify-end gap-5">
-          <like-post :likes="reply?.likes" :post="reply" :isReply="true" />
-          <button>
-            <span class="mr-1">{{ reply.replies.length ? reply.replies.length : '' }}</span>
+          <like-post
+            :likesCount="reply?.likesCount"
+            :userLiked="reply?.userLiked"
+            :id="reply?.id"
+            :isReply="true"
+          />
+          <button class="flex items-center">
             <i class="fa-regular fa-comment"></i>
+            <span class="ml-1 font-Raleway">{{
+              reply.replyCount > 0 ? reply.replyCount : ''
+            }}</span>
             <!-- <i class="fa-regular fa-comment-dots text-gray-600 text-lg"></i> -->
           </button>
         </div>
@@ -59,7 +72,7 @@ import Avatar from '@/components/Avatar.vue'
 import { dp } from './utils'
 const router = useRouter()
 
-const props = defineProps(['results'])
+const props = defineProps(['results', 'main'])
 
 function enter(id) {
   console.log(id)
@@ -79,5 +92,17 @@ function leave(id) {
 <style>
 .view {
   display: none;
+}
+.borderBright {
+  animation: borderBright 1s infinite linear;
+}
+
+@keyframes borderBright {
+  0% {
+  }
+
+  100% {
+    outline: 1px solid whitesmoke;
+  }
 }
 </style>

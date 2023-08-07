@@ -5,7 +5,7 @@
     <nav class="w-screen flex items-center justify-between px-3">
       <!-- LOGO -->
       <div>
-        <h1 class="font-bold text-xl text-base font-QuickSand dark:text-white">HOLLAR&#8482;</h1>
+        <h1 class="font-bold text-lg text-base font-QuickSand dark:text-white">HOLLAR&#8482;</h1>
       </div>
 
       <!-- <div class="flex gap-5 text-lg">
@@ -29,16 +29,16 @@
       <div class="flex items-center gap-5" v-else>
         <input
           type="text"
-          placeholder="search here ... username starts with @"
-          class="w-[290px] focus:bg-white search py-1 px-2 text-sm placeholder:text-darks dark:placeholder:text-gray-400 rounded-lg font-Quicksand text-darks dark:text-gray-100 bg-slate-100 dark:border-gray-200 dark:bg-black"
+          placeholder="search here ... channel search with #"
+          class="w-[300px] focus:bg-white search py-1 px-2 text-sm placeholder:text-darks focus:placeholder:text-gray-500 dark:placeholder:text-gray-400 rounded-lg font-Quicksand text-darks dark:text-gray-100 bg-slate-100 dark:border-gray-200 dark:bg-black"
         />
         <!-- <button>
           <i class="fa-solid fa-magnifying-glass -mr-2 text-gray-100"></i>
         </button> -->
         <button class="relative cursor-pointer">
-          <i class="fa-regular fa-bell text-xl text-gray-600 dark:text-gray-100"></i
+          <i class="fa-regular fa-bell text-lg text-gray-600 dark:text-gray-100"></i
           ><span
-            class="absolute -top-2 left-3 bg-base text-white w-5 h-5 rounded-full flex items-center justify-center text-sm"
+            class="absolute -top-2 left-[10.5px] bg-base text-white w-5 h-5 rounded-full flex items-center justify-center text-xs"
             >3</span
           >
         </button>
@@ -46,7 +46,7 @@
           <img
             :src="auth.user?.avatar"
             loading="lazy"
-            :class="`w-[45px] h-[45px] flex items-center justify-center cursor-pointer rounded-full ${auth.authBg} object-cover`"
+            :class="`w-[40px] h-[40px] flex items-center justify-center cursor-pointer rounded-full ${auth.authBg} object-cover`"
             onerror=""
           />
         </button>

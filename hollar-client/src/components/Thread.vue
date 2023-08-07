@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-[750px] mx-auto min-h-[screen] relative pb-[207px]">
+  <div class="max-w-[750px] mx-auto min-h-[screen] relative pb-[207px]" v-if="post">
     <!-- Main Post -->
     <div v-if="!isReply">
       <!-- top post  -->
@@ -11,27 +11,43 @@
 
     <div class="" v-else>
       <!-- reply.post  -->
-      <top-thread
+      <replyHeader :key="post?.id" :id="post?.id" :authorId="post?.authorDetails.id" />
+      <!-- <top-thread
         :post="replyData?.post"
         class="hover:cursor-pointer"
         @click="router.push(`/post/@${replyData?.post.author.username}/${replyData?.post.id}`)"
-      />
+      /> -->
       <!-- reply.treplies  -->
-      <top-thread :topReplies="replyData?.treplies" />
-      <div class="w-[1.5px] ml-4 mt-1 mb-1 border-gray-300 border-l border-dashed h-[100px]"></div>
-      <top-thread :post="replyData ? replyData : false" class="" />
+      <!-- <top-thread :topReplies="replyData?.treplies" /> -->
+      <div
+        id="replySection"
+        class="w-[1.5px] ml-4 mt-1 mb-1 border-gray-300 border-l border-dashed h-[100px]"
+      ></div>
+      <replies :results="[post]" :main="true" />
     </div>
 
     <div
       v-if="newReplies.length || post?.replyCount > 0"
-      class="w-[1.5px] ml-4 mt-1 mb-1 border-darks dark:border-gray-300 border-l border-dashed h-[100px]"
+      class="w-[1.5px] ml-4 mt-1 mb-1 border-gray-300 border-l border-dashed h-[100px]"
     ></div>
+
+    <div
+      v-if="!post?.replyCount && !newReplies.length"
+      class="text-center mt-16 dark:font-semibold text-md text-darks dark:text-gray-200"
+    >
+      No replies yet ...
+    </div>
 
     <!-- newReplies  -->
     <section id="replySection" class="">
       <user-post :newReplies="newReplies" />
 
-      <!-- <post-reply :postId="postId" :isReply="isReply" /> -->
+      <post-reply
+        :key="post?.id"
+        :author="post?.authorDetails.id"
+        :postId="postId"
+        :isReply="isReply"
+      />
       <!-- Reply box -->
     </section>
     <div
@@ -74,7 +90,7 @@
       <files :all-files="allFiles" @remove-files="removeFiles" class="-mt-5" />
       <vue-tribute :options="options">
         <div
-          class="w-full relative min-h-[70px] p-2 bg-white dark:border focus:outline focus:outline-1 dark:border-black focus:outline-black dark:outline-black dark:bg-darks rounded-xl reply"
+          class="w-full relative min-h-[70px] p-2 bg-white dark:border focus:outline focus:outline-1 dark:outline dark:outline-1 dark:text-gray-200 dark:border-black focus:outline-black dark:outline-black dark:bg-darks rounded-xl reply"
           id="#post"
           :placeholder="replyPlaceholder"
           contenteditable
@@ -89,10 +105,10 @@
 <script setup lang="ts">
 import { watch, ref, computed } from 'vue'
 import { VueTribute } from 'vue-tribute'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import ViewProfile from '@/components/profile/ViewProfile.vue'
-import LikePost from '@/components/post/LikePost.vue'
+import Replies from './post/Replies.vue'
+import replyHeader from './replyHeader.vue'
 import { useQuery, useMutation } from '@vue/apollo-composable'
 import PostReply from '@/components/post/PostReply.vue'
 import UserPost from '@/components/post/UserPost.vue'
@@ -103,7 +119,10 @@ import files from '@/components/post/Files.vue'
 import TopThread from './TopThread.vue'
 
 const props = defineProps(['isReply', 'post', 'loading', 'replyData', 'postId'])
+
 const router = useRouter()
+const route = useRoute()
+const id = ref(String(route.params.id))
 const auth = useAuthStore()
 const newReplies: any = ref([])
 const reply: any = ref(null)
@@ -136,7 +155,7 @@ const options = {
   },
   positionMenu: false,
   containerClass:
-    'tribute-container fixed bottom-[22%] border shadow-barshadow rounded z-50 bg-white dark:bg-darks dark:shadow-barshadow mx-auto left-[50%] -translate-x-[50%] w-[60%] dark:border-black border-dashed',
+    'tribute-container fixed bottom-[22%] border shadow-barshadow rounded z-50 bg-white dark:bg-darks dark:shadow-barshadow mx-auto left-[50%] -translate-x-[50%] w-[60%] dark:border-black',
   itemClass:
     'hover:bg-slate-100 hover:text-darks dark:hover:bg-base dark:hover:text-white cursor-pointer py-1 px-2',
   selectTemplate: function (item) {
@@ -222,7 +241,7 @@ async function uploadFiles() {
 const { mutate, onDone, error: replyPostError } = useMutation(replyPostMutate)
 const {
   mutate: replyRepliesMutate,
-  onDone: replyRonDone,
+  onDone: replyRepliesDone,
   error: replyReplyError
 } = useMutation(replyReply)
 async function handleReply() {
@@ -235,22 +254,31 @@ async function handleReply() {
         files: returnFile.value,
         authorId: auth.user.id
       }
-      console.log(props.postId, replyPost)
+      // console.log(props.postId, replyPost)
+      const authorDetails = {
+        id: auth.user?.id,
+        username: auth.user?.username,
+        avatar: auth.user?.avatar,
+        fullName: auth.user?.fullName,
+        favourite: auth.user?.favourite
+      }
       if (!props.isReply) {
-        mutate({ postId: props.postId, reply: replyPost })
+        mutate({ postId: props?.postId, reply: replyPost })
         onDone((result) => {
           console.log(result)
-          newReplies.value.unshift({ id: result.data.replyPost.id, reply: reply.value.innerHTML })
+          newReplies.value.push({ ...result.data.replyPost, authorDetails })
           reply.value.innerHTML = ''
         })
       } else {
-        replyRepliesMutate({ replyId: props.postId, reply: replyPost })
-        onDone((result) => {
+        replyRepliesMutate({ replyId: props?.postId, reply: replyPost })
+        replyRepliesDone((result) => {
           console.log(result)
-          newReplies.value.unshift({
-            id: result.data.replyReplies.id,
-            reply: reply.value.innerHTML
+          newReplies.value.push({
+            ...result.data.replyReply,
+            authorDetails
           })
+
+          console.log(newReplies.value)
           reply.value.innerHTML = ''
         })
       }
@@ -280,14 +308,19 @@ function openFile() {
   }
 }
 
-// const element = ref(document.getElementById('replySection'))
-// console.log(element, 'el')
-// element.value?.scrollIntoView(true)
-
 // // watches
 // watch(element, () => {
 //   element.value?.scrollIntoView(true)
 // })
+watch(
+  () => route.params.id,
+  (newId, oldId) => {
+    id.value = String(route.params.id)
+    newReplies.value = []
+    console.log(route.params.id)
+  }
+)
+
 watch(replyBody, () => {
   const o: any = document.querySelector('.tribute-container')
   if (o) {
@@ -300,10 +333,12 @@ watch(replyBody, () => {
   // const o = document.querySelector('.tribute-container')
 })
 // watch()
-watch(reply, () => {
+
+watch(replyReplyError, () => {
+  console.log(replyReplyError)
+
   if (reply.value) {
     reply.value.focus()
-    console.log(replyReplyError)
     console.log(replyPostError)
   }
 })
@@ -315,7 +350,6 @@ watch(reply, () => {
   pointer-events: none;
   display: block; /* For Firefox */
   color: grey;
-  font-style: italic;
-  font-family: 'Trebuchet Ms';
+  font-family: 'Quicksand';
 }
 </style>

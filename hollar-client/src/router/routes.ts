@@ -1,5 +1,6 @@
-import type { RouteRecordRaw } from 'vue-router';
+import type { RouteRecordRaw, Router } from 'vue-router';
 
+import Reply from '@/views/Reply.vue'
 export const routes: RouteRecordRaw[] = [
     {
         path: '/',
@@ -59,7 +60,7 @@ export const routes: RouteRecordRaw[] = [
         }
     },
     {
-        path: '/:name/:id',
+        path: '/channel/:name/:id',
         // name: 'rooms',
         components: {
             default: () => import('@/views/Room.vue'),
@@ -81,12 +82,17 @@ export const routes: RouteRecordRaw[] = [
     {
         path: '/replies/:name/:id',
         // name: 'rooms',
+        props: true,
         components: {
-            default: () => import('@/views/Reply.vue'),
+            default: Reply,
             navbar: () => import('@/components/bars/Navbar.vue'),
             trendbar: () => import('@/components/bars/Trendbar.vue'),
             couTrendbar: () => import('@/components/bars/CouTrendbar.vue'),
+        },
+        meta: {
+            isReply: true
         }
+
     },
     {
         path: '/:catchAll(.*)*',

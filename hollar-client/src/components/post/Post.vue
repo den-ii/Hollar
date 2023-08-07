@@ -9,7 +9,7 @@
       :post="post"
       :dpName="post?.authorDetails.fullName"
       :src="post?.authorDetails.avatar"
-      size="w-[56px] h-[50px]"
+      size="w-[46px] h-[40px]"
     />
     <div class="w-full">
       <div class="text-base font-semibold text-sm relative">
@@ -29,13 +29,13 @@
           <view-profile :post="post" />
         </div>
       </div>
-      <div class="font-light w-full min-h-[100px] flex flex-col justify-between g-5">
+      <div class="font-light w-full min-h-[70px] flex flex-col justify-between g-5">
         <div>{{ post.comment }}</div>
         <div class="flex justify-end gap-5">
           <like-post :likesCount="post?.likesCount" :id="post.id" :userLiked="post.userLiked" />
-          <button>
-            <span class="mr-1">{{ post?.replyCount > 0 ? post.replyCount : '' }}</span>
+          <button class="flex items-center">
             <i class="fa-regular fa-comment"></i>
+            <span class="ml-1 font-Raleway">{{ post?.replyCount > 0 ? post.replyCount : '' }}</span>
           </button>
         </div>
       </div>

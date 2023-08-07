@@ -3,9 +3,9 @@
   <span
     v-else-if="!src"
     class="rounded-full flex items-center justify-center bg-gray-400 font-bold text-white"
-    :class="size"
+    :class="dpSize || size"
   >
-    {{ dp(dpName) }}
+    {{ dpName ? dp(dpName) : '' }}
   </span>
 
   <span v-else>
@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { dp } from '@/components/post/utils'
-defineProps(['src', 'post', 'size', 'dpName'])
+defineProps(['src', 'post', 'size', 'dpName', 'dpSize'])
 </script>
 
 <style scoped></style>

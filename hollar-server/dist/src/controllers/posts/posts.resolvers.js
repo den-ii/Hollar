@@ -1,11 +1,14 @@
-import { createPost, getAllPosts, getPostWithFilm, deletePost, likePost, unlikePost, replyPost, getPostWithReplies, unlikeReply, likeReply, replyReply, getReplyWithReplies, getReplyAddon } from "./posts.controller.js";
+import { createPost, getAllPosts, getPostWithFilm, deletePost, likePost, unlikePost, replyPost, getPostReplies, unlikeReply, likeReply, replyReply, getReplyAddon, authorPostReplies, getReplyRepliesHeader, getReplyReplies, authorReplyReplies } from "./posts.controller.js";
 export const resolvers = {
     Query: {
         posts: () => getAllPosts(),
         post: (_, { id, userId }) => getPostWithFilm(id, userId),
-        reply: (_, { id }) => getReplyAddon(id),
-        postWithReplies: (_, { id, cursor, limit }) => getPostWithReplies(id, cursor, limit),
-        ReplyWithReplies: (_, { id, cursor, limit }) => getReplyWithReplies(id, cursor, limit),
+        reply: (_, { id, userId }) => getReplyAddon(id, userId),
+        authorPostReplies: (_, { id, authorId, userId }) => authorPostReplies(id, authorId, userId),
+        postReplies: (_, { id, authorId, userId, cursor, limit }) => getPostReplies(id, authorId, userId, cursor, limit),
+        replyRepliesHeader: (_, { id, authorId, userId }) => getReplyRepliesHeader(id, authorId, userId),
+        authorReplyReplies: (_, { id, authorId, userId }) => authorReplyReplies(id, authorId, userId),
+        replyReplies: (_, { id, authorId, userId, cursor, limit }) => getReplyReplies(id, authorId, userId, cursor, limit),
     },
     Mutation: {
         createPost: (_, { post }) => {

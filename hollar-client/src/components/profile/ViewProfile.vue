@@ -3,7 +3,12 @@
     <!-- {{ props.post }} -->
     <div class="flex gap-3">
       <div>
-        <avatar :src="post?.authorDetails.avatar" :post="post" size="w-[45px] h-[45px]" />
+        <avatar
+          :src="post?.authorDetails?.avatar"
+          :post="post"
+          size="w-[46px] h-[45px]"
+          :dpName="post?.authorDetails?.fullName"
+        />
         <!-- <span
           v-if="!props.post.author"
           class="w-[40px] h-[40px] rounded-full bg-gray-500 animate-pulse"
@@ -23,7 +28,7 @@
         </span> -->
       </div>
       <div class="w-[50%]">
-        <div class="dark:text-white">@{{ props.post?.authorDetails.username }}</div>
+        <div class="dark:text-white">@{{ props.post?.authorDetails?.username }}</div>
         <button class="block w-full mt-1 bg-base rounded py-[0.4px] text-white text-center">
           follow
         </button>
@@ -46,11 +51,11 @@ import Avatar from '@/components/Avatar.vue'
 const props = defineProps(['post'])
 
 const favourite = computed(() => {
-  if (props.post?.authorDetails.favourite) {
-    if (props.post?.authorDetails.favourite.length > 14) {
-      return props.post?.authorDetails.favourite.slice(0, 14) + '...'
+  if (props.post?.authorDetails?.favourite) {
+    if (props.post?.authorDetails?.favourite.length > 14) {
+      return props.post?.authorDetails?.favourite.slice(0, 14) + '...'
     } else {
-      return props.post?.authorDetails.favourite
+      return props.post?.authorDetails?.favourite
     }
   } else return 'unknown'
 })

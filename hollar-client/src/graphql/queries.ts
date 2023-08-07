@@ -153,133 +153,142 @@ query post($id: ID!, $userId: ID){
 }
 }
 `
-// export const replyQuery = gql`
-// query reply($id: ID!){
-//   reply(id: $id) {
-//     id
-//     author {
-//       id
-//       avatar
-//       username
-//       favourite
-//       fullName
-//     }
-//     comment
-//     room {
-//       id
-//       name
-//       cover
-//     }
-//     replies
-//     likes
-// }
-// }
-// `
 
-
-export const postWithReplies = gql`
-query postWithReplies($id: ID!, $cursor: String, $limit: Int){
-  postWithReplies(id: $id, cursor: $cursor, limit: $limit) {
-     id
-     author{
-      username
+export const authorPostRepliesQuery = gql`
+query authorPostReplies($id: ID!, $authorId: ID!, $userId: ID){
+  authorPostReplies(id: $id, authorId: $authorId, userId: $userId) {
+    id
+    comment
+    authorDetails {
+      id
       avatar
+      username
       favourite
       fullName
-     }
-     comment
-     replies{
-      id
-     }
-     likes{
-      id
-     }
-     createdAt
-     updatedAt
-    
+    }
+    likesCount
+    replyCount
+    userLiked
+    createdAt
   }
 }
 `
+export const authorReplyRepliesQuery = gql`
+query authorReplyReplies($id: ID!, $authorId: ID!, $userId: ID){
+  authorReplyReplies(id: $id, authorId: $authorId, userId: $userId) {
+    id
+    comment
+    authorDetails {
+      id
+      avatar
+      username
+      favourite
+      fullName
+    }
+    likesCount
+    replyCount
+    userLiked
+    createdAt
+  }
+}
+`
+
+export const postRepliesQuery = gql`
+query postReplies($id: ID!, $authorId: ID!, $userId: ID, $cursor: String, $limit: Int){
+  postReplies(id: $id, authorId: $authorId, userId: $userId, cursor: $cursor, limit: $limit) {
+    id
+    comment
+    authorDetails {
+      id
+      avatar
+      username
+      favourite
+      fullName
+    }
+    likesCount
+    replyCount
+    userLiked
+    createdAt
+  }
+}
+`
+
+
 export const replyQuery = gql`
- query reply($id: ID!){
-  reply(id: $id){
+ query reply($id: ID!, $userId: ID){
+  reply(id: $id, userId: $userId){
   id
   comment
-  likes{
-    id
-  }
-  replies{
-    id
-  }
-  author{
+  authorDetails{
     id
     fullName
     avatar
     username
     favourite
   }
-  treplies{
-    id
-    comment
-    author {
-      id
-      fullName
-      avatar
-      username
-      favourite
-    }
-  }
-  post{
-    id
-    room{
-      id
-      cover 
-      name
-    }
-    comment
-    author{
-      fullName
-      avatar
-      id
-      favourite
-      username
-    }
-    likes{
-      id
-    }
-    replies{
-      id
-    }
-  }
+  userLiked
+  likesCount
+  replyCount
   
  }
  }
 `
-export const replyWithReplies = gql`
-query replyWithReplies($id: ID!, $cursor: String, $limit: Int){
-  replyWithReplies(id: $id, cursor: $cursor, limit: $limit) {
-     id
-     author{
-      username
+export const replyHeaderQuery = gql`
+  query replyRepliesHeader($id: ID!, $authorId: ID!, $userId: ID){
+  replyRepliesHeader(id: $id, authorId: $authorId, userId: $userId) {
+    treplies {
+      id
+      comment
+      authorDetails{
+        id
+        fullName
+        avatar
+        username
+        favourite
+      }
+      likesCount
+      userLiked
+      replyCount
+    }
+    post {
+      id
+      comment
+      authorDetails{
+        id
+        fullName
+        avatar
+        username
+        favourite
+      }
+      roomDetails {
+      id
+      name
+      cover
+      }
+      likesCount
+      userLiked
+      replyCount
+    }
+    
+  }
+}
+`
+export const replyRepliesQuery = gql`
+query replyReplies($id: ID!, $authorId: ID!, $userId: ID, $cursor: String, $limit: Int){
+  replyReplies(id: $id, authorId: $authorId, userId: $userId, cursor: $cursor, limit: $limit) {
+    id
+    comment
+    authorDetails {
+      id
       avatar
+      username
       favourite
       fullName
-     }
-     post{
-      id
-      room {
-        cover
-        name
-      }
-     }
-     comment
-     treplies
-     likes{
-      id
-     }
-     createdAt
-     updatedAt
-    
+    }
+    likesCount
+    replyCount
+    userLiked
+    createdAt
   }
 }
 `

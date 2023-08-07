@@ -1,56 +1,23 @@
 <template>
-  <div class="border rounded-lg mb-1" v-for="reply in newReplies" :key="reply.id">
-    <div class="flex gap-2 min-h-[100px] mb-1 hover:shadow">
-      <!-- avatar -->
-      <avatar
-        :post="reply"
-        :dpName="auth?.user?.fullName"
-        :src="auth?.user?.avatar"
-        size="w-[56px] h-[50px]"
-      />
-
-      <!-- username -->
-      <div class="w-full flex justify-between gap-1">
-        <div class="w-full mr-3">
-          <div class="text-base font-semibold pt-2 pl-2 text-sm relative">
-            <span
-              class="prof cursor-pointer font-semibold dark:text-white"
-              @mouseover="enter(reply.id)"
-              @mouseleave="leave(reply.id)"
-            >
-              @{{ auth.user.username }}</span
-            >
-            <div
-              :id="reply.id"
-              class="view w-[150px] min-h-[100px] border p-2 absolute rounded-lg -top-[102px] bg-white dark:bg-darks shadow z-50"
-              @mouseover="enter(reply.id)"
-              @mouseleave="leave(reply.id)"
-            >
-              <view-profile :post="dummyPost" />
-            </div>
-          </div>
-          <div class="font-light w-full h-[70%] flex flex-col justify-between g-5">
-            <div class="pl-2" v-html="reply.reply"></div>
-            <div class="flex justify-end gap-5">
-              <like-post :likes="reply.likes" :post="reply" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div><replies :results="newReplies" /></div>
 </template>
 
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth'
 import ViewProfile from '../profile/ViewProfile.vue'
+import Replies from './Replies.vue'
+import { useRouter } from 'vue-router'
 import Avatar from '../Avatar.vue'
+import LikePost from './LikePost.vue'
 const auth = useAuthStore()
 const props = defineProps(['newReplies'])
+
+const router = useRouter()
 const dummyPost = {
   authorDetails: {
     username: auth.user?.username,
     avatar: auth.user?.avatar,
+    fullName: auth.user?.fullName,
     favourite: auth.user?.favourite
   }
 }

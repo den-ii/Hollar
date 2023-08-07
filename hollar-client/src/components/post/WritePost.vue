@@ -8,7 +8,7 @@
     ></div>
 
     <div
-      class="bg-white dark:bg-darks dark:shadow-barshadow w-[80%] min-h-[250px] h-auto max-h-[300px] max-w-[800px] rounded-2xl z-40 relative overflow-auto"
+      class="bg-white dark:bg-darks dark:shadow-barshadow dark:border dark:border-black w-[80%] min-h-[250px] h-auto max-h-[300px] max-w-[800px] rounded-2xl z-40 relative overflow-auto"
       id="writepost"
     >
       <!-- Write Post -->
@@ -288,6 +288,14 @@ watch(post, () => {
 })
 </script>
 <style scoped>
+[contenteditable='true']:empty:before {
+  content: attr(placeholder);
+  pointer-events: none;
+  display: block; /* For Firefox */
+  color: grey;
+  font-family: 'Quicksand';
+}
+
 .titlerotate {
   transform: rotateZ(90deg);
 }

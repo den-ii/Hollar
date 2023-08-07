@@ -29,9 +29,11 @@ const search = ref('')
 
 function toRoom(title, id) {
   const name = title.split(' ').join('+')
-  router.push(`${name}/${id}`)
+  router.push(`channel/${name}/${id}`)
 }
-let vars = auth?.user?.id ? { cursor: '', limit: 2, userId: auth?.user?.id } : { cursor: '', limit: 2 }
+let vars = auth?.user?.id
+  ? { cursor: '', limit: 2, userId: auth?.user?.id }
+  : { cursor: '', limit: 2 }
 const { result, loading, fetchMore, error } = useQuery(roomsPaginateQuery, () => vars, {
   notifyOnNetworkStatusChange: true,
   fetchPolicy: 'cache-and-network'
