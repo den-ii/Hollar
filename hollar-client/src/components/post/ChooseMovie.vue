@@ -20,15 +20,15 @@
 
       <!-- Movie Searchbar -->
       <div
-        class="h-full overflow-y-hidden px-6"
+        class="h-full overflow-y-hidden px-6 relative"
         id="smovie"
         :class="{ 'overflow-y-scroll': data?.length }"
       >
-        <form @submit.prevent="bringUpMovies(search)">
+        <form @submit.prevent="bringUpMovies(search)" class="sticky top-3">
           <input
-            placeholder="SEARCH..."
+            placeholder=""
             v-model="search"
-            class="block addsearch dark:bg-black dark:text-gray-200 search w-[100%] text-lg py-3 px-4 mt-3 rounded-full border-2 border-gray-400"
+            class="block five addsearch dark:bg-black dark:text-gray-200 search w-[100%] text-lg py-3 px-4 mt-3 rounded-full border-2 border-gray-400"
           />
         </form>
         <!-- Movie List -->
@@ -43,7 +43,7 @@
               <!--  -->
               <div class="flex items-center mb-3 p-3 rounded justify-between">
                 <img :src="movies.image?.url" class="moviebg" />
-                <p class="font-bold text-center text-2xl font-Raleway">{{ movies.title }}</p>
+                <p class="font-semibold text-center text-2xl">{{ movies.title }}</p>
                 <p class="font-bold">{{ movies.year }}</p>
               </div>
             </div>
@@ -57,17 +57,20 @@
           </div>
           <div
             v-else-if="error?.name && !loading"
-            class="flex flex-column h-[35vh] w-full items-center justify-center text-xl"
+            class="flex flex-column h-[35vh] w-full items-center justify-center text-lg"
           >
             OOPS...NOTHING MATCHES
           </div>
           <div
             v-else-if="!title.length"
-            class="flex flex-column h-[35vh] w-full items-center justify-center text-xl"
+            class="flex flex-column h-[35vh] w-full items-center justify-center text-lg dark:text-gray-200"
           >
             WHAT CHANNEL DO YOU WANT TO POST ON?
           </div>
-          <div v-else class="flex flex-column h-[35vh] w-full items-center justify-center text-xl">
+          <div
+            v-else
+            class="flex flex-column h-[35vh] w-full items-center justify-center text-xl text-gray-200 font-Raleway"
+          >
             WHAT CHANNEL DO YOU WANT TO POST ON?
 
             <!-- SEARCH FOR SOMETHING... -->
@@ -93,4 +96,10 @@ defineProps<{
 const search = ref('')
 </script>
 
-<style></style>
+<style scoped>
+.moviebg {
+  height: 240px;
+  width: 160px;
+  border-radius: 6px;
+}
+</style>

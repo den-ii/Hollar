@@ -1,5 +1,5 @@
 // IMPORTS
-import { getAllUsers, getUser, deleteUser, findUser, tryEmailCreateUser, parseEmailCreateUser, loginWithEmail, invalidUsername, invalidEmail, editProfile } from './users.controller.js';
+import { getAllUsers, getUser, deleteUser, findUser, tryEmailCreateUser, parseEmailCreateUser, loginWithEmail, invalidUsername, invalidEmail, editProfile, tagSearchUsers } from './users.controller.js';
 // RESOLVERS
 export const resolvers = {
     Query: {
@@ -9,7 +9,8 @@ export const resolvers = {
         invalidUsername: (_, { username }) => invalidUsername(username),
         invalidEmail: (_, { email }) => invalidEmail(email),
         tryCreateUserWithEmail: (_, { user }) => tryEmailCreateUser(user),
-        loginWithEmail: (_, { loginUser }) => loginWithEmail(loginUser)
+        loginWithEmail: (_, { loginUser }) => loginWithEmail(loginUser),
+        tagSearchUsers: (_, { username, limit }) => tagSearchUsers(username, limit)
     },
     Mutation: {
         verifyUser: (_, { token }) => parseEmailCreateUser(token),

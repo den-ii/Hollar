@@ -25,13 +25,6 @@
         </button>
       </router-link>
     </div>
-
-    <!-- <Suspense>
-      <template #default> </template>
-      <template #fallback>
-        <div>Loading</div>
-      </template>
-    </Suspense> -->
   </div>
 </template>
 
@@ -40,15 +33,9 @@ import { useRoute } from 'vue-router'
 import { verifyUser, verifyUserError } from '@/graphql/mutations'
 import { ref, watch, computed } from 'vue'
 
-// const hello = computed(() => query.result.value?.id ?? '')
-// console.log(query.value)
-
 const { token } = useRoute().query
-console.log(token)
 const me = verifyUser({ token })
 const error = verifyUserError
-console.log(error)
-console.log(me)
 </script>
 
 <style scoped></style>

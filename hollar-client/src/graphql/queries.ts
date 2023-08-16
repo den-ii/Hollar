@@ -101,6 +101,7 @@ query roomsPaginate($cursor: String, $limit: Int, $userId: ID){
       name
       cover
       dislikes
+      postsCount
       likesCount
       dislikesCount
       userLiked
@@ -189,6 +190,17 @@ query authorReplyReplies($id: ID!, $authorId: ID!, $userId: ID){
     replyCount
     userLiked
     createdAt
+  }
+}
+`
+export const tagSearchUsersQuery = gql`
+query tagSearchUsers($username: String!, $limit: Int){
+  tagSearchUsers(username: $username, limit: $limit){
+    id
+    avatar
+    fullName
+    username
+    favourite
   }
 }
 `

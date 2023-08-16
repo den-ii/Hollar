@@ -5,17 +5,24 @@
       class="shadow dark:shadow-barshadow dark:border dark:border-black rounded-lg px-3 py-3 relative"
     >
       <div class="">
-        <div
-          class="w-full h-[250px] bg-gray-200 animate-pulse rounded-lg"
-          v-if="!result?.room.cover"
-        />
-        <img :src="result?.room?.cover" class="w-full h-[200px] object-cover rounded-lg" v-else />
+        <bg-skeleton>
+          <div class="h-[200px]">
+            <img
+              ref="coverImg"
+              v-if="result?.room.cover"
+              :src="result?.room?.cover"
+              loading="lazy"
+              class="w-full h-[200px] object-cover rounded-tl-lg rounded-tr-lg"
+              @error="imageError"
+            />
+          </div>
+        </bg-skeleton>
       </div>
-      <h1 class="font-bold text-darks dark:text-gray-200 text-xl mt-3">
-        {{ result?.room?.name.toUpperCase() }}
+      <h1 class="five text-darks dark:text-gray-200 text-xl mt-3">
+        {{ result?.room?.name }}
       </h1>
       <span
-        class="dark:bg-gray-200 rounded-full text-base dark:border-2 dark:border-black absolute p-0 -right-5 -bottom-5"
+        class="dark:bg-darks rounded-full text-base dark:border dark:border-black absolute p-0 -right-5 -bottom-5"
         ><i class="fa-solid fa-circle-play text-6xl"></i
       ></span>
     </div>
@@ -28,16 +35,19 @@
   </main>
 </template>
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { imageError } from '@/components/skeleton/utils'
 import Post from '@/components/post/Post.vue'
 import { useQuery } from '@vue/apollo-composable'
 import { roomQuery, roomPosts } from '@/graphql/queries'
 import { useAuthStore } from '@/stores/auth'
+import BgSkeleton from '@/components/rooms/BgSkeleton.vue'
 
 const route = useRoute()
 const id = route.params.id
 const auth = useAuthStore()
+const coverImg: any = ref(null)
 
 const vars = auth?.user?.id
   ? {
@@ -88,8 +98,6 @@ function loadMore() {
     }
   })
 }
-// console.log(room)
-console.log(id)
 </script>
 
 <style scoped>

@@ -4,15 +4,15 @@
   >
     <div>
       <h1
-        class="bg-base text-white dark:text-gray-100 rounded-lg text-center mb-2 text-[1rem] font-bold mt-3 py-1 dark:font-semibold cursor-pointer"
+        class="bg-base text-white dark:text-gray-100 rounded-tl-lg rounded-tr-lg text-center mb-2 text-[1rem] font-bold mt-3 py-1 dark:font-semibold cursor-pointer font-Raleway"
       >
-        What's Trending?
+        Top 10
       </h1>
       <ul class="text-[1.1rem]">
         <li
           v-for="trend in Trends"
           :key="trend"
-          class="dark:text-gray-200 dark:hover:text-purple-50 cursor-pointer"
+          class="dark:text-gray-200 four dark:hover:text-purple-50 cursor-pointer"
         >
           {{ trend }}
         </li>

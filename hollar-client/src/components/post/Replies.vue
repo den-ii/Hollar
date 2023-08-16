@@ -8,7 +8,7 @@
   >
     <avatar
       :post="reply"
-      :size="`w-[44px] h-[40px]`"
+      :size="`w-[40px] h-[40px]`"
       :src="reply?.authorDetails?.avatar"
       :dpName="reply?.authorDetails?.fullName"
     />
@@ -24,66 +24,76 @@
     >
       {{ dp(reply?.author?.fullName) }}
     </span> -->
-    <div class="w-full">
+    <div class="break">
       <div class="text-base text-sm relative">
         <span
-          class="prof cursor-pointer dark:text-white dark:font-light"
+          class="prof font-Raleway cursor-pointer dark:text-white dark:font-light"
           @mouseover="enter(reply.id)"
           @mouseleave="leave(reply.id)"
         >
           @{{ reply?.authorDetails?.username }}</span
         >
         <div
-          :id="reply.id"
-          class="view w-[150px] min-h-[80px] border p-2 z-50 absolute rounded-lg -top-[102px] shadow dark:bg-darks bg-white"
+          :id="!main ? reply.id : mainHoverId"
+          class="view border border-darks dark:border-white p-2 z-50 absolute rounded-lg -top-[102px] shadow dark:bg-darks bg-white"
           @mouseover.prevent="enter(reply.id)"
           @mouseleave="leave(reply.id)"
         >
           <view-profile :post="reply" />
         </div>
       </div>
-      <div class="font-light w-full min-h-[65px] flex flex-col justify-between g-5">
-        <div>{{ reply?.comment }}</div>
-        <div class="flex justify-end gap-5">
-          <like-post
-            :likesCount="reply?.likesCount"
-            :userLiked="reply?.userLiked"
-            :id="reply?.id"
-            :isReply="true"
-          />
-          <button class="flex items-center">
-            <i class="fa-regular fa-comment"></i>
-            <span class="ml-1 font-Raleway">{{
-              reply.replyCount > 0 ? reply.replyCount : ''
-            }}</span>
-            <!-- <i class="fa-regular fa-comment-dots text-gray-600 text-lg"></i> -->
-          </button>
-        </div>
+      <div class="font-light mt-1 mr-1 min-h-[35px]">
+        <div class="" v-html="reply?.comment"></div>
+      </div>
+      <div class="flex justify-end mt-2 gap-5">
+        <like-post
+          :likesCount="reply?.likesCount"
+          :userLiked="reply?.userLiked"
+          :id="reply?.id"
+          :isReply="true"
+        />
+        <button class="flex items-center">
+          <i class="fa-regular fa-comment"></i>
+          <span class="ml-1 five font-Raleway">{{
+            reply.replyCount > 0 ? reply.replyCount : ''
+          }}</span>
+          <!-- <i class="fa-regular fa-comment-dots text-gray-600 text-lg"></i> -->
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import LikePost from '@/components/post/LikePost.vue'
 import ViewProfile from '@/components/profile/ViewProfile.vue'
 import Avatar from '@/components/Avatar.vue'
+import { v4 as uuidv4 } from 'uuid'
+
 import { dp } from './utils'
 const router = useRouter()
 
 const props = defineProps(['results', 'main'])
+const mainHoverId = ref(uuidv4())
 
 function enter(id) {
-  console.log(id)
   const item: any = document.getElementById(id)
-  if (item) {
+
+  if (props.main) {
+    const mainItem: any = document.getElementById(mainHoverId.value)
+    if (mainItem) mainItem.style.display = 'block'
+  } else if (item) {
     item.style.display = 'block'
   }
 }
 function leave(id) {
   const item: any = document.getElementById(id)
-  if (item) {
+  if (props.main) {
+    const mainItem: any = document.getElementById(mainHoverId.value)
+    if (mainItem) mainItem.style.display = 'none'
+  } else if (item) {
     item.style.display = 'none'
   }
 }

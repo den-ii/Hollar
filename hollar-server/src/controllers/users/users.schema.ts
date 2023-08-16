@@ -9,6 +9,7 @@ export const typeDef = `
         loginWithEmail(loginUser: loginUser!): loginReturn
         invalidUsername(username: String): Error
         invalidEmail(email : String): Error
+        tagSearchUsers(username: String!, limit: Int): [User]
     }
     type Mutation {
         removeUser(id: ID!) : deleteError

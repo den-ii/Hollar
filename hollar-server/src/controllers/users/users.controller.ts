@@ -25,6 +25,12 @@ export async function getAllUsers() {
     return await User.find({})
 }
 
+export async function tagSearchUsers(username: string, limit = 10) {
+    const regex = new RegExp(username, 'gi')
+    const result = await User.find({ username: regex }).limit(limit).exec()
+    return result
+}
+
 // try$createauserwithemail
 export async function tryEmailCreateUser(user: IUser) {
     const secret = process.env.SECRETKEY
@@ -34,37 +40,35 @@ export async function tryEmailCreateUser(user: IUser) {
 
     console.log('user', user)
     const hash = await bcrypt.hash(user.password, 12)
-    console.log(hash)
     user.password = hash
     console.log('tryEmail', user)
     const token = jwt.sign(user, secret, { expiresIn: '1hr' })
     sgMail.setApiKey(process.env.SENDGRID)
     const url = `http://localhost:5173/verifyaccount?token=${token}`
-    sendMail(user.email, url)
+    // sendMail(user.email, url)
 
-    // const msg = {
-    //     to: user.email, // Change to your recipient
-    //     from: 'holllarztm@gmail.com', // Change to your verified sender
-    //     subject: 'Verification Mail',
-    //     text: 'and easy to do anywhere, even with Node.js',
-    //     html: signupMail(url),
+    const msg = {
+        to: user.email, // Change to your recipient
+        from: 'holllarztm@gmail.com', // Change to your verified sender
+        subject: 'Verification Mail',
+        text: 'and easy to do anywhere, even with Node.js',
+        html: signupMail(url),
 
-    // }
-    // try {
-    //     let statement = await sgMail.send(msg)
+    }
+    try {
+        let statement = await sgMail.send(msg)
 
-    //     return { message: 'email sent', code: 200 }
-    // }
-    // catch (err) {
-    //     console.log('err:', err)
-    //     throw new GraphQLError('Email not sent.', {
-    //         extensions: {
-    //             code: 'EMAIL_ERROR',
-    //             err: err
-    //         }
-    //     })
+        return { message: 'email sent', code: 200 }
+    }
+    catch (err) {
+        throw new GraphQLError('Email not sent.', {
+            extensions: {
+                code: 'EMAIL_ERROR',
+                err: err
+            }
+        })
 
-    // }
+    }
 }
 
 // password check
@@ -96,7 +100,6 @@ export async function loginWithEmail(loginUser: IloginUser) {
     console.log('user', userfound)
     const hash = userfound?.password || ''
     const compare = await bcrypt.compare(password, hash)
-    console.log('compare', compare)
     if (!userfound || !compare) {
         throw new GraphQLError('Username or password not correct.', {
             extensions: {
@@ -116,10 +119,8 @@ export async function parseEmailCreateUser(token: string) {
     // const secret = process.env.SECRETKEY
     const secret = process.env.SECRETKEY
 
-    console.log('parsiing')
     try {
         const decoded: any = jwt.verify(token, secret);
-        console.log(decoded)
         const { fullName, email, password, username, avatar, color, id, country, countrycode } = decoded
 
 
@@ -132,7 +133,7 @@ export async function parseEmailCreateUser(token: string) {
 
 
     } catch (err) {
-        console.log(err)
+        console.error(err)
         throw new GraphQLError('This token is invalid.', {
             extensions: {
                 code: 'INVALID_TOKEN',

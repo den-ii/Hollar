@@ -12,7 +12,11 @@ export async function searchTvTitles(title) {
     const options = {
         method: 'GET',
         url: 'https://online-movie-database.p.rapidapi.com/title/find',
-        params: { q: title },
+        params: {
+            q: title,
+            limit: '15',
+            sortArg: 'moviemeter,asc'
+        },
         headers: {
             'X-RapidAPI-Key': key,
             'X-RapidAPI-Host': 'online-movie-database.p.rapidapi.com'
@@ -30,7 +34,7 @@ export async function searchTvTitles(title) {
                 d.inRoom = false;
                 console.log(d);
             }
-            console.log(d);
+            (d);
             return d;
         });
     }
@@ -83,22 +87,8 @@ export async function roomWithPost(id, cursor, limit, userId) {
         },
         perDocumentLimit: limit
     }).exec();
-    // console.log('result', result)
     console.log(result);
     return result;
-    // const c = Number(cursor)
-    // console.log(c)
-    // const result = await Room.findById({ _id: id }).populate({
-    //     path: 'posts',
-    //     options: { sort: { createdAt: -1 } },
-    //     match: { createdAt: { $lt: c } },
-    //     populate: {
-    //         path: 'author likes'
-    //     },
-    //     perDocumentLimit: limit
-    // }).exec()
-    // console.log(result)
-    // return result
 }
 // getARoomByName
 export async function getRoomByName(name) {
@@ -128,7 +118,6 @@ export async function likeRoom(roomId, userId) {
         await Room.updateOne({ _id: roomId }, { $pull: { dislikes: userId } });
         await Room.updateOne({ _id: roomId }, { $pull: { likes: userId } });
         const ll = await Room.findOne({ _id: roomId, likes: userId });
-        console.log('ll', ll);
         await room.likes.push(user.id);
         room.save();
         console.log(room);
@@ -155,12 +144,10 @@ export async function likeRoom(roomId, userId) {
 export async function dislikeRoom(roomId, userId) {
     const room = await getRoom(roomId);
     const user = await getUser(userId);
-    console.log('enter');
     if (room && user) {
         await Room.updateOne({ _id: roomId }, { $pull: { likes: userId } });
         await Room.updateOne({ _id: roomId }, { $pull: { dislikes: userId } });
         await room.dislikes.push(user.id);
-        console.log('dis');
         room.save();
         console.log(room);
         return room;

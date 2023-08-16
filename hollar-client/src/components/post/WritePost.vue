@@ -18,14 +18,14 @@
       >
         <div class="flex items-center gap-3">
           <h1 class="font-Raleway font-bold post-head">Post</h1>
-          <p class="text-white italic font-Raleway">@{{ username }}</p>
+          <p class="text-white font-semibold font-Raleway">@{{ username }}</p>
         </div>
         <div class="font-Raleway flex gap-3 items-center">
           <button @click="$emit('unchoose')" class="cursor-pointer hover:text-purple-100">
             <i class="fa-solid fa-backward"></i>
           </button>
 
-          <span>{{ title }}</span>
+          <span class="font-QuickSand font-semibold">{{ title }}</span>
         </div>
 
         <div class="flex items-center gap-3">
@@ -63,7 +63,7 @@
           <div
             class="w-full min-h-[150px] -mt-1 pt-3 p-2 focus:outline-none overflow-x-hidden"
             ref="post"
-            placeholder="What 're you posting today?"
+            :placeholder="`What 're you posting on ${title}?`"
             id="textarea"
             @input="checkMaxLength"
             contenteditable
@@ -154,7 +154,6 @@ function checkMaxLength() {
 function parseFile() {
   const file = fileInput.value?.files[0]
   if (file) {
-    console.log(file)
     if (file.size > 536870912) {
       largeFileContent.value = 'You are not allowed to upload files > 512mb'
       isLarge.value = true
@@ -183,7 +182,6 @@ function parseFile() {
   }
 }
 async function uploadFiles() {
-  console.log('fileupload', region)
   fileUpload.value.forEach(async (file) => {
     const timestamp = new Date().getTime()
     const filename = timestamp + file.name
@@ -205,7 +203,6 @@ async function uploadFiles() {
           src: `https://${bucket}.s3.${region}.amazonaws.com/${filename}`
         })
       }
-      console.log(res)
     } catch (err) {
       console.error(err)
     }
@@ -236,12 +233,11 @@ async function handlePost() {
         authorId: auth.user.id,
         cover: movie.image.url
       }
-      console.log(post)
       mutate({ post })
       emit('unchoose')
       emit('closeAllModal')
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   } else if (postLen.value == 400) {
     largeFileContent.value = 'No Content in Post'
@@ -268,16 +264,14 @@ function openFile() {
 }
 
 watch(error, () => {
-  console.log(error)
+  console.error(error)
 })
 // watches
 watch(postBody, () => {
   const o: any = document.querySelector('.tribute-container')
   if (o) {
-    console.log('0', o)
     document.querySelector('#post')?.appendChild(o)
   }
-  console.log(tags.value)
 
   // const o = document.querySelector('.tribute-container')
 })

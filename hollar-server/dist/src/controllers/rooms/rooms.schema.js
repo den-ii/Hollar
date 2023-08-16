@@ -63,9 +63,8 @@ export const typeDef = `
         name: String
         objectPosition: String
         tv: Tv
-        posts: [ID]
-        likes: [ID]
         dislikes: [ID]
+        postsCount: Int
         likesCount: Int
         dislikesCount: Int
         userLiked: Int

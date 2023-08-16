@@ -1,7 +1,10 @@
 <template>
   <div class="mb-5 cursor-pointer">
     <!-- <rooms-header @openRoomModal="$emit('openRoomModal')" :rooms="rooms" @change="change" /> -->
-    <div>
+    <div v-if="!result?.roomsPaginate?.length">
+      <room-skeleton />
+    </div>
+    <div v-else>
       <scroll-results :result="result" @toRoom="toRoom" />
     </div>
   </div>
@@ -15,6 +18,7 @@ import { roomsPaginateQuery, searchRoomsQuery } from '@/graphql/queries'
 import { useQuery, useLazyQuery } from '@vue/apollo-composable'
 import { useAuthStore } from '@/stores/auth'
 import RoomsHeader from './RoomsHeader.vue'
+import RoomSkeleton from './RoomSkeleton.vue'
 import ScrollResults from './ScrollResults.vue'
 import SearchResults from './SearchResults.vue'
 
@@ -61,7 +65,6 @@ function loadMore() {
 // load room on initial render
 
 function infiniteScroll() {
-  console.log(loading)
   if (!loading.value) {
     const { scrollTop, offsetHeight } = document.documentElement
     const { innerHeight } = window

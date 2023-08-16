@@ -58,10 +58,8 @@ function unchoose() {
 async function bringUpMovies(value) {
   title.value = value
   load() || refetch()
-  console.log('error', error)
+  console.error('error', error)
 }
-console.log(title.value)
-console.log('error', error)
 
 onError((err) => {
   error.value = err

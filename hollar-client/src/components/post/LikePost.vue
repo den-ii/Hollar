@@ -1,12 +1,12 @@
 <template>
   <span>
     <button v-if="!liked" class="flex items-center gap-1" @click.stop="like">
-      <span class="text-gray-800 dark:text-white font-Raleway">{{ len }}</span
+      <span class="five text-gray-800 dark:text-white font-Raleway">{{ len }}</span
       ><span class="w-[12px]"><i class="fa-regular fa-heart"></i></span>
     </button>
     <button v-else class="flex items-center gap-2" @click.stop="unlike">
       <span class="w-[12px]"><i class="fa-solid text-red-400 fa-heart"></i></span>
-      <span class="font-Raleway">{{ len }}</span>
+      <span class="five font-Raleway">{{ len }}</span>
     </button>
   </span>
 </template>
@@ -53,13 +53,10 @@ function like() {
     liked.value = !liked.value
     likeLen.value++
     if (props.isReply) {
-      console.log('replylike', props.id)
       likeReplyMutate({ replyId: props.id, userId: auth.user.id })
     } else {
-      console.log(props.isReply)
       likeMutate({ postId: props.id, userId: auth.user.id })
     }
-    console.log(likeReplyError)
   }
 }
 function unlike() {

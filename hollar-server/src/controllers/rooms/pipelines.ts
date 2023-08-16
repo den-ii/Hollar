@@ -16,6 +16,8 @@ export async function getRoomsPaginatedPipeline(cursor: string, limit: number, u
             tv: 1,
             likesCount: { $size: "$likes" },
             likes: 1,
+            post: 1,
+            postsCount: { $size: "$posts" },
             dislikes: 1,
             dislikesCount: { $size: "$dislikes" },
             updatedAt: 1

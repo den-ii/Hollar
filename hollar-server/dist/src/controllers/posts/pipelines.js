@@ -64,7 +64,6 @@ export async function postPipeline(id, userId, match) {
         $sort: { createdAt: -1 }
     };
     const pipeline = [match, authorLookup, authorUnwind, roomLookup, roomUnwind, project, addFields, sort];
-    console.log('hey');
     const result = await Post.aggregate(pipeline);
     return result;
 }
@@ -145,7 +144,6 @@ export async function getReplyPipeline(id, userId) {
         }
     };
     const reply = await getReplies({ id, userId, match });
-    console.log(reply);
     return reply[0];
 }
 export async function authorPostRepliesPipeline(id, authorId, userId) {
@@ -190,7 +188,6 @@ export async function postRepliesPipeline(id, authorId, userId, cursor, limiter)
         $limit: limiter
     };
     const reply = await getReplies({ id, userId, match, limit });
-    console.log('postReply');
     return reply;
 }
 export async function authorReplyRepliesPipeline(id, authorId, userId) {
@@ -240,7 +237,6 @@ export async function replyRepliesPipeline(id, authorId, userId, cursor, limiter
         $limit: limiter
     };
     const reply = await getReplies({ id, userId, match, limit });
-    console.log('replyReply', reply);
     return reply;
 }
 export async function tRepliesPipeline(idList, userId) {

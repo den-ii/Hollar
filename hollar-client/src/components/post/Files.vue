@@ -14,10 +14,10 @@
         </button>
       </template>
       <template v-else>
-        <img :src="file.src" alt="photo" class="w-[150px] h-[100px] object-cover" />
+        <img :src="file.src" alt="photo" class="w-[150px] h-[100px] object-cover rounded" />
         <button
           @click.prevent="$emit('removeFiles', index)"
-          class="bg-white text-base dark:bg-base dark:text-white absolute w-[20px] h-[20px] rounded-full flex items-center justify-center -right-3 -top-3 cursor-pointer"
+          class="bg-neutral-700 text-white dark:bg-base dark:text-white absolute w-[20px] h-[20px] rounded-full flex items-center justify-center -right-3 -top-3 cursor-pointer"
           aria-label="remove image"
         >
           <i class="fa-solid fa-xmark text-sm"></i>

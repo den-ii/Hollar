@@ -5,7 +5,10 @@
     <nav class="w-screen flex items-center justify-between px-3">
       <!-- LOGO -->
       <div>
-        <h1 class="font-bold text-lg text-base font-QuickSand dark:text-white">HOLLAR&#8482;</h1>
+        <h1 class="font-bold flex items-center gap-1 text-lg text-base dark:text-gray-200">
+          <i class="fa-solid fa-circle-play text-3xl"></i>
+          <span class="font-semibold text-lg font-QuickSand">HOLLAR</span>
+        </h1>
       </div>
 
       <!-- <div class="flex gap-5 text-lg">
@@ -30,7 +33,7 @@
         <input
           type="text"
           placeholder="search here ... channel search with #"
-          class="w-[300px] focus:bg-white search py-1 px-2 text-sm placeholder:text-darks focus:placeholder:text-gray-500 dark:placeholder:text-gray-400 rounded-lg font-Quicksand text-darks dark:text-gray-100 bg-slate-100 dark:border-gray-200 dark:bg-black"
+          class="w-[300px] focus:bg-white search py-1 px-2 text-sm placeholder:text-darks focus:placeholder:text-gray-500 dark:placeholder:text-gray-400 rounded-lg text-darks dark:text-gray-100 bg-slate-100 dark:border-gray-200 dark:bg-black"
         />
         <!-- <button>
           <i class="fa-solid fa-magnifying-glass -mr-2 text-gray-100"></i>
@@ -38,24 +41,12 @@
         <button class="relative cursor-pointer">
           <i class="fa-regular fa-bell text-lg text-gray-600 dark:text-gray-100"></i
           ><span
-            class="absolute -top-2 left-[10.5px] bg-base text-white w-5 h-5 rounded-full flex items-center justify-center text-xs"
+            class="absolute -top-2 left-[10.5px] bg-base text-white dark:text-gray-100 w-5 h-5 rounded-full font-semibold font-QuickSand flex items-center justify-center text-xs"
             >3</span
           >
         </button>
-        <button v-if="auth.user?.avatar?.length" @click="router.push('/profile')">
-          <img
-            :src="auth.user?.avatar"
-            loading="lazy"
-            :class="`w-[40px] h-[40px] flex items-center justify-center cursor-pointer rounded-full ${auth.authBg} object-cover`"
-            onerror=""
-          />
-        </button>
-        <button
-          v-else
-          :class="`w-[45px] h-[45px] flex items-center justify-center cursor-pointer rounded-full ${auth.authBg}`"
-          @click="router.push('/profile')"
-        >
-          <p class="text-lg font-bold text-white">{{ auth.name }}</p>
+        <button v-if="auth.user" @click="router.push('/profile/@me')">
+          <avatar :dpName="auth.user?.fullName" :src="auth.user?.avatar" size="w-[40px] h-[40px]" />
         </button>
       </div>
     </nav>
@@ -65,6 +56,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import Avatar from '../Avatar.vue'
 
 const auth = useAuthStore()
 const dp = auth.name

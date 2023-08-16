@@ -1,8 +1,8 @@
 <template>
-  <div class="dark:bg-darks dark:shadow-barshadow p-2 z-50">
+  <div class="dark:bg-darks min-w-[200px] min-h-[120px] dark:shadow-barshadow p-2 z-50">
     <!-- {{ props.post }} -->
-    <div class="flex gap-3">
-      <div>
+    <div class="flex">
+      <div class="w-50px">
         <avatar
           :src="post?.authorDetails?.avatar"
           :post="post"
@@ -27,14 +27,18 @@
           />
         </span> -->
       </div>
-      <div class="w-[50%]">
-        <div class="dark:text-white">@{{ props.post?.authorDetails?.username }}</div>
-        <button class="block w-full mt-1 bg-base rounded py-[0.4px] text-white text-center">
+      <div class="w-[80%] flex flex-col items-center">
+        <div class="text-base font-Raleway dark:text-white">
+          @{{ props.post?.authorDetails?.username }}
+        </div>
+        <button
+          class="block w-[80%] mt-2 font-semibold bg-base rounded-md py-1 text-white text-center font-QuickSand"
+        >
           follow
         </button>
       </div>
     </div>
-    <div class="text-gray-700 mt-2">
+    <div class="text-gray-700 mt-4">
       <i class="fa-solid fa-star text-yellow-500"></i>
       <span class="ml-1 dark:text-white">
         {{ favourite }}

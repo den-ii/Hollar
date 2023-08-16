@@ -18,13 +18,13 @@
       ></span>
 
       <!-- Movie Searchbar -->
-      <div class="h-full overflow-y-scroll px-6" id="smovie" v-if="modal == 'addRoom'">
-        <form @submit.prevent="bringUpMovies">
+      <div class="h-full overflow-y-scroll relative px-6" id="smovie" v-if="modal == 'addRoom'">
+        <form @submit.prevent="bringUpMovies" class="sticky top-3">
           <input
-            placeholder="SEARCH..."
+            placeholder=""
             v-model="title"
             ref="search"
-            class="block search addsearch dark:bg-black dark:text-gray-200 w-[100%] text-lg py-3 px-4 mt-3 rounded-full border-2 border-gray-100"
+            class="block five search addsearch dark:bg-black dark:text-gray-200 w-[100%] text-lg py-3 px-4 mt-3 rounded-full border-2 border-gray-100"
           />
         </form>
         <!-- Movie List -->
@@ -35,16 +35,16 @@
               <div class="flex items-center mb-3 justify-between">
                 <img :src="movies.image?.url" class="moviebg" loading="lazy" />
                 <div class="w-full text-center">
-                  <p class="font-bold text-2xl font-Raleway">{{ movies.title }}</p>
+                  <p class="font-semibold text-2xl">{{ movies.title }}</p>
                   <button
                     v-if="movies.inRoom"
-                    class="mt-2 bg-yellow-600 text-white font-Raleway rounded px-2 py-1 font-bold cursor-not-allowed"
+                    class="mt-2 bg-yellow-600 text-white rounded px-2 py-1 font-semibold cursor-not-allowed"
                   >
                     already created
                   </button>
                   <button
                     v-else
-                    class="mt-2 bg-base text-white font-Raleway rounded px-2 py-1 font-bold"
+                    class="mt-2 bg-base text-white rounded px-2 py-1 font-semibold"
                     @click.prevent="
                       createRoom({ name: movies.title, cover: movies.image?.url, tv: movies })
                     "
@@ -125,15 +125,11 @@ let {
 
 async function bringUpMovies() {
   load() || refetch()
-  console.log('error', error)
 }
-console.log(title.value)
-console.log('error', error)
+console.error('error', error)
 
 async function createRoom(movie) {
   movie.creator = auth.user.id
-  console.log(auth.user.id)
-  console.log(movie)
   movie.description = ''
   const { id, year } = movie.tv
   const { height, imageUrl, width } = movie.tv.image
@@ -143,9 +139,7 @@ async function createRoom(movie) {
   mutate({ ...movie })
   modal.value = 'createRoom'
   onDone((result) => {
-    console.log(result)
     let { name, id } = result.data.createRoom
-    console.log(name, id)
     name = name.split(' ').join('+')
     router.push(`/${name}/${id}`)
   })
@@ -161,52 +155,4 @@ watch([result, createRoomError], () => {
 })
 </script>
 
-<style>
-.addsearch {
-  background-image: url(../../assets/search.svg);
-  background-repeat: no-repeat;
-  background-position: 8px 50%;
-  background-size: 24px;
-  text-indent: 20px;
-}
-.moviebg {
-  height: 240px;
-  width: 160px;
-  border-radius: 6px;
-}
-#smovie::-webkit-scrollbar {
-  width: 10px;
-  cursor: pointer;
-}
-
-/* Track */
-#smovie::-webkit-scrollbar-track {
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-/* Handle */
-#smovie::-webkit-scrollbar-thumb {
-  /*background: rgba(88, 30, 235, 0.3);*/
-  background: gainsboro;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-/* Handle on hover */
-#smovie::-webkit-scrollbar-thumb:hover {
-  background: gray;
-}
-.loader {
-  animation: rotation 1s infinite linear;
-  font-size: 5rem;
-}
-@keyframes rotation {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(359deg);
-  }
-}
-</style>
+<style></style>

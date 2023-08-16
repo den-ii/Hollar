@@ -4,7 +4,9 @@
     <div v-if="!isReply">
       <!-- top post  -->
       <top-thread
+        id=""
         :post="post"
+        :main="true"
         @click.prevent="router.push(`/post/@${post.author.username}/${post.id}`)"
       />
     </div>
@@ -35,7 +37,7 @@
       v-if="!post?.replyCount && !newReplies.length"
       class="text-center mt-16 dark:font-semibold text-md text-darks dark:text-gray-200"
     >
-      No replies yet ...
+      <!-- No replies yet ... -->
     </div>
 
     <!-- newReplies  -->
@@ -52,21 +54,24 @@
     </section>
     <div
       v-if="auth.isAuth"
-      class="fixed bottom-2 w-full max-w-[750px] bg-base dark:bg-darks dark:shadow-barshadow border border-black rounded-xl p-2"
+      id="smovie"
+      class="fixed bottom-2 w-full max-w-[750px] bg-white dark:bg-darks shadow-barshadow border border-neutral-700 dark:border-black rounded-xl p-2"
     >
       <div class="flex justify-between pb-2 dark:text-gray-100 text-white">
-        <h2 class="dark:text-gray-100 text-white font-bold dark:font-medium text-lg mb-1">
+        <h2 class="dark:text-gray-200 text-neutral-700 font-bold text-lg mb-1 font-Raleway">
           Reply:
         </h2>
         <div class="flex items-center gap-3">
-          <p class="font-Raleway italic w-12 text-ellipsis text-center">
+          <p
+            class="font-Raleway font-semibold w-12 text-neutral-700 dark:text-gray-200 text-ellipsis text-center"
+          >
             {{ replyLen }}
           </p>
           <button class="cursor-pointer hover:text-purple-100">
-            <i class="fa-solid fa-face-grin-wink text-lg dark:text-gray-100 text-white"></i>
+            <i class="fa-solid fa-face-grin-wink text-lg text-neutral-700 dark:text-gray-200"></i>
           </button>
           <button class="hover:text-purple-100 cursor-pointer" @click="openFile">
-            <i class="fa-solid fa-images text-lg dark:text-gray-100 text-white"></i>
+            <i class="fa-solid fa-images text-lg dark:text-gray-200 text-neutral-700"></i>
             <input
               ref="fileInput"
               type="file"
@@ -77,27 +82,34 @@
           </button>
           <span class="w-[40px]">
             <button
-              class="send cursor-pointer w-[30px] h-[30px] rounded-full dark:bg-gray-100 bg-white flex items-center justify-center"
+              class="send cursor-pointer w-[30px] h-[30px] rounded-full bg-white dark:bg-gray-200 border border-neutral-700 dark:border-0 flex items-center justify-center"
               :disabled="loading"
               @click.prevent="handleReply"
             >
-              <i class="fa-solid fa-paper-plane text-base" v-if="!loading"></i>
+              <i class="fa-solid fa-paper-plane text-neutral-700" v-if="!loading"></i>
               <i class="fa-solid fa-rotate loader text-base" v-else></i>
             </button>
           </span>
         </div>
       </div>
-      <files :all-files="allFiles" @remove-files="removeFiles" class="-mt-5" />
-      <vue-tribute :options="options">
-        <div
-          class="w-full relative min-h-[70px] p-2 bg-white dark:border focus:outline focus:outline-1 dark:outline dark:outline-1 dark:text-gray-200 dark:border-black focus:outline-black dark:outline-black dark:bg-darks rounded-xl reply"
-          id="#post"
-          :placeholder="replyPlaceholder"
-          contenteditable
-          ref="reply"
-          @input="checkMaxLength"
-        ></div>
-      </vue-tribute>
+      <div class="max-h-[300px] overflow-y-scroll" id="smovie">
+        <files :all-files="allFiles" @remove-files="removeFiles" class="-mt-5" />
+        <vue-tribute :options="options">
+          <div
+            class="w-full relative min-h-[70px] p-2 bg-white border dark:focus:border-[1.5px] focus:outline-0 dark:text-gray-200 border-neutral-700 dark:border-black dark:shadow-barshadow dark:bg-darks rounded-xl reply"
+            id="#post"
+            :placeholder="replyPlaceholder"
+            contenteditable
+            ref="reply"
+            @input="checkMaxLength"
+          ></div>
+        </vue-tribute>
+      </div>
+      <large-file
+        v-show="isLarge"
+        :content="largeFileContent"
+        class="w-[300px] left-[50%] -translate-x-[50%] mx-auto mt-[100px]"
+      />
     </div>
   </div>
 </template>
@@ -108,15 +120,19 @@ import { VueTribute } from 'vue-tribute'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import Replies from './post/Replies.vue'
+import { tagSearchUsersQuery } from '@/graphql/queries'
 import replyHeader from './replyHeader.vue'
-import { useQuery, useMutation } from '@vue/apollo-composable'
+import { useLazyQuery, useMutation } from '@vue/apollo-composable'
 import PostReply from '@/components/post/PostReply.vue'
 import UserPost from '@/components/post/UserPost.vue'
 import { replyPostMutate, replyReply } from '@/graphql/mutations'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { client, bucket, region } from '@/config/aws'
+import LargeFile from './post/LargeFile.vue'
 import files from '@/components/post/Files.vue'
 import TopThread from './TopThread.vue'
+import { selectTemplate, menuItemTemplate } from './tag'
+import Avatar from './Avatar.vue'
 
 const props = defineProps(['isReply', 'post', 'loading', 'replyData', 'postId'])
 
@@ -144,29 +160,31 @@ const replyBody = ref('')
 const tags: any = ref([])
 const options = {
   trigger: '@',
-  values: [
-    { key: 'Sarah Drasner', value: 'sarah_edo' },
-    { key: 'Evan You', value: 'youyuxi' },
-    { key: 'Adam Wathan', value: 'adamwathan' },
-    { key: 'Rich Harris', value: 'Rich_Harris' }
-  ],
+  values: function (text, cb) {
+    tagSearch(text, (users) => cb(users))
+  },
+  lookup: 'username',
+  fillAttr: 'username',
   noMatchTemplate: function () {
-    return '<span style:"visibility: hidden;"></span>'
+    return '<span class="hidden border-0 child"></span>'
   },
   positionMenu: false,
   containerClass:
-    'tribute-container fixed bottom-[22%] border shadow-barshadow rounded z-50 bg-white dark:bg-darks dark:shadow-barshadow mx-auto left-[50%] -translate-x-[50%] w-[60%] dark:border-black',
+    'tribute-container fixed border shadow-barshadow rounded-lg z-50 bg-white dark:bg-darks dark:shadow-barshadow mx-auto left-[50%] block -translate-x-[50%] w-[500px] border-neutral-700 dark:border-black parent',
   itemClass:
-    'hover:bg-slate-100 hover:text-darks dark:hover:bg-base dark:hover:text-white cursor-pointer py-1 px-2',
-  selectTemplate: function (item) {
-    tags.value.push(item.original.value)
-    return (
-      '<span contenteditable="false" class="bg-slate-100 text-darks dark:bg-black p-1 rounded-lg dark:text-white cursor-pointer">@' +
-      item.original.value +
-      '</span>'
-    )
-  }
+    'hover:bg-slate-100 hover:text-darks dark:hover:bg-base dark:hover:text-white cursor-pointer py-1 px-2 rounded-lg',
+  selectTemplate,
+  menuItemTemplate
+
   // menuContainer: document.getElementById('make')
+}
+const username = ref('')
+const { result, load, refetch } = useLazyQuery(tagSearchUsersQuery, { username })
+
+function tagSearch(text, cb) {
+  username.value = text
+  load() || refetch()
+  cb(result.value?.tagSearchUsers)
 }
 
 function checkMaxLength() {
@@ -180,7 +198,6 @@ function checkMaxLength() {
 function parseFile() {
   const file = fileInput.value?.files[0]
   if (file) {
-    console.log(file)
     if (file.size > 536870912) {
       largeFileContent.value = 'You are not allowed to upload files > 512mb'
       isLarge.value = true
@@ -209,7 +226,6 @@ function parseFile() {
   }
 }
 async function uploadFiles() {
-  console.log('fileupload', region)
   fileUpload.value.forEach(async (file) => {
     const timestamp = new Date().getTime()
     const filename = timestamp + file.name
@@ -231,7 +247,6 @@ async function uploadFiles() {
           src: `https://${bucket}.s3.${region}.amazonaws.com/${filename}`
         })
       }
-      console.log(res)
     } catch (err) {
       console.error(err)
     }
@@ -254,7 +269,6 @@ async function handleReply() {
         files: returnFile.value,
         authorId: auth.user.id
       }
-      // console.log(props.postId, replyPost)
       const authorDetails = {
         id: auth.user?.id,
         username: auth.user?.username,
@@ -265,7 +279,6 @@ async function handleReply() {
       if (!props.isReply) {
         mutate({ postId: props?.postId, reply: replyPost })
         onDone((result) => {
-          console.log(result)
           newReplies.value.push({ ...result.data.replyPost, authorDetails })
           reply.value.innerHTML = ''
         })
@@ -278,21 +291,18 @@ async function handleReply() {
             authorDetails
           })
 
-          console.log(newReplies.value)
           reply.value.innerHTML = ''
         })
       }
-      console.log(replyReplyError)
-      console.log(replyPostError)
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   } else if (replyLen.value == 400) {
     largeFileContent.value = 'No Content in Post'
     isLarge.value = true
     return setTimeout(() => (isLarge.value = false), 2500)
   } else {
-    largeFileContent.value = 'Post is too long'
+    largeFileContent.value = 'Reply is too long'
     isLarge.value = true
     return setTimeout(() => (isLarge.value = false), 2500)
   }
@@ -317,39 +327,56 @@ watch(
   (newId, oldId) => {
     id.value = String(route.params.id)
     newReplies.value = []
-    console.log(route.params.id)
   }
 )
 
 watch(replyBody, () => {
   const o: any = document.querySelector('.tribute-container')
   if (o) {
-    console.log('0', o)
     document.querySelector('#reply')?.appendChild(o)
   }
-  console.log(tags.value)
-  console.log(replyPostError)
-
-  // const o = document.querySelector('.tribute-container')
 })
 // watch()
 
 watch(replyReplyError, () => {
-  console.log(replyReplyError)
-
   if (reply.value) {
     reply.value.focus()
-    console.log(replyPostError)
   }
 })
 </script>
 
-<style>
+<style scoped>
 [contenteditable='true']:empty:before {
   content: attr(placeholder);
   pointer-events: none;
   display: block; /* For Firefox */
   color: grey;
-  font-family: 'Quicksand';
+  font-family: 'Karla';
+}
+
+#post::-webkit-scrollbar {
+  width: 10px;
+  cursor: pointer;
+  background: blue;
+}
+
+/* Track */
+#post::-webkit-scrollbar-track {
+  border-radius: 10px;
+  cursor: pointer;
+  background: red;
+}
+
+/* Handle */
+#post::-webkit-scrollbar-thumb {
+  /*background: rgba(88, 30, 235, 0.3);*/
+  background: gainsboro;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* Handle on hover */
+#post::-webkit-scrollbar-thumb:hover {
+  background: gray;
 }
 </style>

@@ -31,17 +31,6 @@ watch(
   () => route.params.id,
   (newId, oldId) => {
     id.value = route.params.id
-    console.log(route.params.id)
   }
 )
-
-// watch(, () => {
-//   const response = useQuery(replyQuery, vars, { fetchPolicy: 'network-only' })
-//   replyResult = response.result
-//   console.log(response)
-
-//   // id.value = route.params.id
-//   console.log(replyResult)
-//   console.log(error)
-// })
 </script>

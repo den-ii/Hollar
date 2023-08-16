@@ -1,12 +1,12 @@
 <template>
-  <div class="max-w-[750px] mt-[100px] mx-auto min-h-[screen] relative pb-[207px]">
+  <div class="max-w-[750px] mt-[100px] mx-auto min-h-[screen] relative pb-[207px]" id="top">
     <!-- {{ post }} -->
     <thread :postId="id" :post="post" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, nextTick, } from 'vue'
 import { useRoute } from 'vue-router'
 import Thread from '../components/Thread.vue'
 import { useQuery } from '@vue/apollo-composable'
@@ -15,7 +15,6 @@ import { postQuery } from '@/graphql/queries'
 
 const route = useRoute()
 const auth = useAuthStore()
-const newReplies: any = ref([])
 const { id } = route.params
 
 console.log(id)
@@ -28,6 +27,8 @@ const {
 } = useQuery(postQuery, vars, { fetchPolicy: 'cache-and-network' })
 const post = computed(() => postResult?.value?.post)
 console.error(error)
+
+nextTick(() => document.getElementById('top')?.scrollIntoView())
 </script>
 
 <style>

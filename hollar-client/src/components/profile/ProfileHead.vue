@@ -80,17 +80,17 @@
       <!-- Profile Info -->
       <div>
         <p>{{ auth.user.fullName }}</p>
-        <p class="font-Dosis font-semibold italic">@{{ auth.user.username }}</p>
+        <p class="font-Raleway text-[1.1rem] font-semibold">@{{ auth.user.username }}</p>
         <div v-if="!edit">
-          <i class="fa-solid fa-star text-yellow-500"></i
-          ><span class="italic font-light font-Dosis">{{
+          <i class="fa-solid fa-star text-yellow-500 mr-1"></i
+          ><span class="text-[1rem] dark:text-200">{{
             auth.user.favourite ? auth.user.favourite : 'unknown'
           }}</span>
         </div>
         <div v-else>
-          <i class="fa-solid fa-star text-yellow-500"></i
+          <i class="fa-solid fa-star text-yellow-500 mr-1"></i
           ><input
-            class="italic font-light dark:placeholder-darks font-Dosis border border-base rounded px-1 dark:text-darks"
+            class="text-[1rem] dark:placeholder-darks border border-base rounded px-1 dark:text-darks"
             v-model="edited.favourite"
             :placeholder="auth.user.favourite ? auth.user.favourite : 'unknown'"
           />
@@ -101,7 +101,7 @@
         <!-- <button @click="logOut">
           <i class="fa-solid fa-arrow-right-from-bracket text-base dark:text-white"></i>
         </button> -->
-        <button class=""><i class="fa-solid fa-gear text-base dark:text-white"></i></button>
+        <button class=""><i class="fa-solid fa-gear text-base dark:text-gray-200"></i></button>
         <button
           class="flex items-center gap-2 border border-grey-500 rounded-md px-2 cursor-pointer text-[1.1rem] text-gray-100 bg-base"
           @click.prevent="saveEdit"
@@ -156,7 +156,6 @@ const bgUpload: any = ref('')
 function parseAvatar() {
   const file = avatarInput.value?.files[0]
   if (file) {
-    console.log(file)
     if (file.size > 236870912) {
       largeFileContent.value = 'You are not allowed to upload files > 212mb'
       isLarge.value = true
@@ -174,7 +173,6 @@ function parseAvatar() {
 function parseBg() {
   const file = bgInput.value?.files[0]
   if (file) {
-    console.log(file)
     if (file.size > 236870912) {
       largeFileContent.value = 'You are not allowed to upload files > 212mb'
       isLarge.value = true
@@ -186,16 +184,13 @@ function parseBg() {
         bg.value = e.target?.result
       }
       bgUpload.value = file
-      console.log(bg)
     }
   }
 }
 async function uploadAvatar() {
   if (avatarUpload.value) {
-    console.log('fileupload', region)
     const timestamp = new Date().getTime()
     const filename = timestamp + avatarUpload.value.name.toLowerCase()
-    console.log(avatarUpload, 'av')
     const command = new PutObjectCommand({
       Bucket: bucket,
       Key: filename,
@@ -204,7 +199,6 @@ async function uploadAvatar() {
     try {
       const res = await client.send(command)
       edited.avatar = `https://${bucket}.s3.${region}.amazonaws.com/${filename}`
-      console.log(res)
     } catch (err) {
       console.error(err)
     }
@@ -213,7 +207,6 @@ async function uploadAvatar() {
 
 async function uploadBg() {
   if (bgUpload.value) {
-    console.log('fileupload', region)
     const timestamp = new Date().getTime()
     const filename = timestamp + bgUpload.value.name.toLowerCase()
     const command = new PutObjectCommand({
@@ -224,8 +217,6 @@ async function uploadBg() {
     try {
       const res = await client.send(command)
       edited.bg = `https://${bucket}.s3.${region}.amazonaws.com/${filename}`
-      console.log(edited.bg, 'edied')
-      console.log(res)
     } catch (err) {
       console.error(err)
     }

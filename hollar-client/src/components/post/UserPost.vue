@@ -22,7 +22,6 @@ const dummyPost = {
   }
 }
 function enter(id) {
-  console.log(id)
   const item: any = document.getElementById(id)
   if (item) {
     item.style.display = 'block'

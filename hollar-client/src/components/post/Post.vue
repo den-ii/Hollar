@@ -9,12 +9,12 @@
       :post="post"
       :dpName="post?.authorDetails.fullName"
       :src="post?.authorDetails.avatar"
-      size="w-[46px] h-[40px]"
+      size="w-[40px] h-[40px]"
     />
-    <div class="w-full">
+    <div class="break">
       <div class="text-base font-semibold text-sm relative">
         <span
-          class="prof cursor-pointer text-base dark:text-white text-sm"
+          class="prof font-Raleway cursor-pointer text-base dark:text-white text-sm"
           @mouseover="enter(post.id)"
           @mouseleave="leave(post.id)"
         >
@@ -22,22 +22,24 @@
         >
         <div
           :id="post.id"
-          class="view w-[150px] min-h-[100px] border absolute rounded-lg -top-[102px] bg-white dark:bg-darks p-2 shadow"
+          class="view border border-darks dark:border-white absolute rounded-lg -top-[102px] bg-white dark:bg-darks p-2 shadow"
           @mouseover.prevent="enter(post.id)"
           @mouseleave="leave(post.id)"
         >
           <view-profile :post="post" />
         </div>
       </div>
-      <div class="font-light w-full min-h-[70px] flex flex-col justify-between g-5">
-        <div>{{ post.comment }}</div>
-        <div class="flex justify-end gap-5">
-          <like-post :likesCount="post?.likesCount" :id="post.id" :userLiked="post.userLiked" />
-          <button class="flex items-center">
-            <i class="fa-regular fa-comment"></i>
-            <span class="ml-1 font-Raleway">{{ post?.replyCount > 0 ? post.replyCount : '' }}</span>
-          </button>
-        </div>
+      <div class="mt-1 mr-1 min-h-[35px]">
+        <div v-html="post.comment" class=""></div>
+      </div>
+      <div class="flex justify-end mt-2 gap-5">
+        <like-post :likesCount="post?.likesCount" :id="post.id" :userLiked="post.userLiked" />
+        <button class="flex items-center">
+          <i class="fa-regular fa-comment"></i>
+          <span class="ml-1 font-Raleway five">{{
+            post?.replyCount > 0 ? post.replyCount : ''
+          }}</span>
+        </button>
       </div>
     </div>
   </div>
@@ -52,7 +54,6 @@ const router = useRouter()
 const props = defineProps(['results'])
 
 function enter(id) {
-  console.log(props.results)
   const item: any = document.getElementById(id)
   if (item) {
     item.style.display = 'block'

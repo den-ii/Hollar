@@ -143,8 +143,7 @@ function infiniteScroll() {
   }
 }
 watch([replyError, replyResult], () => {
-  console.log(replyResult)
-  console.log(replyError)
+  console.error(replyError)
 })
 // infinite scrollin
 window.addEventListener('scroll', infiniteScroll)

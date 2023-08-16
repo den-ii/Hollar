@@ -9,11 +9,11 @@
           v-if="liked && auth?.user"
           @click.stop="like"
         >
-          <span class="font-Raleway">{{ likeLen }}</span>
+          <span class="font-Raleway five">{{ likeLen }}</span>
           <i class="fa-solid fa-thumbs-up text-green-500"></i>
         </div>
         <div class="flex items-center gap-1 hover:text-lg h-[18px]" v-else @click.stop="like">
-          <span class="font-Raleway">{{ likeLen }}</span>
+          <span class="font-Raleway five">{{ likeLen }}</span>
           <i class="fa-regular fa-thumbs-up text-gray-800 dark:text-gray-100"></i>
         </div>
       </div>
@@ -23,7 +23,7 @@
         v-if="disliked && auth?.user"
         @click.stop="dislike"
       >
-        <span class="font-Raleway">{{ dislikeLen }}</span>
+        <span class="font-Raleway five">{{ dislikeLen }}</span>
         <i class="fa-solid fa-thumbs-down text-red-500"></i>
       </div>
       <div
@@ -31,7 +31,7 @@
         v-else
         @click.stop="dislike"
       >
-        <span class="font-Raleway">{{ dislikeLen }}</span>
+        <span class="font-Raleway five">{{ dislikeLen }}</span>
         <i class="fa-regular fa-thumbs-down text-gray-800 dark:text-gray-100"></i>
       </div>
     </div>
@@ -54,8 +54,6 @@ const liked = ref(props.userLiked === 1 ? true : false)
 const disliked = ref(props.userDisliked === 1 ? true : false)
 const dislikeLen = ref(props.dislikesCount)
 const likeLen = ref(props.likesCount)
-console.log('userLiked', props.userLiked)
-console.log('userdisLiked', props.userDisliked)
 
 function like() {
   if (!auth.isAuth) {
