@@ -101,10 +101,10 @@ export async function getReplies(reply) {
             post: 1,
             treplies: 1,
             likes: 1,
+            likesCount: { $cond: { if: { $isArray: "$likes" }, then: { $size: "$likes" }, else: 0 } },
+            replyCount: { $cond: { if: { $isArray: "$replies" }, then: { $size: "$replies" }, else: "0" } },
             comment: 1,
             createdAt: 1,
-            replyCount: { $size: "$replies" },
-            likesCount: { $size: "$likes" }
         }
     };
     const addFields = {

@@ -14,7 +14,8 @@ import RoomsHeader from '@/components/rooms/RoomsHeader.vue'
 const auth = useAuthStore()
 // const route = useRoute()
 // const id = String(route.params.id)
-
+const route = useRoute()
+const id = route.params.id as string
 const modals = useModalStore()
 </script>
 
@@ -23,7 +24,7 @@ const modals = useModalStore()
     <auth-modal v-if="auth.authModal" />
     <router-view name="navbar" />
     <div class="dark:bg-darks">
-      <router-view/>
+      <router-view :key="id" />
     </div>
     <router-view name="trendbar" />
     <router-view name="couTrendbar" />

@@ -40,8 +40,8 @@ export async function createPost(post: { comment: string, authorId: string, titl
             const follower = await getUser(id)
             follower?.feeds.push(newPost.id)
         })
-        await room.save();
-        await user.save();
+        await room?.save();
+        await user?.save();
         return newPost
     }
     else {
@@ -52,7 +52,7 @@ export async function createPost(post: { comment: string, authorId: string, titl
         console.log('post', newPost)
         room?.posts?.push(newPost.id)
         user?.posts?.push(newPost.id)
-        await room.save()
+        // await room?.save()
         await user?.save()
         return newPost
     }
@@ -205,7 +205,6 @@ export async function replyPost(postId: string, reply: { authorId: string, comme
             }
         })
     }
-
 
 }
 

@@ -3,8 +3,8 @@ import { Post } from "../../models/posts.model.js"
 import { Room } from "../../models/rooms.model.js"
 
 
-export async function getRoomsPaginatedPipeline(cursor: string, limit: number, userId?: string,) {
-
+export async function getRoomsPaginatedPipeline(cursor: string, limit: number, userId?: string) {
+    console.log(cursor, limit, userId)
     const sort = {
         $sort: { updatedAt: -1 }
     }
@@ -14,12 +14,12 @@ export async function getRoomsPaginatedPipeline(cursor: string, limit: number, u
             name: 1,
             cover: 1,
             tv: 1,
-            likesCount: { $size: "$likes" },
             likes: 1,
-            post: 1,
-            postsCount: { $size: "$posts" },
+            likesCount: { $cond: { if: { $isArray: "$likes" }, then: { $size: "$likes" }, else: 0 } },
+            posts: 1,
+            postsCount: { $cond: { if: { $isArray: "$posts" }, then: { $size: "$posts" }, else: 0 } },
             dislikes: 1,
-            dislikesCount: { $size: "$dislikes" },
+            dislikesCount: { $cond: { if: { $isArray: "$dislikes" }, then: { $size: "$dislikes" }, else: 0 } },
             updatedAt: 1
         }
     }
@@ -52,7 +52,7 @@ export async function getRoomsPaginatedPipeline(cursor: string, limit: number, u
     }
     const limiter = { $limit: limit }
     const pipeline: any = [sort, project, limiter];
-    if (cursor || cursor.length) {
+    if (cursor && cursor.length) {
         const c = Number(cursor)
         const timestamp = new Date(c)
         const match = {
@@ -120,8 +120,8 @@ export async function roomWithPostPipeline(id: string, cursor: string, limit: nu
             likes: 1,
             comment: 1,
             createdAt: 1,
-            replyCount: { $size: "$replies" },
-            likesCount: { $size: "$likes" }
+            replyCount: { $cond: { if: { $isArray: "$replies" }, then: { $size: "$replies" }, else: "0" } },
+            likesCount: { $cond: { if: { $isArray: "$likes" }, then: { $size: "$likes" }, else: "0" } },
         }
     }
     const addFields = {

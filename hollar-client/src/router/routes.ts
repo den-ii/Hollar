@@ -1,6 +1,8 @@
 import type { RouteRecordRaw, Router } from 'vue-router';
+import { useRoute } from 'vue-router'
 
 import Reply from '@/views/Reply.vue'
+const route = useRoute()
 export const routes: RouteRecordRaw[] = [
     {
         path: '/',
@@ -67,6 +69,10 @@ export const routes: RouteRecordRaw[] = [
             navbar: () => import('@/components/bars/Navbar.vue'),
             trendbar: () => import('@/components/bars/Trendbar.vue'),
             couTrendbar: () => import('@/components/bars/CouTrendbar.vue'),
+        },
+        props: true,
+        meta: {
+            isReply: true
         }
     },
     {
@@ -89,9 +95,6 @@ export const routes: RouteRecordRaw[] = [
             trendbar: () => import('@/components/bars/Trendbar.vue'),
             couTrendbar: () => import('@/components/bars/CouTrendbar.vue'),
         },
-        meta: {
-            isReply: true
-        }
 
     },
     {

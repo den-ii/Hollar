@@ -58,13 +58,13 @@
             v-if="!loading"
             class="w-[30px] h-[30px] rounded-full flex items-center justify-center cursor-pointer"
             ><i class="fa-solid fa-plus text-xl text-white dark:text-gray-200 cursor-pointer"></i>
-            <!-- <input
+            <input
               ref="avatarInput"
               type="file"
               accept=".gif,.jpg,.jpeg,.png"
               class="opacity-5 z-10 w-[30px] h-[30px] absolute cursor-pointer"
               @change="parseAvatar"
-            /> -->
+            />
           </span>
           <span
             v-else
@@ -235,7 +235,6 @@ async function saveEdit() {
 
     mutate({ profile: edited })
     onDone((result) => {
-      console.log('result', result)
       localStorage.setItem('user', JSON.stringify(result.data.editProfile))
       auth.user = result.data.editProfile
       edit.value = false

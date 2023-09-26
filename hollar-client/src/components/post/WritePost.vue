@@ -77,7 +77,8 @@
 
 <script setup lang="ts">
 // imports
-import { computed, ref, watch, reactive } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { client, bucket, region } from '@/config/aws'
 import LargeFile from './LargeFile.vue'
@@ -136,6 +137,12 @@ const title = computed(() =>
     ? props.chosenFilm?.title.slice(0, 19) + '...'
     : props.chosenFilm?.title
 )
+const router = useRouter()
+function toRoom(title: string, id: string) {
+  const name = title.split(' ').join('+')
+  console.log(name)
+  router.push(`/channel/${name}/${id}`)
+}
 const username = computed(() =>
   auth?.user.username > 12 ? auth.user.username.slice(0, 12) + '...' : auth.user.username
 )
@@ -236,6 +243,10 @@ async function handlePost() {
       mutate({ post })
       emit('unchoose')
       emit('closeAllModal')
+      onDone((res) => {
+        const movieId = res.data.createPost.id
+        toRoom(title, movieId)
+      })
     } catch (err) {
       console.error(err)
     }

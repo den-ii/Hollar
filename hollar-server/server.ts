@@ -23,7 +23,7 @@ config()
 
 
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT
 mongoose.connect(process.env.MONGO_URL, {
     connectTimeoutMS: 7000,
     serverSelectionTimeoutMS: 7000
@@ -67,7 +67,7 @@ app.use(
 );
 
 await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
-console.log(`🚀 Server ready at http://localhost:3000/graphql`);
+console.log(`🚀 Server ready at http://localhost:${port}/graphql`);
 
 
 // cors<cors.CorsRequest>({ origin: ['http://localhost:5143/', 'http://localhost:5143', 'https://studio.apollographql.com'] }),

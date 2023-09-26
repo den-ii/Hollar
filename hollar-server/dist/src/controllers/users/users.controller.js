@@ -38,6 +38,7 @@ export async function tryEmailCreateUser(user) {
     };
     try {
         let statement = await sgMail.send(msg);
+        console.log(statement);
         return { message: 'email sent', code: 200 };
     }
     catch (err) {

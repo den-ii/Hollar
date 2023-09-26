@@ -37,8 +37,8 @@ export async function createPost(post) {
             const follower = await getUser(id);
             follower?.feeds.push(newPost.id);
         });
-        await room.save();
-        await user.save();
+        await room?.save();
+        await user?.save();
         return newPost;
     }
     else {
@@ -49,7 +49,7 @@ export async function createPost(post) {
         console.log('post', newPost);
         room?.posts?.push(newPost.id);
         user?.posts?.push(newPost.id);
-        await room.save();
+        // await room?.save()
         await user?.save();
         return newPost;
     }
