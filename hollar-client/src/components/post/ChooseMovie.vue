@@ -83,7 +83,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-defineEmits(['closeAllModal', 'closeAllModal', 'change'])
+defineEmits(['closeAllModal', 'closeAllModal', 'change', 'chooseFilm'])
 defineProps<{
   bringUpMovies: (value: string) => {}
   modal: string

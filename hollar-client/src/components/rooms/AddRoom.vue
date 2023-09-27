@@ -104,7 +104,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useLazyQuery, useMutation } from '@vue/apollo-composable'
 import { useRouter } from 'vue-router'
 
-defineEmits(['openRoomModal'])
+defineEmits(['openRoomModal', 'closeRoomModal'])
 
 const auth = useAuthStore()
 const router = useRouter()
