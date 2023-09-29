@@ -10,4 +10,4 @@ COPY ./dist .
 
 EXPOSE 3000
 
-CMD [ "npm", "start-container" ]
+CMD [ "npm", "run", "start-container" ]
